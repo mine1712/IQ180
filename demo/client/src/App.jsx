@@ -192,7 +192,7 @@ function App() {
           )}
           <div>
             <h3>Time Left: {timeLeft} seconds</h3>
-            {isTimeUp && <h3>Time's up!</h3>}
+            {isTimeUp && <h3>Time&apos;s up!</h3>}
           </div>
         </div>
       )}
