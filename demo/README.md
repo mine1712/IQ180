@@ -1,10 +1,10 @@
-THIS IS A PROTOTYPE PERHAPS.
+**THIS IS A PROTOTYPE PERHAPS.**
 
-TO Start Server 
+**TO Start Server **
 
 cd server && npm install && npm start
 
-TO Start Client
+**TO Start Client**
 
 cd client && npm install && npm run dev
 
