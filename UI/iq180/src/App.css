@@ -14,6 +14,7 @@
   -webkit-text-stroke: 2px #696956;
   margin-bottom: 60px;
   animation: rotate 8s linear infinite;
+  z-index: 1;
 }
 
 @keyframes rotate {
@@ -48,9 +49,12 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: transform 0.2s ease; /* Suaviza el efecto de agrandamiento */
+  transition: transform 0.2s ease;
+  z-index: 1;
 }
 
 .play-button:hover {
   transform: scale(1.2); /* Agranda el botón al 110% de su tamaño original */
 }
+
+
