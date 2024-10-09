@@ -49,9 +49,9 @@ const RandomLetter = () => {
         prevLetters.map(letter => ({
           ...letter,
           top: letter.top + 5, // Caer 5px cada intervalo
-        })).filter(letter => letter.top < window.innerHeight) // Eliminar letras que salieron de la pantalla
+        })).filter(letter => letter.top < window.innerHeight-45) // Eliminar letras que salieron de la pantalla
       );
-    }, 50); // Actualizar la posición cada 50 ms
+    }, 40); // Actualizar la posición cada 50 ms
 
     return () => clearInterval(fallInterval);
   }, []);
