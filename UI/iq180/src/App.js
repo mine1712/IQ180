@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Menu from './Menu';
-import Game from './Game';
+import Singleplayer from './Singleplayer';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Menu />} />
-        <Route path="/game" element={<Game />} />
+        <Route path="/Singleplayer" element={<Singleplayer />} />
       </Routes>
     </Router>
   );

@@ -1,5 +1,7 @@
+// Menu.js
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Howtoplay from './Howtoplay';
 import './App.css';
 
 const RandomLetter = () => {
@@ -7,51 +9,51 @@ const RandomLetter = () => {
 
   const getColorForSymbol = (symbol) => {
     switch (symbol) {
-      case '+':
-        return '#ff8e86'; // Color para '+'
+      case '+':  
+        return '#ff8e86';
       case '-':
-        return '#c586ff'; // Color para '-'
-      case '/':
-        return '#86f6ff'; // Color para '/'
+        return '#6cf94c';
+      case '÷':
+        return '#86f6ff';
       case 'x':
-        return '#ff86fd'; // Color para 'x'
+        return '#ff86fd';
       case '%':
-        return '#f5ff86'; // Color para '%'
+        return '#f5ff86';
+      default:
+        return '#ffffff';
     }
   };
 
   const generateRandomLetter = () => {
-    const lettersArray = '+-/%x';
+    const lettersArray = '+-÷%x';
     const randomIndex = Math.floor(Math.random() * lettersArray.length);
-    const symbol = lettersArray[randomIndex]; // Guardar el símbolo
+    const symbol = lettersArray[randomIndex];
     const newLetter = {
       char: symbol,
-      left: Math.random() * window.innerWidth, // Posición horizontal aleatoria
-      top: -40, // Empieza desde la parte superior
-      color: getColorForSymbol(symbol), // Usar el símbolo para el color
+      left: Math.random() * window.innerWidth,
+      top: -40,
+      color: getColorForSymbol(symbol),
     };
     setLetters((prevLetters) => [...prevLetters, newLetter]);
   };
 
   useEffect(() => {
-    // Generar una letra al inicio
     const interval = setInterval(() => {
       generateRandomLetter();
-    }, 200); // Cambiar letras cada 200 ms
+    }, 200);
 
     return () => clearInterval(interval);
   }, []);
 
-  // Animar las letras
   useEffect(() => {
     const fallInterval = setInterval(() => {
       setLetters((prevLetters) => 
         prevLetters.map(letter => ({
           ...letter,
-          top: letter.top + 5, // Caer 5px cada intervalo
-        })).filter(letter => letter.top < window.innerHeight-45) // Eliminar letras que salieron de la pantalla
+          top: letter.top + 5,
+        })).filter(letter => letter.top < window.innerHeight - 45)
       );
-    }, 40); // Actualizar la posición cada 50 ms
+    }, 40);
 
     return () => clearInterval(fallInterval);
   }, []);
@@ -65,9 +67,9 @@ const RandomLetter = () => {
             position: 'absolute',
             left: letter.left,
             top: letter.top,
-            fontSize: '36px', // Aumentar el tamaño de la fuente
-            color: letter.color, // Usar el color específico para cada letra
-            textShadow: '1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black', // Borde negro
+            fontSize: '36px',
+            color: letter.color,
+            textShadow: '1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black',
           }}
         >
           {letter.char}
@@ -78,19 +80,34 @@ const RandomLetter = () => {
 };
 
 function Menu() {
+  const [showHowtoplay, setShowHowtoplay] = useState(false); 
   const navigate = useNavigate();
 
-  // Función que se ejecuta al hacer clic en "Jugar"
   const handlePlayClick = () => {
-    navigate('/game'); // Redirige a la ruta "/game"
+    navigate('/Singleplayer');
+  };
+
+  const handleHowtoplayClick = () => {
+    setShowHowtoplay(true);
+  };
+
+  const handleCloseHowtoplay = () => {
+    setShowHowtoplay(false);
   };
 
   return (
     <div className="menu-container">
       <h1 className="game-title">IQ180</h1>
-      <button className="play-button" onClick={handlePlayClick}>
-        Play
+      <button className="multiplayer-button" onClick={handlePlayClick}>
+        Multiplayer
       </button>
+      <button className="singleplayer-button" onClick={handlePlayClick}>
+        Singleplayer
+      </button>
+      <button className="howtoplay-button" onClick={handleHowtoplayClick}>
+        How to play
+      </button>
+      {showHowtoplay && <Howtoplay onClose={handleCloseHowtoplay} />}
       <RandomLetter />
     </div>
   );
