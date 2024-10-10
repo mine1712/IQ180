@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import '../css/Singleplayer.css';
-import RandomLetter from '../components/Effects';
 
 const Singleplayer = () => {
   const [playerName, setPlayerName] = useState('');
