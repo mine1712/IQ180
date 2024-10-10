@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Howtoplay from './Howtoplay';
 import RandomLetter from './Effects';
-import './App.css';
+import './Menu.css';
 
 
 
