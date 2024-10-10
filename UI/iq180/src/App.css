@@ -1,3 +1,11 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-y: hidden;  /* Solo desactiva el scroll vertical */
+  overflow-x: hidden;  /* Solo desactiva el scroll horizontal */
+}
+
 .menu-container {
   display: flex;
   flex-direction: column;

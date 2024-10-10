@@ -51,7 +51,7 @@ const RandomLetter = () => {
         prevLetters.map(letter => ({
           ...letter,
           top: letter.top + 5,
-        })).filter(letter => letter.top < window.innerHeight - 45)
+        })).filter(letter => letter.top < window.innerHeight)
       );
     }, 40);
 
