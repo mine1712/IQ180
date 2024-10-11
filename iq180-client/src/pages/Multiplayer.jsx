@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import '../css/Multiplayer.css';
 import io from 'socket.io-client';
+import {NumberPlaySlotBox,OperatorPlaySlotBox} from '../components';
 
 const server = io.connect('http://localhost:5172');
 
 function Multiplayer () {
+    const numbers = [null,2,3,4,5]
+    const operators = ['+','-','x','÷']
     return (
         <div>
             <h1>Target = XX</h1>
@@ -12,50 +15,18 @@ function Multiplayer () {
             <p>It is your turn</p>
             <div style={{textAlign:'center'}}>
                 <div>
-                    {[...Array(5).keys()].map((index) => {
+                    {numbers.map((number,index) => {
+                        // return <NumberPlaySlotBox/>
                         if (index==4) {
                             return (
                                 <div id="playSlotBoxArea">
-                                    <span
-                                        key={'numberPlaySlot'+(index+1)}
-                                        id='numberPlaySlotBox'
-                                        // disabled={isTimeUp}
-                                        // draggable
-                                        // onDragStart={() => handleNumberDragStart(index)}
-                                        // onDrop={() => handleNumberDrop(index)}
-                                        // onDragOver={(e) => e.preventDefault()}
-                                        // id = "span_num_ops"
-                                    >
-                                        1
-                                    </span>
+                                    <NumberPlaySlotBox number={number}/>
                                 </div>
                             )
                         } else return (
                             <div id="playSlotBoxArea">
-                                <span
-                                    key={'numberPlaySlot'+(index+1)}
-                                    id='numberPlaySlotBox'
-                                    // disabled={isTimeUp}
-                                    // draggable
-                                    // onDragStart={() => handleNumberDragStart(index)}
-                                    // onDrop={() => handleNumberDrop(index)}
-                                    // onDragOver={(e) => e.preventDefault()}
-                                    // id = "span_num_ops"
-                                >
-                                    1
-                                </span>
-                                <span
-                                    key={'numberPlaySlot'+(index+1)}
-                                    id='operatorPlaySlotBox'
-                                    // disabled={isTimeUp}
-                                    // draggable
-                                    // onDragStart={() => handleNumberDragStart(index)}
-                                    // onDrop={() => handleNumberDrop(index)}
-                                    // onDragOver={(e) => e.preventDefault()}
-                                    // id = "span_num_ops"
-                                >
-                                    +
-                                </span>
+                                <NumberPlaySlotBox number={number}/>
+                                <OperatorPlaySlotBox operator={operators[index]}/>
                             </div>
                         )
                     })}
