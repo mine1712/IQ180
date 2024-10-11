@@ -4,12 +4,12 @@ Cobbled together by Thas
 
 **TO Start Server**
 
-cd server
+cd iq180-server
 npm install
 npm start
 
 **TO Start Client**
 
-cd client
+cd iq180-client
 npm install
 npm run dev
