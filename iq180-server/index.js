@@ -98,6 +98,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('joinRoom', ({ room, name }) => {
+    //Set nickname
+    socket.nickname = name;
     // Check if room is full
     if(io.sockets.adapter.rooms.get(room)?.size === 2) {
       socket.emit('roomFull', 'Room is full');
