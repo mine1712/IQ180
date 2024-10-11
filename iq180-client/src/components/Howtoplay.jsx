@@ -15,14 +15,14 @@ const Howtoplay = ({ onClose }) => {
             to penalties.
             </p>
             <h3> Rules </h3> 
-            <p>  Click on the buttons to select the
+            <p id="howtoplay-line1">  Click on the buttons to select the
                  digits or operators needed to 
                  complete the equation.</p>
                   
-            <p>  Once selected, the chosen button will be disabled to 
+            <p id="howtoplay-line2">  Once selected, the chosen button will be disabled to 
                 prevent it from being selected again.</p>
-            <p>Each correct equation solved will increase your score.</p>
-            <p>Incorrect selections may lead to penalties, so think carefully 
+            <p id="howtoplay-line3">Each correct equation solved will increase your score.</p>
+            <p id="howtoplay-line4">Incorrect selections may lead to penalties, so think carefully 
                 before clicking.</p>
 
         
