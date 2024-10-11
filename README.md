@@ -1,4 +1,4 @@
-# IQ180
+# IQ180  
 
 All information here are subject to change.  
 
@@ -7,8 +7,19 @@ Backend/Server: NodeJS
 Frontend and Backend will be connected with Socket.IO  
 
 Members:  
-Frontend: Thas, David, Minerva  
-Backend: Matt, Thame, Nav  
+Frontend: Thas, David, Minerva, Black  
+Backend: Matt, Thame  
 
-Term Project Checkup on September 20th  
-**Term Project Submission on November 3rd and 10th**
+**Term Project Submission on November 3rd and 10th**  
+
+**TO Start Server**  
+
+cd iq180-server  
+npm install  
+npm start  
+
+**TO Start Client**  
+  
+cd iq180-client  
+npm install  
+npm run dev  
