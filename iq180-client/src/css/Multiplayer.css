@@ -1,0 +1,41 @@
+#numberPlaySlotBox {
+  display: inline-block; /* Makes it a box */
+  padding: 10px; /* Adjust padding as needed */
+  margin: 10px; /* Adds margin around the box */
+  border-radius: 5px; /* Adjust border-radius as needed */
+  background-color: #f9f9f9;
+  min-width: 50px;
+  min-height: 50px;
+  font-size: 40px;
+}
+
+#operatorPlaySlotBox {
+  display: inline-block; /* Makes it a box */
+  padding: 5px; /* Adjust padding as needed */
+  margin: 5px; /* Adds margin around the box */
+  border-radius: 5px; /* Adjust border-radius as needed */
+  background-color: #f9f9f9;
+  min-width: 25px;
+  min-height: 25px;
+  font-size: 25px;
+}
+
+#numberBankBox {
+  display: inline-block; /* Makes it a box */
+  padding: 10px; /* Adjust padding as needed */
+  margin: 10px; /* Adds margin around the box */
+  border-radius: 5px; /* Adjust border-radius as needed */
+  background-color: #f9f9f9;
+}
+
+#operatorBankBox {
+  display: inline-block; /* Makes it a box */
+  padding: 10px; /* Adjust padding as needed */
+  margin: 10px; /* Adds margin around the box */
+  border-radius: 5px; /* Adjust border-radius as needed */
+  background-color: #f9f9f9;
+}
+
+#playSlotBoxArea {
+  display: inline-block;
+}
