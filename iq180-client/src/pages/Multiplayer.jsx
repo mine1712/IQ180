@@ -6,28 +6,34 @@ import {NumberPlaySlotBox,OperatorPlaySlotBox} from '../components';
 const server = io.connect('http://localhost:5172');
 
 function Multiplayer () {
-    const numbers = [null,2,3,4,5]
-    const operators = ['+','-','x','÷']
+    const [playSlotNumbers,setPlaySlotNumbers] = useState(Array(5).fill());
+    const [playSlotOperators,setPlaySlotOperators] = useState(Array(4).fill());
+    // const numbers = [null,2,3,4,5]
+    // setPlaySlotNumbers([null,2,3,4,5])
+    // const operators = ['+','-','x','÷']
     return (
         <div>
             <h1>Target = XX</h1>
             <p>Time remaining = XX</p>
             <p>It is your turn</p>
+            <button onClick={()=>{setPlaySlotNumbers([null,2,3,4,5])
+                setPlaySlotOperators(['+','-','x','÷'])
+            }}>Test</button>
             <div style={{textAlign:'center'}}>
-                <div>
-                    {numbers.map((number,index) => {
+                <div id="playSlotBoxArea">
+                    {playSlotNumbers.map((number,index) => {
                         // return <NumberPlaySlotBox/>
                         if (index==4) {
                             return (
-                                <div id="playSlotBoxArea">
+                                <>
                                     <NumberPlaySlotBox number={number}/>
-                                </div>
+                                </>
                             )
                         } else return (
-                            <div id="playSlotBoxArea">
+                            <>
                                 <NumberPlaySlotBox number={number}/>
-                                <OperatorPlaySlotBox operator={operators[index]}/>
-                            </div>
+                                <OperatorPlaySlotBox operator={playSlotOperators[index]}/>
+                            </>
                         )
                     })}
                 </div>
