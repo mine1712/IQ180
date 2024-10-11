@@ -7,7 +7,7 @@ function OperatorPlaySlotBox({operator}) {
             // draggable
             // onDragStart={() => handleNumberDragStart(index)}
             // onDrop={() => handleNumberDrop(index)}
-            // onDragOver={(e) => e.preventDefault()}
+            onDragOver={(e) => e.preventDefault()}
             // id = "span_num_ops"
         >
             {operator}
