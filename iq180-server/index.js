@@ -4,6 +4,7 @@
 // TODO localhost:5174 will be the react project for scoreboard!
 // requestNumbers - request for numbers to be generated (receive target length from client if none provided will be 5 numbers)
 // startGame will be call when room has 2 users and firstPlayerName will be emited //TODO : startGame on client based on firstPlayer
+// Users stats will be stored in stats //TODO
 const express = require('express');
 const app = express();
 const http = require('http');
@@ -56,30 +57,58 @@ function isSolvable(numbers, target) {
   return helper(numbers, target);
 }
 
+const stats = {};
+const keys = {};
+
 io.on('connection', (socket) => {
   console.log(`A user with id: ${socket.id} connected`);
 
-  socket.on('requestNumbers', (targetLength) => {
+  socket.on('requestNumbers', (targetLength ,room) => {
     let numbers;
     let targetResult; // receive target result from client if none provided will be 5 numbers
-    targetLength = (targetLength == null) ? 5 : targetLength;
-    do {
-      numbers = Array.from({ length: targetLength }, () => Math.floor(Math.random() * 10));
-      targetResult = Math.floor(Math.random() * 10); // Ensure target result is a one-digit number
-    } while (!isSolvable(numbers, targetResult));
+    // Check whether if the numbers are already generated or not.
+    if (keys.room.timeCalled === 0) {
+      targetLength = (targetLength == null) ? 5 : targetLength;
+      do {
+        numbers = Array.from({ length: targetLength }, () => Math.floor(Math.random() * 10));
+        targetResult = Math.floor(Math.random() * 10); // Ensure target result is a one-digit number
+      } while (!isSolvable(numbers, targetResult));
+      keys.room.numbers = numbers;
+      keys.room.ans = targetResult;
+      keys.room.timeCalled = 1;
+    }
+    else if(keys.room.timeCalled === 1){
+      numbers = keys.room.numbers;
+      targetResult = keys.room.ans;
+      keys.room.timeCalled += 1;
+    }
+    else{
+      targetLength = (targetLength == null) ? 5 : targetLength;
+      do {
+        numbers = Array.from({ length: targetLength }, () => Math.floor(Math.random() * 10));
+        targetResult = Math.floor(Math.random() * 10); // Ensure target result is a one-digit number
+      } while (!isSolvable(numbers, targetResult));
+      keys.room.numbers = numbers;
+      keys.room.ans = targetResult;
+      keys.room.timeCalled = 1;
+    }
 
     socket.emit('numbers', { numbers, targetResult });
 
   });
 
   socket.on('joinRoom', ({ room, name }) => {
-    //Set nickname
-    socket.nickname = name;
     // Check if room is full
     if(io.sockets.adapter.rooms.get(room)?.size === 2) {
       socket.emit('roomFull', 'Room is full');
       return;
     }
+    //Set nickname
+    socket.nickname = name;
+    //setting up the scoreboard
+    if(!room in stats){
+      stats.room = {name:0};
+    }else stats.room.name = 0;
     socket.join(room);
     console.log(`${name} joined ${room}`);
     io.to(room).emit('message', `${name} has joined the room`);
@@ -95,6 +124,12 @@ io.on('connection', (socket) => {
       const firstPlayer = (Math.random()>0.5)? nicknames[1]:nicknames[0];
       io.to(room).emit('startGame',firstPlayer);
     }
+  });
+
+  //TODO
+  socket.on('checkAns', ({nums, operators, room})=>{
+    
+
   });
 
 
