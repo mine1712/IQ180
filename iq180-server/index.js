@@ -1,9 +1,9 @@
 // Setting up Socketio server
 //list of functions and their purpose
-// joinRoom - join a room (will emit roomFull if room is full) //TODO : add a check for room full on client side
+// joinRoom - join a room (will emit roomFull if room is full) //TODO : add a check for roomFull on client side
 // TODO localhost:5174 will be the react project for scoreboard!
 // requestNumbers - request for numbers to be generated (receive target length from client if none provided will be 5 numbers)
-// TODO takeTurn - take turn to solve the numbers.
+// startGame will be call when room has 2 users and firstPlayerName will be emited //TODO : startGame on client based on firstPlayer
 const express = require('express');
 const app = express();
 const http = require('http');
@@ -73,6 +73,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('joinRoom', ({ room, name }) => {
+    //Set nickname
+    socket.nickname = name;
     // Check if room is full
     if(io.sockets.adapter.rooms.get(room)?.size === 2) {
       socket.emit('roomFull', 'Room is full');
@@ -82,9 +84,19 @@ io.on('connection', (socket) => {
     console.log(`${name} joined ${room}`);
     io.to(room).emit('message', `${name} has joined the room`);
     if(io.sockets.adapter.rooms.get(room)?.size === 2) {
-      io.to(room).emit('startGame');
+      const roomSocket = io.sockets.adapter.rooms.get(room);
+      const nicknames = [];
+      roomSocket.forEach(socketId => {
+        const socket = io.sockets.sockets.get(socketId);
+        if (socket && socket.nickname) {
+          nicknames.push(socket.nickname);
+        }
+      });
+      const firstPlayer = (Math.random()>0.5)? nicknames[1]:nicknames[0];
+      io.to(room).emit('startGame',firstPlayer);
     }
   });
+
 
   socket.on('disconnect', () => {
     console.log(`User with id: ${socket.id} disconnected`);
