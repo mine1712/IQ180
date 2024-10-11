@@ -127,9 +127,39 @@ io.on('connection', (socket) => {
   });
 
   //TODO
-  socket.on('checkAns', ({nums, operators, room})=>{
-    
+  socket.on('checkAns', ({nums, operators, timeUsed, room})=>{
+    try {
+      let result = nums[0];
+      for (let i = 1; i < nums.length; i++) {
+        switch (operators[i - 1]) {
+          case '+':
+            result += nums[i];
+            break;
+          case '-':
+            result -= nums[i];
+            break;
+          case '*':
+            result *= nums[i];
+            break;
+          case '/':
+            result /= nums[i];
+            break;
+          default:
+            throw new Error('Invalid operator');
+        }
+      }
+      let booleanResult = eval(result,keys.room.ans);
+      // Emit the result back to the room
+      io.to(room).emit('answerChecked', { booleanResult });
+    } catch (error) {
+      io.to(room).emit('error', { message: error.message });
+    }
 
+  });
+
+  // Getting stats //TODO
+  socket.on('getStats', () => {
+    socket.emit('stats', stats);
   });
 
 
