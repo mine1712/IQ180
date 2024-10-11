@@ -1,4 +1,9 @@
 // Setting up Socketio server
+//list of functions and their purpose
+// joinRoom - join a room (will emit roomFull if room is full) //TODO : add a check for room full on client side
+// TODO localhost:5174 will be the react project for scoreboard!
+// requestNumbers - request for numbers to be generated (receive target length from client if none provided will be 5 numbers)
+// TODO takeTurn - take turn to solve the numbers.
 const express = require('express');
 const app = express();
 const http = require('http');
@@ -12,7 +17,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   // cors set up for react
   cors: {
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173','http://localhost:5174'],
     methods: ['GET', 'POST'],
   },
 });
@@ -54,25 +59,31 @@ function isSolvable(numbers, target) {
 io.on('connection', (socket) => {
   console.log(`A user with id: ${socket.id} connected`);
 
-  socket.on('requestNumbers', () => {
+  socket.on('requestNumbers', (targetLength) => {
     let numbers;
-    let targetResult;
+    let targetResult; // receive target result from client if none provided will be 5 numbers
+    targetLength = (targetLength == null) ? 5 : targetLength;
     do {
-      numbers = Array.from({ length: 5 }, () => Math.floor(Math.random() * 10));
+      numbers = Array.from({ length: targetLength }, () => Math.floor(Math.random() * 10));
       targetResult = Math.floor(Math.random() * 10); // Ensure target result is a one-digit number
     } while (!isSolvable(numbers, targetResult));
 
     socket.emit('numbers', { numbers, targetResult });
+
   });
 
   socket.on('joinRoom', ({ room, name }) => {
+    // Check if room is full
+    if(io.sockets.adapter.rooms.get(room)?.size === 2) {
+      socket.emit('roomFull', 'Room is full');
+      return;
+    }
     socket.join(room);
     console.log(`${name} joined ${room}`);
     io.to(room).emit('message', `${name} has joined the room`);
-  });
-
-  socket.on('sentMessage', (data) => {
-    console.log(data);
+    if(io.sockets.adapter.rooms.get(room)?.size === 2) {
+      io.to(room).emit('startGame');
+    }
   });
 
   socket.on('disconnect', () => {
