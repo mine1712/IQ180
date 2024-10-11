@@ -18,13 +18,13 @@ function Multiplayer () {
             <h1>Target = XX</h1>
             <p>Time remaining = XX</p>
             <p>It is your turn</p>
-            <button onClick={()=>{setPlaySlotNumbers([null,2,3,4,5])
-                setPlaySlotOperators(['+','-','x','÷'])
-            }}>Test</button>
             <GameArea playSlotNumbers={playSlotNumbers}
                 playSlotOperators={playSlotOperators}
                 bankNumbers={bankNumbers}
                 bankOperators={bankOperators}
+                setPlaySlotNumbers={setPlaySlotNumbers}
+                setPlaySlotOperators={setPlaySlotOperators}
+                setBankNumbers={setBankNumbers}
             />
         </div>    
     )
