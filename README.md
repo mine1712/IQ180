@@ -49,7 +49,7 @@ Client
 - [ ] (0.5) Increase a score when the equation has been solved.
   
 Server  
-- [] (1.0) Server program shows the number of concurrent clients that are online.  
+- [ ] (1.0) Server program shows the number of concurrent clients that are online.  
 - [ ] (1.0) Server has a reset button to reset player’s scores and current game.  
 - [ ] (1.0) Server randomizes the five digits and the final result when the game starts and also randomizes the first player for the first game.
   
