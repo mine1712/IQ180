@@ -1,11 +1,11 @@
-// function numberBankBoxDragStart(index) {
-
-// }
-
-function NumberBankBox({number,index,dragStartHandler}) {
+function NumberBankBox({number,index,dragStartHandler,dropHandler}) {
 
     const numberBankBoxDragStart = (index) => {
-        dragStartHandler("numbank",index)
+        dragStartHandler("numbank",index);
+    }
+
+    const numberBankBoxDrop = (index) => {
+        dropHandler("numbank",index);
     }
 
     return (
@@ -15,8 +15,8 @@ function NumberBankBox({number,index,dragStartHandler}) {
             // disabled={isTimeUp}
             draggable={true}
             onDragStart={() => numberBankBoxDragStart(index)}
-            // onDrop=
-            // onDragOver={(e) => e.preventDefault()}
+            onDrop={() => numberBankBoxDrop(index)}
+            onDragOver={(e) => e.preventDefault()}
             // id = "span_num_ops"
         >
             {number}

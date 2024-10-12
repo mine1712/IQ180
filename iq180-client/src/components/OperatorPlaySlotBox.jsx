@@ -1,5 +1,9 @@
-function OperatorPlaySlotBox({operator,index,dropHandler}) {
+function OperatorPlaySlotBox({operator,index,dropHandler,dragStartHandler}) {
     
+    const operatorPlaySlotDragStart = (index) => {
+        dragStartHandler("opslot",index)
+    }
+
     const operatorPlaySlotDrop = (index) => {
         dropHandler("opslot",index);
     }
@@ -9,8 +13,8 @@ function OperatorPlaySlotBox({operator,index,dropHandler}) {
             // key={'numberPlaySlot'+(index+1)}
             id='operatorPlaySlotBox'
             // disabled={isTimeUp}
-            // draggable
-            // onDragStart={() => handleNumberDragStart(index)}
+            draggable={true}
+            onDragStart={() => operatorPlaySlotDragStart(index)}
             onDrop={() => operatorPlaySlotDrop(index)}
             onDragOver={(e) => e.preventDefault()}
             // id = "span_num_ops"

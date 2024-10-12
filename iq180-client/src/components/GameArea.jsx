@@ -31,28 +31,61 @@ function GameArea({
                 newPlaySlotOperators.splice(index,1,bankOperators[currentDragItem.index]);
                 setPlaySlotOperators(newPlaySlotOperators);
             }
-            
+            if (currentDragItem.dragSource=="opslot") {
+                const newPlaySlotOperators = [...playSlotOperators];
+                const [replacedOperator] = newPlaySlotOperators.splice(index,1,playSlotOperators[currentDragItem.index]);
+                newPlaySlotOperators.splice(currentDragItem.index,1,replacedOperator);
+                setPlaySlotOperators(newPlaySlotOperators);
+            }
         }
         if (dropSource=="numslot") {
             if (currentDragItem.dragSource=="numbank" && bankNumbers[currentDragItem.index]!=null) {
                 const newPlaySlotNumbers = [...playSlotNumbers];
-                newPlaySlotNumbers.splice(index,1,bankNumbers[currentDragItem.index])
-                setPlaySlotNumbers(newPlaySlotNumbers);
+                newPlaySlotNumbers.splice(index,1,bankNumbers[currentDragItem.index]);
                 const newBankNumbers = [...bankNumbers];
-                newBankNumbers.splice(currentDragItem.index,1,null);
+                newBankNumbers.splice(currentDragItem.index,1,playSlotNumbers[index]);
+                setPlaySlotNumbers(newPlaySlotNumbers);
                 setBankNumbers(newBankNumbers);
             }
-            if (currentDragItem.dragSource=="numslot") {
+            if (currentDragItem.dragSource=="numslot" && playSlotNumbers[currentDragItem.index]!=null) {
                 const newPlaySlotNumbers = [...playSlotNumbers];
                 const [replacedNumber] = newPlaySlotNumbers.splice(index,1,playSlotNumbers[currentDragItem.index]);
-                newPlaySlotNumbers.splice(currentDragItem.index,1,replacedNumber)
+                newPlaySlotNumbers.splice(currentDragItem.index,1,replacedNumber);
                 setPlaySlotNumbers(newPlaySlotNumbers);
+            }
+        }
+        if (dropSource=="numbank") {
+            if (currentDragItem.dragSource=="numslot" && playSlotNumbers[currentDragItem.index]!=null) {
+                const newBankNumbers = [...bankNumbers];
+                newBankNumbers.splice(index,1,playSlotNumbers[currentDragItem.index]);
+                const newPlaySlotNumbers = [...playSlotNumbers];
+                newPlaySlotNumbers.splice(currentDragItem.index,1,bankNumbers[index]);
+                setBankNumbers(newBankNumbers);
+                setPlaySlotNumbers(newPlaySlotNumbers);
+            }
+            if (currentDragItem.dragSource=="numbank" && bankNumbers[currentDragItem.index]!=null) {
+                const newBankNumbers = [...bankNumbers];
+                const [replacedNumber] = newBankNumbers.splice(index,1,bankNumbers[currentDragItem.index]);
+                newBankNumbers.splice(currentDragItem.index,1,replacedNumber);
+                setBankNumbers(newBankNumbers);
             }
         }
         setCurrentDragItem(null);
     }
 
-    console.log(isTimeUp+"test")
+    const formatSubmission = () => {
+        const formatOperators = playSlotOperators.reduce((acc, curr) => {
+            if (curr === "x") {
+                acc.push("*");
+            } else if (curr === "÷") {
+                acc.push("/");
+            } else {
+                acc.push(curr);
+            }
+            return acc;
+        }, []);
+        return formatOperators;
+    }
 
     return (
         <div style={{textAlign:'center'}}>
@@ -77,7 +110,8 @@ function GameArea({
                             />
                             <OperatorPlaySlotBox operator={playSlotOperators[index]}
                                     index={index}  
-                                    dropHandler={dropHandler} 
+                                    dropHandler={dropHandler}
+                                    dragStartHandler={dragStartHandler}
                             />
                         </>
                     )
@@ -85,7 +119,7 @@ function GameArea({
             </div>
             <div>
                 {bankNumbers.map((number, index) => (
-                    <NumberBankBox number={number} index={index} dragStartHandler={dragStartHandler}/>
+                    <NumberBankBox number={number} index={index} dragStartHandler={dragStartHandler} dropHandler={dropHandler}/>
                 ))}
             </div>
             <div>
@@ -93,9 +127,10 @@ function GameArea({
                     <OperatorBankBox symbol={symbol} index={index} dragStartHandler={dragStartHandler}/>
                 ))}
             </div>
-            <button onClick={() => {alert("Submitting not implemented yet")}} disabled={isTimeUp} >Submit answer</button>
-            {/* <button onClick={() => {alert(isTimeUp)}}>Test</button> */}
-            {/* <p>{isTimeUp} iasiasi {test}</p> */}
+            <button onClick={() => {
+                alert("Submitting not implemented yet\nNumbers: " + playSlotNumbers + "\nOperators: "+formatSubmission());
+
+            }} disabled={isTimeUp} >Submit answer</button>
         </div>
     );
 }

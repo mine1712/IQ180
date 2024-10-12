@@ -17,9 +17,7 @@ function Multiplayer () {
     const [isYourTurn, setIsYourTurn] = useState(false);
     const [isTimeUp,setIsTimeUp] = useState(false);
     const [targetResult,setTargetResult] = useState(null);
-    // const numbers = [null,2,3,4,5]
-    // setPlaySlotNumbers([null,2,3,4,5])
-    // const operators = ['+','-','x','÷']
+    const [getNumberButtonState,setGetNumberButtonState] = useState(false);
 
     useEffect(() => {
         server.on('numbers', (data) => {
@@ -93,7 +91,17 @@ function Multiplayer () {
                     <button onClick={() => {
                         setTimeLeft(5);
                     }}>Test button disable</button>
-                    <button onClick={() => {server.emit('requestNumbers')}}>Get numbers</button>
+                    <button onClick={() => {
+                        server.emit('requestNumbers');
+                        setGetNumberButtonState(true);
+                    }} disabled={getNumberButtonState}>Get numbers</button>
+                    <button onClick={() => {
+                        setTimeLeft(60);
+                        setBankNumbers([]);
+                        setPlaySlotNumbers(Array(5).fill());
+                        setPlaySlotOperators(Array(4).fill());
+                        setGetNumberButtonState(false);
+                    }}>Reset Room</button>
                     <p>It is {isYourTurn ? "" : "not"}your turn</p>
                     <GameArea playSlotNumbers={playSlotNumbers}
                         playSlotOperators={playSlotOperators}
@@ -104,7 +112,6 @@ function Multiplayer () {
                         setBankNumbers={setBankNumbers}
                         isTimeUp={isTimeUp}
                     />
-                    {/* <button onClick={() => {alert(isTimeUp)}}>Test2</button> */}
                 </div>
             )}
         </div>     
