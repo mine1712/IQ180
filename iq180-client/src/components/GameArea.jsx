@@ -11,7 +11,8 @@ function GameArea({
     bankOperators,
     setPlaySlotNumbers,
     setPlaySlotOperators,
-    setBankNumbers
+    setBankNumbers,
+    isTimeUp
 }) {
 
     const [currentDragItem, setCurrentDragItem] = useState(null)
@@ -50,6 +51,8 @@ function GameArea({
         }
         setCurrentDragItem(null);
     }
+
+    console.log(isTimeUp+"test")
 
     return (
         <div style={{textAlign:'center'}}>
@@ -90,6 +93,9 @@ function GameArea({
                     <OperatorBankBox symbol={symbol} index={index} dragStartHandler={dragStartHandler}/>
                 ))}
             </div>
+            <button onClick={() => {alert("Submitting not implemented yet")}} disabled={isTimeUp} >Submit answer</button>
+            {/* <button onClick={() => {alert(isTimeUp)}}>Test</button> */}
+            {/* <p>{isTimeUp} iasiasi {test}</p> */}
         </div>
     );
 }

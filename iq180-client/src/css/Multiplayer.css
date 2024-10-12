@@ -40,6 +40,13 @@
   background-color: #f9f9f9;
 }
 
+:disabled {
+  background-color: #f9f9f9;
+}
+
+:disabled:hover {
+  background-color: #f9f9f9;
+}
 /* #playSlotBoxArea {
   display:inline-block;
 } */
