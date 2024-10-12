@@ -18,6 +18,7 @@ function Multiplayer () {
     const [isTimeUp,setIsTimeUp] = useState(false);
     const [targetResult,setTargetResult] = useState(null);
     const [getNumberButtonState,setGetNumberButtonState] = useState(false);
+    const [privateRoomCode,setPrivateRoomCode] = useState(null);
 
     useEffect(() => {
         server.on('numbers', (data) => {
@@ -63,8 +64,17 @@ function Multiplayer () {
                         <button onClick={() => handleRoomSelection('Room 1')}>Room 1</button>
                         <button onClick={() => handleRoomSelection('Room 2')}>Room 2</button>
                         <button onClick={() => handleRoomSelection('Room 3')}>Room 3</button>
-                    </div>
+                        <h2>or enter a Private Room Code</h2>
+                        <input 
+                            type="text" 
+                            value={privateRoomCode} 
+                            onChange={(e) => setPrivateRoomCode(e.target.value)} 
+                            placeholder="Your Code" 
+                            className='input'
+                        />
+                        <button onClick={() => handleRoomSelection(privateRoomCode)}>Submit</button>
                 </div>
+            </div>
             )}
             {currentMultiplayerScreen=="nameentry" && (
                 <div className="modal">
