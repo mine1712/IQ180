@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../css/Singleplayer.css';
 import {GameArea} from '../components';
+import { generateNumbers } from '../utils/numberGenerator'
 
 const Singleplayer = () => {
     const [currentSingleplayerScreen, setCurrentSingleplayerScreen] = useState("nameentry");
@@ -10,7 +11,7 @@ const Singleplayer = () => {
     const [bankNumbers,setBankNumbers] = useState([]);
     const [bankOperators,setBankOperators] = useState(['+','-','x','÷'])
     // const [selectedRoom, setSelectedRoom] = useState(null);
-    const [userName, setUserName] = useState(null);
+    const [userName, setUserName] = useState("");
     const [timeLeft,setTimeLeft] = useState(null);
     const [isYourTurn, setIsYourTurn] = useState(false);
     const [isTimeUp,setIsTimeUp] = useState(false);
@@ -112,6 +113,15 @@ const Singleplayer = () => {
                         // setGetNumberButtonState(false);
                     }}>Reset Room</button>
                     <p>It is {isYourTurn ? "" : "not "}your turn</p>
+                    <button onClick={() => {
+                        setIsYourTurn(true);
+                        setTimeLeft(60);
+                        const generated = generateNumbers();
+                        setBankNumbers(generated[0]);
+                        setTargetResult(generated[1]);
+                        setPlaySlotNumbers(Array(5).fill());
+                        setPlaySlotOperators(Array(4).fill());
+                    }}>Start</button>
                     <GameArea playSlotNumbers={playSlotNumbers}
                         playSlotOperators={playSlotOperators}
                         bankNumbers={bankNumbers}
