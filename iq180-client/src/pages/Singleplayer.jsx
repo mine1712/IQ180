@@ -52,6 +52,33 @@ const Singleplayer = () => {
     const handleNameSubmit = () => {
         setCurrentSingleplayerScreen("gamescreen");
     }
+    
+    const handleSubmission = (numbers,operators) => {
+        let equation = "";
+        var playerAnswer;
+        for (let i=0;i<numbers.length;i++) {
+            equation+=numbers[i];
+            if (i!==numbers.length-1) {
+                equation+=operators[i];
+            }
+        }
+        try {
+            playerAnswer = eval(equation);
+            if (playerAnswer === targetResult) {
+                alert("Correct! The solution is valid.");
+                return true;
+            } else {
+                alert(`Incorrect. The result is ${playerAnswer}, but ${targetResult} was expected.`);
+                return false;
+            }
+        } catch (error) {
+            alert("Error in the expression. Please ensure it is well-formed.");
+            return false;
+        }
+        // const playerAnswer = eval(equation);
+        // alert("Player Answer: "+playerAnswer+"\nTarget: "+targetResult);
+        // return 
+    }
 
     return (
         <div>
@@ -130,6 +157,7 @@ const Singleplayer = () => {
                         setPlaySlotOperators={setPlaySlotOperators}
                         setBankNumbers={setBankNumbers}
                         isTimeUp={isTimeUp}
+                        handleSubmission={handleSubmission}
                     />
                 </div>
             )}

@@ -12,7 +12,8 @@ function GameArea({
     setPlaySlotNumbers,
     setPlaySlotOperators,
     setBankNumbers,
-    isTimeUp
+    isTimeUp,
+    handleSubmission
 }) {
 
     const [currentDragItem, setCurrentDragItem] = useState(null)
@@ -84,6 +85,7 @@ function GameArea({
             }
             return acc;
         }, []);
+        alert(formatOperators)
         return formatOperators;
     }
 
@@ -128,8 +130,7 @@ function GameArea({
                 ))}
             </div>
             <button onClick={() => {
-                alert("Submitting not implemented yet\nNumbers: " + playSlotNumbers + "\nOperators: "+formatSubmission());
-
+                handleSubmission(playSlotNumbers,formatSubmission);
             }} disabled={isTimeUp} >Submit answer</button>
         </div>
     );

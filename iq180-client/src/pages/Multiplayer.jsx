@@ -54,6 +54,10 @@ function Multiplayer () {
         setCurrentMultiplayerScreen("selectroom");
     }
 
+    const handleSubmission = () => {
+        alert("Multiplayer submission has not been implemented yet.\nNumbers: " + playSlotNumbers + "\nOperators: "+ playSlotOperators)
+    }
+
     return (
         <div>
             {currentMultiplayerScreen=="selectroom" && (
@@ -121,6 +125,7 @@ function Multiplayer () {
                         setPlaySlotOperators={setPlaySlotOperators}
                         setBankNumbers={setBankNumbers}
                         isTimeUp={isTimeUp}
+                        handleSubmission={handleSubmission}
                     />
                 </div>
             )}
