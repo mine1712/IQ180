@@ -78,7 +78,7 @@ function genNumbers(targetLength){
   return {numbers,result};
 }
 
-const stats = {};
+let stats = {};
 let keys = {"Room 1":{timeCalled:0,numbers:[],ans:null},"Room 2":{timeCalled:0,numbers:[],ans:null},"Room 3":{timeCalled:0,numbers:[],ans:null}};
 
 io.on('connection', (socket) => {
