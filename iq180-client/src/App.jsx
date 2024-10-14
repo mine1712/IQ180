@@ -10,10 +10,10 @@ function App() {
         <Menu goToPage={setCurrentPage}/>
       )}
       {currentPage=="Singleplayer"&& (
-        <Singleplayer />
+        <Singleplayer goToPage={setCurrentPage}/>
       )}
       {currentPage=="Multiplayer"&& (
-        <Multiplayer />
+        <Multiplayer goToPage={setCurrentPage}/>
       )}
     </>
   )

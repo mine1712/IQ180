@@ -3,7 +3,7 @@ import '../css/Singleplayer.css';
 import {GameArea} from '../components';
 import { generateNumbers } from '../utils/numberGenerator'
 
-const Singleplayer = () => {
+const Singleplayer = ({goToPage}) => {
     const [currentSingleplayerScreen, setCurrentSingleplayerScreen] = useState("nameentry");
     const [playerScore, setPlayerScore] = useState(0);
     const [playSlotNumbers,setPlaySlotNumbers] = useState(Array(5).fill());
@@ -172,7 +172,7 @@ const Singleplayer = () => {
                         isTimeUp={isTimeUp}
                         handleSubmission={handleSubmission}
                     />
-                    
+                    <button onClick={()=>goToPage("Menu")}>Return to Menu</button>
                 </div>
             )}
         </div>     

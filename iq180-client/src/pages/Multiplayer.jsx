@@ -5,7 +5,7 @@ import {GameArea} from '../components';
 
 const server = io.connect('http://localhost:5172');
 
-function Multiplayer () {
+function Multiplayer ({goToPage}) {
     const [currentMultiplayerScreen, setCurrentMultiplayerScreen] = useState("nameentry");
     const [playSlotNumbers,setPlaySlotNumbers] = useState(Array(5).fill());
     const [playSlotOperators,setPlaySlotOperators] = useState(Array(4).fill());
@@ -127,6 +127,7 @@ function Multiplayer () {
                         isTimeUp={isTimeUp}
                         handleSubmission={handleSubmission}
                     />
+                    <button onClick={()=>goToPage("Menu")}>Return to Menu</button>
                 </div>
             )}
         </div>     
