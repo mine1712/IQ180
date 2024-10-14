@@ -39,6 +39,7 @@ function genNumbers(targetLength){
       for (let i = 0; i < targetLength; i++) {
       numbers.push(Math.floor(Math.random() * 10));
       }
+      count = 0;
     }
     for(let i = 0; i < numbers.length; i++){
       if(numbers[i] !== 0){
