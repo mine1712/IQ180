@@ -25,38 +25,49 @@ const io = new Server(server, {
 
 const operators = ['+', '-', '*', '/'];
 
-function isSolvable(numbers, target) {
-  function helper(nums, target) {
-    if (nums.length === 1) {
-      return Math.abs(nums[0] - target) < 1e-6;
-    }
-
-    for (let i = 0; i < nums.length; i++) {
-      for (let j = 0; j < nums.length; j++) {
-        if (i !== j) {
-          const remaining = nums.filter((_, index) => index !== i && index !== j);
-          for (const op of operators) {
-            let result;
-            if (op === '+') result = nums[i] + nums[j];
-            if (op === '-') result = nums[i] - nums[j];
-            if (op === '*') result = nums[i] * nums[j];
-            if (op === '/' && nums[j] !== 0) result = nums[i] / nums[j];
-
-            if (result !== undefined) {
-              if (helper([...remaining, result], target)) {
-                return true;
-              }
-            }
-          }
-        }
+function genNumbers(targetLength){
+  let numbers = [];
+  let result = 0;
+  for (let i = 0; i < targetLength; i++) {
+    numbers.push(Math.floor(Math.random() * 10));
+  }
+  for(let i = 0; i < numbers.length; i++){
+    if(numbers[i] != 0){
+      switch (operators[Math.floor(Math.random() * 4)]) {
+        case '+':
+          result += numbers[i];
+          break;
+        case '-':
+          result -= numbers[i];
+          break;
+        case '*':
+          result *= numbers[i];
+          break;
+        case '/':
+          result /= numbers[i];
+          break;
+        default:
+          throw new Error('Invalid operator');
       }
     }
-    return false;
+    else{
+      switch (operators[Math.floor(Math.random() * 3)]) {
+        case '+':
+          result += numbers[i];
+          break;
+        case '-':
+          result -= numbers[i];
+          break;
+        case '*':
+          result *= numbers[i];
+          break;
+        default:
+          throw new Error('Invalid operator');
+      }}
+
   }
-
-  return helper(numbers, target);
+  return {numbers,result};
 }
-
 const stats = {};
 const keys = {};
 
@@ -66,35 +77,22 @@ io.on('connection', (socket) => {
   socket.on('requestNumbers', (targetLength ,room) => {
     let numbers;
     let targetResult; // receive target result from client if none provided will be 5 numbers
+    targetLength = (targetLength == null) ? 5 : targetLength;
+    numbers,targetResult = genNumbers(targetLength);
     // Check whether if the numbers are already generated or not.
     if (keys.room.timeCalled === 0) {
-      targetLength = (targetLength == null) ? 5 : targetLength;
-      do {
-        numbers = Array.from({ length: targetLength }, () => Math.floor(Math.random() * 10));
-        targetResult = Math.floor(Math.random() * 10); // Ensure target result is a one-digit number
-      } while (!isSolvable(numbers, targetResult));
-      keys.room.numbers = numbers;
-      keys.room.ans = targetResult;
       keys.room.timeCalled = 1;
     }
     else if(keys.room.timeCalled === 1){
-      numbers = keys.room.numbers;
-      targetResult = keys.room.ans;
       keys.room.timeCalled += 1;
     }
     else{
       targetLength = (targetLength == null) ? 5 : targetLength;
-      do {
-        numbers = Array.from({ length: targetLength }, () => Math.floor(Math.random() * 10));
-        targetResult = Math.floor(Math.random() * 10); // Ensure target result is a one-digit number
-      } while (!isSolvable(numbers, targetResult));
-      keys.room.numbers = numbers;
-      keys.room.ans = targetResult;
       keys.room.timeCalled = 1;
     }
-
-    socket.emit('numbers', { numbers, targetResult });
-
+    keys.room.numbers = numbers;
+    keys.room.ans = targetResult;
+    socket.to(room).emit('numbers', { numbers, targetResult });
   });
 
   socket.on('joinRoom', ({ room, name }) => {
