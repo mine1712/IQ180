@@ -104,9 +104,6 @@ io.on('connection', (socket) => {
       keys.room.numbers = numbers;
       keys.room.ans = targetResult;
     }
-    console.log(`Numbers generated: ${numbers}`);
-    console.log(`Target result: ${targetResult}`);
-    console.log(`Room: ${room}`);
     socket.to(room).emit('numbers', { numbers, targetResult });
   });
 
