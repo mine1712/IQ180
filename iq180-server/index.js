@@ -32,7 +32,7 @@ function genNumbers(targetLength){
   for (let i = 0; i < targetLength; i++) {
     numbers.push(Math.floor(Math.random() * 10));
   }
-  while(!Number.isInteger(result) || result<0 || result>500){
+  while(!Number.isInteger(result) || result<1 || result>500){
     // if the loop runs more than 200 times, reset the numbers
     if(count++>200){
       numbers =[];
@@ -75,7 +75,7 @@ function genNumbers(targetLength){
             throw new Error('Invalid operator');
         }}}
   }
-  return {numbers,result};
+  return { numbers, result };
 }
 
 let stats = {};
