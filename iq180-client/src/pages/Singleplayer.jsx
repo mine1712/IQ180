@@ -47,7 +47,10 @@ const Singleplayer = ({goToPage}) => {
             const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
             return () => clearTimeout(timer);
         } else {
-            setIsTimeUp(true);
+            if (isYourTurn) {
+                setIsTimeUp(true);
+                setPlayerLost(true);
+            }
         }
     }, [timeLeft]);
 

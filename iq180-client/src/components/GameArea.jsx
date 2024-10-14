@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import NumberPlaySlotBox from "./numberPlaySlotBox";
 import OperatorPlaySlotBox from "./OperatorPlaySlotBox";
 import NumberBankBox from "./NumberBankBox";
@@ -17,6 +17,21 @@ function GameArea({
 }) {
 
     const [currentDragItem, setCurrentDragItem] = useState(null)
+    const [playSlotValues,setPlaySlotValues] = useState(Array(9).fill())
+
+    useEffect(() => {
+        let values=[]
+        for (let i=0;i<playSlotNumbers.length;i++) {
+            if (i==4) {
+                values=[...values,playSlotNumbers[i]];
+            } else {
+                values=[...values,playSlotNumbers[i],playSlotOperators[i]];
+            }
+        }
+        setPlaySlotValues(values);
+        // alert(playSlotNumbers);
+        // alert(playSlotOperators);
+    },[playSlotNumbers,playSlotOperators])
 
     const dragStartHandler = (dragSource,index) => {
         setCurrentDragItem({
@@ -89,10 +104,54 @@ function GameArea({
         return formatOperators;
     }
 
+    // const playSlotValues = () => {
+    //     let values=[]
+    //     for (let i=0;i<playSlotNumbers.length;i++) {
+    //         if (i==4) {
+    //             values=[...values,playSlotNumbers[i]];
+    //         } else {
+    //             values=[...values,playSlotNumbers[i],playSlotOperators[i]];
+    //         }
+    //     }
+    // }
+
     return (
         <div style={{textAlign:'center'}}>
             <div>
-                {playSlotNumbers.map((number,index) => {
+                {playSlotValues.map((number,index) => {
+                    if (index%2==0) {
+                        if (index==8) {
+                            return (
+                                <Fragment key={'numberPlaySlot'+((index/2)+1)}>
+                                    <NumberPlaySlotBox number={number}
+                                        index={index/2}
+                                        dropHandler={dropHandler}
+                                        dragStartHandler={dragStartHandler}
+                                    />
+                                </Fragment>
+                            )
+                        } else return (
+                            <Fragment key={'numberPlaySlot'+((index/2)+1)}>
+                                <NumberPlaySlotBox number={number}
+                                    index={index/2}
+                                    dropHandler={dropHandler}
+                                    dragStartHandler={dragStartHandler}
+                                />
+                                
+                            </Fragment>
+                        )
+                    } else return (
+                        <Fragment key={'operatorPlaySlot'+(index+1)}>
+                            <OperatorPlaySlotBox operator={playSlotOperators[(index-1)/2]}
+                                index={(index-1)/2}  
+                                dropHandler={dropHandler}
+                                dragStartHandler={dragStartHandler}
+                            />
+                        </Fragment>
+                    )
+                })}
+                {/* BELOW IS OLD CODE THAT CAUSES "CHILD IN LIST NEEDS UNIQUE 'KEY' PROP WARNING"*/}
+                {/* {playSlotNumbers.map((number,index) => {
                     if (index==4) {
                         return (
                             <>
@@ -117,16 +176,20 @@ function GameArea({
                             />
                         </>
                     )
-                })}
+                })} */}
             </div>
             <div>
                 {bankNumbers.map((number, index) => (
-                    <NumberBankBox number={number} index={index} dragStartHandler={dragStartHandler} dropHandler={dropHandler}/>
+                    <Fragment key={'numberBank'+(index+1)}>
+                        <NumberBankBox number={number} index={index} dragStartHandler={dragStartHandler} dropHandler={dropHandler}/>
+                    </Fragment>
                 ))}
             </div>
             <div>
                 {bankOperators.map((symbol, index) => (
-                    <OperatorBankBox symbol={symbol} index={index} dragStartHandler={dragStartHandler}/>
+                    <Fragment key={'numberBank'+(index+1)}>
+                        <OperatorBankBox symbol={symbol} index={index} dragStartHandler={dragStartHandler}/>
+                    </Fragment>
                 ))}
             </div>
             <button onClick={() => {
