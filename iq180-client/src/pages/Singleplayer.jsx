@@ -55,13 +55,14 @@ const Singleplayer = () => {
     
     const handleSubmission = (numbers,operators) => {
         let equation = "";
-        var playerAnswer;
+        let playerAnswer;
         for (let i=0;i<numbers.length;i++) {
             equation+=numbers[i];
             if (i!==numbers.length-1) {
                 equation+=operators[i];
             }
         }
+        // alert(equation)
         try {
             playerAnswer = eval(equation);
             if (playerAnswer === targetResult) {
@@ -119,6 +120,7 @@ const Singleplayer = () => {
             )}
             {currentSingleplayerScreen=="gamescreen" && (
                 <div>
+                    <h1>Welcome {userName}</h1>
                     <h1>Your score = {playerScore}</h1>
                     <h1>Target = {targetResult}</h1>
                     <p>Time remaining = {timeLeft}</p>

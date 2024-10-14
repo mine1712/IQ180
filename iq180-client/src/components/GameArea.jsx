@@ -130,7 +130,7 @@ function GameArea({
                 ))}
             </div>
             <button onClick={() => {
-                handleSubmission(playSlotNumbers,formatSubmission);
+                handleSubmission(playSlotNumbers,formatSubmission());
             }} disabled={isTimeUp} >Submit answer</button>
         </div>
     );
