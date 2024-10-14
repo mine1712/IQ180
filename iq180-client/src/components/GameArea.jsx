@@ -85,7 +85,7 @@ function GameArea({
             }
             return acc;
         }, []);
-        alert(formatOperators)
+        // alert(formatOperators)
         return formatOperators;
     }
 

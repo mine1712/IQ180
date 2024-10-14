@@ -16,6 +16,7 @@ const Singleplayer = () => {
     const [isYourTurn, setIsYourTurn] = useState(false);
     const [isTimeUp,setIsTimeUp] = useState(false);
     const [targetResult,setTargetResult] = useState(null);
+    const [isRoundInProgress,setIsRoundInProgress] = useState(false);
     // const [getNumberButtonState,setGetNumberButtonState] = useState(false);
     // const [privateRoomCode,setPrivateRoomCode] = useState(null);
 
@@ -67,9 +68,13 @@ const Singleplayer = () => {
             playerAnswer = eval(equation);
             if (playerAnswer === targetResult) {
                 alert("Correct! The solution is valid.");
+                setIsRoundInProgress(false);
+                setIsYourTurn(false)
+                setPlayerScore(playerScore+1);
                 return true;
             } else {
                 alert(`Incorrect. The result is ${playerAnswer}, but ${targetResult} was expected.`);
+                setTimeLeft(0);
                 return false;
             }
         } catch (error) {
@@ -124,33 +129,39 @@ const Singleplayer = () => {
                     <h1>Your score = {playerScore}</h1>
                     <h1>Target = {targetResult}</h1>
                     <p>Time remaining = {timeLeft}</p>
-                    <button onClick={() => {
+                    {/* <p>Test = {isRoundInProgress?"yes":"no"}</p> */}
+                    {/* <button onClick={() => {
                         setTimeLeft(60);
                     }}>Reset Timer</button>
                     <button onClick={() => {
                         setTimeLeft(5);
-                    }}>Test button disable</button>
+                    }}>Test button disable</button> */}
                     {/* <button onClick={() => {
                         server.emit('requestNumbers');
                         setGetNumberButtonState(true);
                     }} disabled={getNumberButtonState}>Get numbers</button> */}
-                    <button onClick={() => {
+                    {/* <button onClick={() => {
                         setTimeLeft(60);
                         setBankNumbers([]);
                         setPlaySlotNumbers(Array(5).fill());
                         setPlaySlotOperators(Array(4).fill());
                         // setGetNumberButtonState(false);
-                    }}>Reset Room</button>
-                    <p>It is {isYourTurn ? "" : "not "}your turn</p>
+                    }}>Reset Room</button> */}
+                    {/* <p>It is {isYourTurn ? "" : "not "}your turn</p> */}
                     <button onClick={() => {
-                        setIsYourTurn(true);
-                        setTimeLeft(60);
-                        const generated = generateNumbers();
-                        setBankNumbers(generated[0]);
-                        setTargetResult(generated[1]);
-                        setPlaySlotNumbers(Array(5).fill());
-                        setPlaySlotOperators(Array(4).fill());
-                    }}>Start</button>
+                            setIsYourTurn(true);
+                            setTimeLeft(60);
+                            const generated = generateNumbers();
+                            setBankNumbers(generated[0]);
+                            setTargetResult(generated[1]);
+                            setPlaySlotNumbers(Array(5).fill());
+                            setPlaySlotOperators(Array(4).fill());
+                            setIsRoundInProgress(!isRoundInProgress);
+                            }
+                        }
+                        disabled = {isRoundInProgress}
+                    >Start</button>
+                    
                     <GameArea playSlotNumbers={playSlotNumbers}
                         playSlotOperators={playSlotOperators}
                         bankNumbers={bankNumbers}
@@ -161,6 +172,7 @@ const Singleplayer = () => {
                         isTimeUp={isTimeUp}
                         handleSubmission={handleSubmission}
                     />
+                    
                 </div>
             )}
         </div>     
