@@ -72,7 +72,7 @@ function genNumbers(targetLength){
   return {numbers,result};
 }
 const stats = {};
-const keys = {"Room 1":{timeCalled:0,numbers:[],keys:null},"Room 2":{timeCalled:0,numbers:[],keys:null},"Room 3":{timeCalled:0,numbers:[],keys:null}};
+let keys = {"Room 1":{timeCalled:0,numbers:[],keys:null},"Room 2":{timeCalled:0,numbers:[],keys:null},"Room 3":{timeCalled:0,numbers:[],keys:null}};
 
 io.on('connection', (socket) => {
   console.log(`A user with id: ${socket.id} connected`);
@@ -104,7 +104,7 @@ io.on('connection', (socket) => {
       keys.room.numbers = numbers;
       keys.room.ans = targetResult;
     }
-    socket.to(room).emit('numbers', { numbers, targetResult });
+    io.to(room).emit('numbers', { numbers, targetResult });
   });
 
   socket.on('joinRoom', ({ room, name }) => {
