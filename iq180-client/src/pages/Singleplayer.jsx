@@ -17,8 +17,22 @@ const Singleplayer = ({goToPage}) => {
     const [isTimeUp,setIsTimeUp] = useState(false);
     const [targetResult,setTargetResult] = useState(null);
     const [isRoundInProgress,setIsRoundInProgress] = useState(false);
+    const [playerLost,setPlayerLost] = useState(false);
     // const [getNumberButtonState,setGetNumberButtonState] = useState(false);
     // const [privateRoomCode,setPrivateRoomCode] = useState(null);
+
+    const initializeSingleplayer = () => {
+        setPlayerScore(0);
+        setPlaySlotNumbers(Array(5).fill());
+        setPlaySlotOperators(Array(4).fill());
+        setBankNumbers([]);
+        setTimeLeft(null);
+        setIsYourTurn(false);
+        setIsTimeUp(false);
+        setTargetResult(null);
+        setIsRoundInProgress(false);
+        setPlayerLost(false);
+    }
 
     // useEffect(() => {
     //     server.on('numbers', (data) => {
@@ -75,6 +89,7 @@ const Singleplayer = ({goToPage}) => {
             } else {
                 alert(`Incorrect. The result is ${playerAnswer}, but ${targetResult} was expected.`);
                 setTimeLeft(0);
+                setPlayerLost(true);
                 return false;
             }
         } catch (error) {
@@ -125,10 +140,14 @@ const Singleplayer = ({goToPage}) => {
             )}
             {currentSingleplayerScreen=="gamescreen" && (
                 <div>
-                    <h1>Welcome {userName}</h1>
+                    <h1 style={{textAlign:'center'}}>Welcome {userName}</h1>
                     <h1>Your score = {playerScore}</h1>
-                    <h1>Target = {targetResult}</h1>
-                    <p>Time remaining = {timeLeft}</p>
+                    {targetResult!==null && (
+                        <h1>Target = {targetResult}</h1>
+                    )}
+                    {timeLeft!==null && (
+                        <p>Time remaining = {timeLeft}</p>
+                    )}
                     {/* <p>Test = {isRoundInProgress?"yes":"no"}</p> */}
                     {/* <button onClick={() => {
                         setTimeLeft(60);
@@ -148,19 +167,23 @@ const Singleplayer = ({goToPage}) => {
                         // setGetNumberButtonState(false);
                     }}>Reset Room</button> */}
                     {/* <p>It is {isYourTurn ? "" : "not "}your turn</p> */}
-                    <button onClick={() => {
-                            setIsYourTurn(true);
-                            setTimeLeft(60);
-                            const generated = generateNumbers();
-                            setBankNumbers(generated[0]);
-                            setTargetResult(generated[1]);
-                            setPlaySlotNumbers(Array(5).fill());
-                            setPlaySlotOperators(Array(4).fill());
-                            setIsRoundInProgress(!isRoundInProgress);
+                    <div style={{textAlign:'center'}}>
+                        <button onClick={() => {
+                                setIsYourTurn(true);
+                                setTimeLeft(60);
+                                const generated = generateNumbers();
+                                setBankNumbers(generated[0]);
+                                setTargetResult(generated[1]);
+                                setPlaySlotNumbers(Array(5).fill());
+                                setPlaySlotOperators(Array(4).fill());
+                                setIsRoundInProgress(!isRoundInProgress);
+                                }
                             }
-                        }
-                        disabled = {isRoundInProgress}
-                    >Start</button>
+                            disabled = {isRoundInProgress}
+                            
+                        >Start</button>
+                    </div>
+                    
                     
                     <GameArea playSlotNumbers={playSlotNumbers}
                         playSlotOperators={playSlotOperators}
@@ -172,7 +195,16 @@ const Singleplayer = ({goToPage}) => {
                         isTimeUp={isTimeUp}
                         handleSubmission={handleSubmission}
                     />
-                    <button onClick={()=>goToPage("Menu")}>Return to Menu</button>
+                    {playerLost && (
+                        <h1 style={{textAlign:'center'}}>You lost! Try again?</h1>
+                    )}
+                    <div style={{textAlign:'center'}}>
+                        {playerLost && (
+                            <button onClick={initializeSingleplayer}>Restart Game</button>
+                        )}
+                        <button onClick={()=>goToPage("Menu")}>Return to Menu</button>
+                    </div>
+                    
                 </div>
             )}
         </div>     
