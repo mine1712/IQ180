@@ -26,6 +26,9 @@ const io = new Server(server, {
 const operators = ['+', '-', '*', '/'];
 
 function genNumbers(targetLength){
+  if(!targetLength.isInteger){
+    targetLength = 5;
+  }
   let numbers = [];
   let result = 0;
   for (let i = 0; i < targetLength; i++) {
@@ -69,33 +72,49 @@ function genNumbers(targetLength){
   return {numbers,result};
 }
 const stats = {};
-const keys = {};
+const keys = {"Room 1":{timeCalled:0,numbers:[],keys:null},"Room 2":{timeCalled:0,numbers:[],keys:null},"Room 3":{timeCalled:0,numbers:[],keys:null}};
 
 io.on('connection', (socket) => {
   console.log(`A user with id: ${socket.id} connected`);
 
-  socket.on('requestNumbers', (targetLength ,room) => {
+  socket.on('requestNumbers', (targetLength) => {
+    const temp = Array.from(socket.rooms);
+    let room = temp[1];
+    //this will have to be fix in the future TODO
+    targetLength = 5;
     let numbers;
     let targetResult; // receive target result from client if none provided will be 5 numbers
-    targetLength = (targetLength == null) ? 5 : targetLength;
-    numbers,targetResult = genNumbers(targetLength);
     // Check whether if the numbers are already generated or not.
     if (keys.room.timeCalled === 0) {
+      const returnVaules = genNumbers(targetLength);
+      numbers = returnVaules.numbers;
+      targetResult = returnVaules.result;
       keys.room.timeCalled = 1;
+      keys.room.numbers = numbers;
+      keys.room.ans = targetResult;
     }
     else if(keys.room.timeCalled === 1){
       keys.room.timeCalled += 1;
     }
     else{
-      targetLength = (targetLength == null) ? 5 : targetLength;
+      const returnVaules = genNumbers(targetLength);
+      numbers = returnVaules.numbers;
+      targetResult = returnVaules.result;
       keys.room.timeCalled = 1;
+      keys.room.numbers = numbers;
+      keys.room.ans = targetResult;
     }
-    keys.room.numbers = numbers;
-    keys.room.ans = targetResult;
+    console.log(`Numbers generated: ${numbers}`);
+    console.log(`Target result: ${targetResult}`);
+    console.log(`Room: ${room}`);
     socket.to(room).emit('numbers', { numbers, targetResult });
   });
 
   socket.on('joinRoom', ({ room, name }) => {
+    // Check if room exists
+    if(keys.room === undefined){
+      keys.room = {timeCalled:0,numbers:[],keys:null};
+    }
     // Check if room is full
     if(io.sockets.adapter.rooms.get(room)?.size === 2) {
       socket.emit('roomFull', 'Room is full');
@@ -106,7 +125,7 @@ io.on('connection', (socket) => {
     //setting up the scoreboard
     if(!room in stats){
       stats.room = {name:0};
-    }else stats.room.name = 0;
+    }
     socket.join(room);
     console.log(`${name} joined ${room}`);
     io.to(room).emit('message', `${name} has joined the room`);
