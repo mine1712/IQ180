@@ -5,7 +5,7 @@ import {GameArea} from '../components';
 
 const server = io.connect('http://localhost:5172');
 
-function Multiplayer () {
+function Multiplayer ({goToPage}) {
     const [currentMultiplayerScreen, setCurrentMultiplayerScreen] = useState("nameentry");
     const [playSlotNumbers,setPlaySlotNumbers] = useState(Array(5).fill());
     const [playSlotOperators,setPlaySlotOperators] = useState(Array(4).fill());
@@ -52,6 +52,10 @@ function Multiplayer () {
 
     const handleNameSubmit = () => {
         setCurrentMultiplayerScreen("selectroom");
+    }
+
+    const handleSubmission = () => {
+        alert("Multiplayer submission has not been implemented yet.\nNumbers: " + playSlotNumbers + "\nOperators: "+ playSlotOperators)
     }
 
     return (
@@ -121,7 +125,9 @@ function Multiplayer () {
                         setPlaySlotOperators={setPlaySlotOperators}
                         setBankNumbers={setBankNumbers}
                         isTimeUp={isTimeUp}
+                        handleSubmission={handleSubmission}
                     />
+                    <button onClick={()=>goToPage("Menu")}>Return to Menu</button>
                 </div>
             )}
         </div>     

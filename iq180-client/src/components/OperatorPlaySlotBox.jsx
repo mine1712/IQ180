@@ -10,7 +10,7 @@ function OperatorPlaySlotBox({operator,index,dropHandler,dragStartHandler}) {
     
     return(
         <span
-            // key={'numberPlaySlot'+(index+1)}
+            key={'operatorPlaySlot'+(index+1)}
             id='operatorPlaySlotBox'
             // disabled={isTimeUp}
             draggable={true}

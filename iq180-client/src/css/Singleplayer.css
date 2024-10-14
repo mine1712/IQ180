@@ -1,30 +1,51 @@
-/* singleplayer.css */
-body {
-  margin: 0;
-  padding: 0;
+#numberPlaySlotBox {
+  display: inline-block; /* Makes it a box */
+  padding: 10px; /* Adjust padding as needed */
+  margin: 10px; /* Adds margin around the box */
+  border-radius: 5px; /* Adjust border-radius as needed */
+  background-color: #f9f9f9;
+  min-width: 50px;
+  min-height: 50px;
+  font-size: 40px;
+  vertical-align: middle;
 }
 
-.Singleplayer-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* Centra verticalmente */
-  align-items: center;     /* Centra horizontalmente */
-  height: 100vh;          /* Ocupa toda la altura de la ventana */
-  background-color: #f0f0f0; 
+#operatorPlaySlotBox {
+  display: inline-block; /* Makes it a box */
+  padding: 5px; /* Adjust padding as needed */
+  margin: 5px; /* Adds margin around the box */
+  border-radius: 5px; /* Adjust border-radius as needed */
+  background-color: #f9f9f9;
+  min-width: 25px;
+  min-height: 25px;
+  font-size: 25px;
+  vertical-align: middle;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+#numberBankBox {
+  display: inline-block; /* Makes it a box */
+  padding: 10px; /* Adjust padding as needed */
+  margin: 10px; /* Adds margin around the box */
+  border-radius: 5px; /* Adjust border-radius as needed */
+  background-color: #f9f9f9;
+  min-width: 10px;
+  min-height: 20px;
 }
 
-input {
-  padding: 10px;
-  margin: 10px 0;
-  font-size: 16px; 
-  border: 1px solid #ccc; 
-  border-radius: 5px; 
+#operatorBankBox {
+  display: inline-block; /* Makes it a box */
+  padding: 10px; /* Adjust padding as needed */
+  margin: 10px; /* Adds margin around the box */
+  border-radius: 5px; /* Adjust border-radius as needed */
+  background-color: #f9f9f9;
+}
+
+:disabled {
+  background-color: #f9f9f9;
+}
+
+:disabled:hover {
+  background-color: #f9f9f9;
 }
 
 button {
@@ -42,57 +63,19 @@ button:hover {
   background-color: #0056b3; 
 }
 
-.game-screen {
+form {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.top-buttons {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap; /* Permite que los botones se muevan a la siguiente línea si es necesario */
-  margin-bottom: 20px; /* Espacio entre botones y casillas */
-}
-
-.boxes {
-  display: flex;
-  justify-content: center;
-  align-items: center; /* Centra verticalmente las casillas */
-  flex-wrap: wrap; /* Permite que las casillas se muevan a la siguiente línea si es necesario */
-}
-
-.box {
+input {
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 16px; 
   border: 1px solid #ccc; 
   border-radius: 5px; 
-  padding: 20px;
-  margin: 5px; /* Espacio entre casillas */
-  min-width: 50px; /* Ancho mínimo para las casillas */
-  text-align: center; /* Centra el texto dentro de la casilla */
 }
-
-.equals-box {
-  font-weight: bold;
-}
-
-.random-number-box {
-  background-color: #e0e0e0; /* Diferenciar la casilla del número aleatorio */
-}
-
-.bottom-buttons {
-  display: flex;
-  flex-direction: column; /* Organiza los botones en columna */
-  align-items: center; /* Centra los botones en la columna */
-}
-
-.operations-buttons {
-  display: flex; /* Alinear botones de operación en fila */
-}
-
-.clear-button {
-  margin-top: 10px; /* Espacio entre el botón de operaciones y el botón de borrar */
-}
-
-.check-button {
-  margin-top: 10px; /* Espacio entre el botón de borrar y el botón de comprobar */
-}
+/* #playSlotBoxArea {
+  display:inline-block;
+} */
