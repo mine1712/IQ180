@@ -12,16 +12,12 @@ Backend: Matt, Thame
 
 **Term Project Submission on November 3rd and 10th**  
 
-**TO Start Server**  
+**TO Start Server** NO LONGER NEEDED TO CD INTO FOLDER!  
 
-cd iq180-server  
-npm install  
 npm start  
 
-**TO Start Client**  
+**TO Start Client**  NO LONGER NEEDED TO CD INTO FOLDER!  
   
-cd iq180-client  
-npm install  
 npm run dev  
 
 **Requirement Checklist**  
