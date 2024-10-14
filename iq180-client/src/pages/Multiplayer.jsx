@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import '../css/Multiplayer.css';
+import '../css/Multiplayer-temp.css';
 import io from 'socket.io-client';
 import {GameArea} from '../components';
 
@@ -106,7 +107,7 @@ function Multiplayer ({goToPage}) {
                         setTimeLeft(5);
                     }}>Test button disable</button>
                     <button onClick={() => {
-                        server.emit('requestNumbers');
+                        server.emit('requestNumbers',5);
                         setGetNumberButtonState(true);
                     }} disabled={getNumberButtonState}>Get numbers</button>
                     <button onClick={() => {
