@@ -26,53 +26,62 @@ const io = new Server(server, {
 const operators = ['+', '-', '*', '/'];
 
 function genNumbers(targetLength){
-  if(!targetLength.isInteger){
-    targetLength = 5;
-  }
   let numbers = [];
   let result = 0;
+  let count =0;
   for (let i = 0; i < targetLength; i++) {
     numbers.push(Math.floor(Math.random() * 10));
   }
-  for(let i = 0; i < numbers.length; i++){
-    if(numbers[i] != 0){
-      switch (operators[Math.floor(Math.random() * 4)]) {
-        case '+':
-          result += numbers[i];
-          break;
-        case '-':
-          result -= numbers[i];
-          break;
-        case '*':
-          result *= numbers[i];
-          break;
-        case '/':
-          result /= numbers[i];
-          break;
-        default:
-          throw new Error('Invalid operator');
+  while(!Number.isInteger(result) || result<1 || result>500){
+    //reset result
+    result = 0;
+    // if the loop runs more than 200 times, reset the numbers
+    if(count++>200){
+      numbers =[];
+      for (let i = 0; i < targetLength; i++) {
+      numbers.push(Math.floor(Math.random() * 10));
       }
+      count = 0;
     }
-    else{
-      switch (operators[Math.floor(Math.random() * 3)]) {
-        case '+':
-          result += numbers[i];
-          break;
-        case '-':
-          result -= numbers[i];
-          break;
-        case '*':
-          result *= numbers[i];
-          break;
-        default:
-          throw new Error('Invalid operator');
-      }}
-
+    for(let i = 0; i < numbers.length; i++){
+      if(numbers[i] !== 0){
+        switch (operators[Math.floor(Math.random() * 4)]) {
+          case '+':
+            result += numbers[i];
+            break;
+          case '-':
+            result -= numbers[i];
+            break;
+          case '*':
+            result *= numbers[i];
+            break;
+          case '/':
+            result /= numbers[i];
+            break;
+          default:
+            throw new Error('Invalid operator');
+        }
+      }
+      else{
+        switch (operators[Math.floor(Math.random() * 3)]) {
+          case '+':
+            result += numbers[i];
+            break;
+          case '-':
+            result -= numbers[i];
+            break;
+          case '*':
+            result *= numbers[i];
+            break;
+          default:
+            throw new Error('Invalid operator');
+        }}}
   }
-  return {numbers,result};
+  return { numbers, result };
 }
-const stats = {};
-const keys = {"Room 1":{timeCalled:0,numbers:[],keys:null},"Room 2":{timeCalled:0,numbers:[],keys:null},"Room 3":{timeCalled:0,numbers:[],keys:null}};
+
+let stats = {};
+let keys = {"Room 1":{timeCalled:0,numbers:[],ans:null},"Room 2":{timeCalled:0,numbers:[],ans:null},"Room 3":{timeCalled:0,numbers:[],ans:null}};
 
 io.on('connection', (socket) => {
   console.log(`A user with id: ${socket.id} connected`);
@@ -85,32 +94,33 @@ io.on('connection', (socket) => {
     let numbers;
     let targetResult; // receive target result from client if none provided will be 5 numbers
     // Check whether if the numbers are already generated or not.
-    if (keys.room.timeCalled === 0) {
+    if (keys[room].timeCalled === 0) {
       const returnVaules = genNumbers(targetLength);
       numbers = returnVaules.numbers;
       targetResult = returnVaules.result;
-      keys.room.timeCalled = 1;
-      keys.room.numbers = numbers;
-      keys.room.ans = targetResult;
+      keys[room].timeCalled = 1;
+      keys[room].numbers = numbers;
+      keys[room].ans = targetResult;
     }
-    else if(keys.room.timeCalled === 1){
-      keys.room.timeCalled += 1;
+    else if(keys[room].timeCalled === 1){
+      keys[room].timeCalled += 1;
     }
     else{
       const returnVaules = genNumbers(targetLength);
       numbers = returnVaules.numbers;
       targetResult = returnVaules.result;
-      keys.room.timeCalled = 1;
-      keys.room.numbers = numbers;
-      keys.room.ans = targetResult;
+      keys[room].timeCalled = 1;
+      keys[room].numbers = numbers;
+      keys[room].ans = targetResult;
     }
-    socket.to(room).emit('numbers', { numbers, targetResult });
+    io.to(room).emit('numbers', { numbers, targetResult });
+    console.dir(keys);
   });
 
   socket.on('joinRoom', ({ room, name }) => {
     // Check if room exists
-    if(keys.room === undefined){
-      keys.room = {timeCalled:0,numbers:[],keys:null};
+    if(keys[room] === undefined){
+      keys[room] = {timeCalled:0,numbers:[],ans:null};
     }
     // Check if room is full
     if(io.sockets.adapter.rooms.get(room)?.size === 2) {
@@ -121,7 +131,7 @@ io.on('connection', (socket) => {
     socket.nickname = name;
     //setting up the scoreboard
     if(!room in stats){
-      stats.room = {name:0};
+      stats[room] = {name:0};
     }
     socket.join(room);
     console.log(`${name} joined ${room}`);
@@ -140,7 +150,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  //TODO
+  //TODO 
   socket.on('checkAns', ({nums, operators, timeUsed, room})=>{
     try {
       let result = nums[0];
