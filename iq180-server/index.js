@@ -27,12 +27,14 @@ const operators = ['+', '-', '*', '/'];
 
 function genNumbers(targetLength){
   let numbers = [];
-  let result = 0.5;
+  let result = 0;
   let count =0;
   for (let i = 0; i < targetLength; i++) {
     numbers.push(Math.floor(Math.random() * 10));
   }
   while(!Number.isInteger(result) || result<1 || result>500){
+    //reset result
+    result = 0;
     // if the loop runs more than 200 times, reset the numbers
     if(count++>200){
       numbers =[];
