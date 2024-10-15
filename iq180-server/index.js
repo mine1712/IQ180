@@ -81,7 +81,7 @@ function genNumbers(targetLength){
 }
 
 let stats = {};
-let keys = {"Room 1":{timeCalled:0,numbers:[],ans:null},"Room 2":{timeCalled:0,numbers:[],ans:null},"Room 3":{timeCalled:0,numbers:[],ans:null}};
+let keys = {"Room 1":{timeCalled:0,numbers:[],ans:null,turn:null},"Room 2":{timeCalled:0,numbers:[],ans:null,turn:null},"Room 3":{timeCalled:0,numbers:[],ans:null,turn:null}};
 
 io.on('connection', (socket) => {
   console.log(`A user with id: ${socket.id} connected`);
@@ -120,7 +120,7 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', ({ room, name }) => {
     // Check if room exists
     if(keys[room] === undefined){
-      keys[room] = {timeCalled:0,numbers:[],ans:null};
+      keys[room] = {timeCalled:0,numbers:[],ans:null,turn:null};
     }
     // Check if room is full
     if(io.sockets.adapter.rooms.get(room)?.size === 2) {
@@ -146,6 +146,7 @@ io.on('connection', (socket) => {
         }
       });
       const firstPlayer = (Math.random()>0.5)? nicknames[1]:nicknames[0];
+      keys[room].turn = firstPlayer;
       io.to(room).emit('startGame',firstPlayer);
     }
   });
@@ -153,26 +154,15 @@ io.on('connection', (socket) => {
   //TODO 
   socket.on('checkAns', ({nums, operators, timeUsed, room})=>{
     try {
-      let result = nums[0];
-      for (let i = 1; i < nums.length; i++) {
-        switch (operators[i - 1]) {
-          case '+':
-            result += nums[i];
-            break;
-          case '-':
-            result -= nums[i];
-            break;
-          case '*':
-            result *= nums[i];
-            break;
-          case '/':
-            result /= nums[i];
-            break;
-          default:
-            throw new Error('Invalid operator');
+      let equation = "";
+        for (let i=0;i<nums.length;i++) {
+            equation+=nums[i];
+            if (i!==nums.length-1) {
+                equation+=operators[i];
+            }
         }
-      }
-      let booleanResult = eval(result,keys.room.ans);
+      let playerAnswer = eval(equation);
+      let booleanResult = playerAnswer === keys[room].ans;
       // Emit the result back to the room
       io.to(room).emit('answerChecked', { booleanResult });
     } catch (error) {
@@ -180,6 +170,15 @@ io.on('connection', (socket) => {
     }
 
   });
+
+  // Exiting room
+  socket.on('exitRoom', () => {
+    const temp = Array.from(socket.rooms);
+    let room = temp[1];
+    socket.leave(room);
+    io.to(room).emit('message', `${socket.nickname} has left the room`);
+    console.log(`${socket.nickname} has left the room`);
+  })
 
   // Getting stats //TODO
   socket.on('getStats', () => {
