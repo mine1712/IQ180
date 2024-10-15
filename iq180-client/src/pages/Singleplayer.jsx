@@ -1,166 +1,217 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../css/Singleplayer.css';
+import {GameArea} from '../components';
+import { generateNumbers } from '../utils/numberGenerator'
 
-const Singleplayer = () => {
-  const [playerName, setPlayerName] = useState('');
-  const [isNameSubmitted, setIsNameSubmitted] = useState(false);
-  const [boxValues, setBoxValues] = useState(Array(7).fill(''));
-  const [buttonStates, setButtonStates] = useState(generateButtonStates());
-  const [buttonValues, setButtonValues] = useState(generateButtonValues());
-  const [randomNumber, setRandomNumber] = useState(0);
+const Singleplayer = ({goToPage}) => {
+    const [currentSingleplayerScreen, setCurrentSingleplayerScreen] = useState("nameentry");
+    const [playerScore, setPlayerScore] = useState(0);
+    const [playSlotNumbers,setPlaySlotNumbers] = useState(Array(5).fill());
+    const [playSlotOperators,setPlaySlotOperators] = useState(Array(4).fill());
+    const [bankNumbers,setBankNumbers] = useState([]);
+    const [bankOperators,setBankOperators] = useState(['+','-','x','÷'])
+    // const [selectedRoom, setSelectedRoom] = useState(null);
+    const [userName, setUserName] = useState("");
+    const [timeLeft,setTimeLeft] = useState(null);
+    const [isYourTurn, setIsYourTurn] = useState(false);
+    const [isTimeUp,setIsTimeUp] = useState(false);
+    const [targetResult,setTargetResult] = useState(null);
+    const [isRoundInProgress,setIsRoundInProgress] = useState(false);
+    const [playerLost,setPlayerLost] = useState(false);
+    // const [getNumberButtonState,setGetNumberButtonState] = useState(false);
+    // const [privateRoomCode,setPrivateRoomCode] = useState(null);
 
-  function generateButtonValues() {
-    return Array.from({ length: 6 }, () => Math.floor(Math.random() * 10) + 1);
-  }
+    const initializeSingleplayer = () => {
+        setPlayerScore(0);
+        setPlaySlotNumbers(Array(5).fill());
+        setPlaySlotOperators(Array(4).fill());
+        setBankNumbers([]);
+        setTimeLeft(null);
+        setIsYourTurn(false);
+        setIsTimeUp(false);
+        setTargetResult(null);
+        setIsRoundInProgress(false);
+        setPlayerLost(false);
+    }
 
-  function generateButtonStates() {
-    return Array(6).fill(true); // Initialize all buttons as enabled
-  }
+    // useEffect(() => {
+    //     server.on('numbers', (data) => {
+    //         setBankNumbers(data.numbers);
+    //         setTargetResult(data.targetResult);
+    //         });
+    // }, []);
 
-  function generateRandomNumber() {
-    const operations = ['+', '-', '*', '/'];
-    let result;
-    let validCombinationFound = false;
-
-    while (!validCombinationFound) {
-      const selectedNumbers = [];
-      for (let i = 0; i < 4; i++) {
-        const randomIndex = Math.floor(Math.random() * buttonValues.length);
-        selectedNumbers.push(buttonValues[randomIndex]);
-      }
-
-      const selectedOperations = [];
-      for (let i = 0; i < 3; i++) {
-        const randomIndex = Math.floor(Math.random() * operations.length);
-        selectedOperations.push(operations[randomIndex]);
-      }
-
-      // Create the expression with 4 numbers and 3 operations
-      const expression = `${selectedNumbers[0]} ${selectedOperations[0]} ${selectedNumbers[1]} ${selectedOperations[1]} ${selectedNumbers[2]} ${selectedOperations[2]} ${selectedNumbers[3]}`;
-
-      try {
-        result = eval(expression); // Evaluate the expression
-        if (Number.isInteger(result) && result >= 0) { // Check if it is a positive integer
-          validCombinationFound = true; // Exit the loop if we find a positive integer
+    useEffect(() => {
+        if (timeLeft > 0 && isYourTurn) {
+            setIsTimeUp(false);
+            const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+            return () => clearTimeout(timer);
+        } else {
+            if (isYourTurn) {
+                setIsTimeUp(true);
+                setPlayerLost(true);
+            }
         }
-      } catch (error) {
-        // Ignore errors and continue searching for a valid combination
-      }
+    }, [timeLeft]);
+
+    // const handleRoomSelection = (room) => {
+    //     setSelectedRoom(room);
+    // }
+
+    // useEffect(() => {
+    //     if (selectedRoom!=null) {
+    //         server.emit('joinRoom', { room: selectedRoom, name: userName });
+    //         setIsYourTurn(true);
+    //         setTimeLeft(60);
+    //         setCurrentMultiplayerScreen("gamescreen");
+    //     }
+    // }, [selectedRoom])
+
+    const handleNameSubmit = () => {
+        setCurrentSingleplayerScreen("gamescreen");
+    }
+    
+    const handleSubmission = (numbers,operators) => {
+        let equation = "";
+        let playerAnswer;
+        for (let i=0;i<numbers.length;i++) {
+            equation+=numbers[i];
+            if (i!==numbers.length-1) {
+                equation+=operators[i];
+            }
+        }
+        // alert(equation)
+        try {
+            playerAnswer = eval(equation);
+            if (playerAnswer === targetResult) {
+                alert("Correct! The solution is valid.");
+                setIsRoundInProgress(false);
+                setIsYourTurn(false)
+                setPlayerScore(playerScore+1);
+                return true;
+            } else {
+                alert(`Incorrect. The result is ${playerAnswer}, but ${targetResult} was expected.`);
+                setTimeLeft(0);
+                setPlayerLost(true);
+                return false;
+            }
+        } catch (error) {
+            alert("Error in the expression. Please ensure it is well-formed.");
+            return false;
+        }
+        // const playerAnswer = eval(equation);
+        // alert("Player Answer: "+playerAnswer+"\nTarget: "+targetResult);
+        // return 
     }
 
-    return result; // Return the found positive integer
-  }
-
-  const handleNameChange = (event) => {
-    setPlayerName(event.target.value);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (playerName) {
-      setIsNameSubmitted(true);
-      setRandomNumber(generateRandomNumber());
-    }
-  };
-
-  const handleButtonClick = (index) => {
-    const firstEmptyIndex = boxValues.indexOf('');
-    if (firstEmptyIndex !== -1) {
-      const newButtonStates = [...buttonStates];
-      newButtonStates[index] = false; // Disable the button when clicked
-
-      const newBoxValues = [...boxValues];
-      const valueToAdd = buttonValues[index]; // Get the corresponding value of the button
-
-      newBoxValues[firstEmptyIndex] = valueToAdd; // Add the value to the first empty box
-      setBoxValues(newBoxValues);
-      setButtonStates(newButtonStates);
-    }
-  };
-
-  const handleOperationClick = (operation) => {
-    const newBoxValues = [...boxValues];
-    const firstEmptyIndex = newBoxValues.indexOf('');
-
-    if (firstEmptyIndex !== -1) {
-      newBoxValues[firstEmptyIndex] = operation; // Add the symbol to the first empty box
-      setBoxValues(newBoxValues);
-    }
-  };
-
-  const handleClear = () => {
-    setBoxValues(Array(7).fill('')); // Clear the boxes
-    setButtonStates(generateButtonStates()); // Enable all buttons
-    setButtonValues(buttonValues); // Keep the same button values
-    setRandomNumber(randomNumber); // Keep the same random number
-  };
-
-  const handleCheckSolution = () => {
-    const expression = boxValues.filter(value => value !== '').join(' ');
-    try {
-      const result = eval(expression.replace('x', '*'));
-      if (result === randomNumber) {
-        alert("Correct! The solution is valid.");
-      } else {
-        alert(`Incorrect. The result is ${result}, but ${randomNumber} was expected.`);
-      }
-    } catch (error) {
-      alert("Error in the expression. Please ensure it is well-formed.");
-    }
-  };
-
-  return (
-    <div className="Singleplayer-container">
-      {!isNameSubmitted ? (
-        <form onSubmit={handleSubmit}>
-          <h2>Set your name</h2>
-          <input
-            type="text"
-            value={playerName}
-            onChange={handleNameChange}
-            placeholder="Your name"
-            required
-          />
-          <button type="submit">Play</button>
-        </form>
-      ) : (
-        <div className="game-screen">
-          <h2>Welcome {playerName}! Let's start!</h2> {/* Welcome message */}
-          <div className="top-buttons">
-            {buttonStates.map((isVisible, index) => (
-              isVisible && (
-                <button key={index} onClick={() => handleButtonClick(index)}>
-                  {buttonValues[index]}
-                </button>
-              )
-            ))}
-          </div>
-
-          <div className="boxes">
-            {boxValues.map((value, index) => (
-              <div key={index} className="box">
-                {value}
-              </div>
-            ))}
-            <div className="box equals-box">=</div>
-            <div className="box random-number-box">{randomNumber}</div>
-          </div>
-
-          <div className="bottom-buttons">
-            <div className="operations-buttons">
-              <button onClick={() => handleOperationClick('+')}>+</button>
-              <button onClick={() => handleOperationClick('-')}>-</button>
-              <button onClick={() => handleOperationClick('/')}>/</button>
-              <button onClick={() => handleOperationClick('*')}>x</button>
+    return (
+        <div>
+            {/* {currentSingleplayerScreen=="selectroom" && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h1>Welcome {userName}!</h1>
+                        <h2>Select a Room</h2>
+                        <button onClick={() => handleRoomSelection('Room 1')}>Room 1</button>
+                        <button onClick={() => handleRoomSelection('Room 2')}>Room 2</button>
+                        <button onClick={() => handleRoomSelection('Room 3')}>Room 3</button>
+                        <h2>or enter a Private Room Code</h2>
+                        <input 
+                            type="text" 
+                            value={privateRoomCode} 
+                            onChange={(e) => setPrivateRoomCode(e.target.value)} 
+                            placeholder="Your Code" 
+                            className='input'
+                        />
+                        <button onClick={() => handleRoomSelection(privateRoomCode)}>Submit</button>
+                </div>
             </div>
-            <button className="clear-button" onClick={handleClear}>Clear</button>
-            <button className="check-button" onClick={handleCheckSolution}>Check Solution</button>
-          </div>
-        </div>
-      )}
-      {/* <RandomLetter/> */}
-    </div>
-  );
-};
+            )} */}
+            {currentSingleplayerScreen=="nameentry" && (
+                <div className="modal">
+                <div className="modal-content">
+                    <h2>Enter Your Name</h2>
+                    <input 
+                        type="text" 
+                        value={userName} 
+                        onChange={(e) => setUserName(e.target.value)} 
+                        placeholder="Your name" 
+                        className='input'
+                    />
+                    <button onClick={handleNameSubmit}>Submit</button>
+                </div>
+                </div>
+            )}
+            {currentSingleplayerScreen=="gamescreen" && (
+                <div>
+                    <h1 style={{textAlign:'center'}}>Welcome {userName}</h1>
+                    <h1>Your score = {playerScore}</h1>
+                    {targetResult!==null && (
+                        <h1>Target = {targetResult}</h1>
+                    )}
+                    {timeLeft!==null && (
+                        <p>Time remaining = {timeLeft}</p>
+                    )}
+                    {/* <p>Test = {isRoundInProgress?"yes":"no"}</p> */}
+                    {/* <button onClick={() => {
+                        setTimeLeft(60);
+                    }}>Reset Timer</button>
+                    <button onClick={() => {
+                        setTimeLeft(5);
+                    }}>Test button disable</button> */}
+                    {/* <button onClick={() => {
+                        server.emit('requestNumbers');
+                        setGetNumberButtonState(true);
+                    }} disabled={getNumberButtonState}>Get numbers</button> */}
+                    {/* <button onClick={() => {
+                        setTimeLeft(60);
+                        setBankNumbers([]);
+                        setPlaySlotNumbers(Array(5).fill());
+                        setPlaySlotOperators(Array(4).fill());
+                        // setGetNumberButtonState(false);
+                    }}>Reset Room</button> */}
+                    {/* <p>It is {isYourTurn ? "" : "not "}your turn</p> */}
+                    <div style={{textAlign:'center'}}>
+                        <button onClick={() => {
+                                setIsYourTurn(true);
+                                setTimeLeft(60);
+                                const generated = generateNumbers();
+                                setBankNumbers(generated[0]);
+                                setTargetResult(generated[1]);
+                                setPlaySlotNumbers(Array(5).fill());
+                                setPlaySlotOperators(Array(4).fill());
+                                setIsRoundInProgress(!isRoundInProgress);
+                                }
+                            }
+                            disabled = {isRoundInProgress}
+                            
+                        >Start</button>
+                    </div>
+                    
+                    
+                    <GameArea playSlotNumbers={playSlotNumbers}
+                        playSlotOperators={playSlotOperators}
+                        bankNumbers={bankNumbers}
+                        bankOperators={bankOperators}
+                        setPlaySlotNumbers={setPlaySlotNumbers}
+                        setPlaySlotOperators={setPlaySlotOperators}
+                        setBankNumbers={setBankNumbers}
+                        isTimeUp={isTimeUp}
+                        handleSubmission={handleSubmission}
+                    />
+                    {playerLost && (
+                        <h1 style={{textAlign:'center'}}>You lost! Try again?</h1>
+                    )}
+                    <div style={{textAlign:'center'}}>
+                        {playerLost && (
+                            <button onClick={initializeSingleplayer}>Restart Game</button>
+                        )}
+                        <button onClick={()=>goToPage("Menu")}>Return to Menu</button>
+                    </div>
+                    
+                </div>
+            )}
+        </div>     
+    )
+    }
 
 export default Singleplayer;

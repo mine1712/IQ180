@@ -1,6 +1,6 @@
 import { useState } from 'react'
 // import './App.css'
-import {Menu,Singleplayer,Multiplayertemp} from './pages'
+import {Menu,Singleplayer,Multiplayer} from './pages'
 
 function App() {
   const [currentPage, setCurrentPage] = useState("Menu");
@@ -10,10 +10,10 @@ function App() {
         <Menu goToPage={setCurrentPage}/>
       )}
       {currentPage=="Singleplayer"&& (
-        <Singleplayer />
+        <Singleplayer goToPage={setCurrentPage}/>
       )}
       {currentPage=="Multiplayer"&& (
-        <Multiplayertemp />
+        <Multiplayer goToPage={setCurrentPage}/>
       )}
     </>
   )
