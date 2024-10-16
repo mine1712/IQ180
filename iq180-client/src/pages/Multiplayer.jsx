@@ -13,6 +13,7 @@ function Multiplayer ({goToPage}) {
     const [bankNumbers,setBankNumbers] = useState([]);
     const [bankOperators,setBankOperators] = useState(['+','-','x','÷'])
     const [selectedRoom, setSelectedRoom] = useState(null);
+    const [currentRoom, setCurrentRoom] = useState(null);
     const [userName, setUserName] = useState(null);
     const [timeLeft,setTimeLeft] = useState(null);
     const [isYourTurn, setIsYourTurn] = useState(false);
@@ -27,6 +28,19 @@ function Multiplayer ({goToPage}) {
             setTargetResult(data.targetResult);
           });
     }, []);
+
+    useEffect(() => {
+        server.on('roomfull', () => {
+            // alert('roomfull')
+            setSelectedRoom(null);
+        });
+        if (selectedRoom!=null) {
+            server.on('joinRoomSuccess', () => {
+                // alert('success '+ selectedRoom);
+                setCurrentRoom(selectedRoom);
+            });
+        }
+    }, [selectedRoom])
 
     useEffect(() => {
         if (timeLeft > 0 && isYourTurn) {
@@ -45,11 +59,18 @@ function Multiplayer ({goToPage}) {
     useEffect(() => {
         if (selectedRoom!=null) {
             server.emit('joinRoom', { room: selectedRoom, name: userName });
+            // alert(selectedRoom);
+        }
+    }, [selectedRoom])
+
+    useEffect(() => {
+        // alert(currentRoom);
+        if (currentRoom!=null) {
             setIsYourTurn(true);
             setTimeLeft(60);
             setCurrentMultiplayerScreen("gamescreen");
         }
-    }, [selectedRoom])
+    }, [currentRoom])
 
     const handleNameSubmit = () => {
         setCurrentMultiplayerScreen("selectroom");
@@ -78,6 +99,9 @@ function Multiplayer ({goToPage}) {
                             className='input'
                         />
                         <button onClick={() => handleRoomSelection(privateRoomCode)}>Submit</button>
+                        {selectedRoom!=null && (
+                            <p>Waiting for server</p>
+                        )}
                 </div>
             </div>
             )}
