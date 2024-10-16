@@ -13,6 +13,7 @@ function Multiplayer ({goToPage}) {
     const [bankNumbers,setBankNumbers] = useState([]);
     const [bankOperators,setBankOperators] = useState(['+','-','x','÷'])
     const [selectedRoom, setSelectedRoom] = useState(null);
+    const [currentRoom, setCurrentRoom] = useState(null);
     const [userName, setUserName] = useState(null);
     const [timeLeft,setTimeLeft] = useState(null);
     const [isYourTurn, setIsYourTurn] = useState(false);
@@ -26,7 +27,37 @@ function Multiplayer ({goToPage}) {
             setBankNumbers(data.numbers);
             setTargetResult(data.targetResult);
           });
+
+        server.on("error", ({message}) => {
+            alert("Error: "+message);
+        })
     }, []);
+
+    useEffect(() => {
+        server.on("startGame", (firstPlayer) => {
+            if (firstPlayer==userName) {
+                setIsYourTurn(true);
+                setTimeLeft(60);
+                setCurrentMultiplayerScreen("gamescreen");
+            }
+            setCurrentMultiplayerScreen("gamescreen");
+        })
+    }, [userName])
+
+    useEffect(() => {
+        server.on('roomfull', () => {
+            setSelectedRoom(null);
+            alert("This room is full! Please select anothoer room");
+        });
+        if (selectedRoom!=null) {
+            server.on('joinRoomSuccess', () => {
+                // alert('success '+ selectedRoom);
+                setCurrentRoom(selectedRoom);
+                setSelectedRoom(null);
+                setCurrentMultiplayerScreen("roomwaiting");
+            });
+        }
+    }, [selectedRoom])
 
     useEffect(() => {
         if (timeLeft > 0 && isYourTurn) {
@@ -45,19 +76,33 @@ function Multiplayer ({goToPage}) {
     useEffect(() => {
         if (selectedRoom!=null) {
             server.emit('joinRoom', { room: selectedRoom, name: userName });
-            setIsYourTurn(true);
-            setTimeLeft(60);
-            setCurrentMultiplayerScreen("gamescreen");
+            // alert(selectedRoom);
         }
     }, [selectedRoom])
+
+    // useEffect(() => {
+    //     // alert(currentRoom);
+        // if (currentRoom!=null) {
+        //     setIsYourTurn(true);
+        //     setTimeLeft(60);
+        //     setCurrentMultiplayerScreen("gamescreen");
+        // }
+    // }, [currentRoom])
 
     const handleNameSubmit = () => {
         setCurrentMultiplayerScreen("selectroom");
     }
 
-    const handleSubmission = () => {
-        alert("Multiplayer submission has not been implemented yet.\nNumbers: " + playSlotNumbers + "\nOperators: "+ playSlotOperators)
+    const handleSubmission = (numbers,operators) => {
+        // alert("Multiplayer submission has not been implemented yet.\nNumbers: " + playSlotNumbers + "\nOperators: "+ playSlotOperators)
+        server.emit('checkAns', {nums: numbers, operators: operators, timeUsed: 60-timeLeft, room:currentRoom})
     }
+
+    useEffect(() => {
+        server.on('answerChecked', ({booleanResult}) => {
+            alert("Test "+booleanResult);
+        })
+    }, [])
 
     return (
         <div>
@@ -78,23 +123,33 @@ function Multiplayer ({goToPage}) {
                             className='input'
                         />
                         <button onClick={() => handleRoomSelection(privateRoomCode)}>Submit</button>
+                        {selectedRoom!=null && (
+                            <p>Waiting for server</p>
+                        )}
                 </div>
             </div>
             )}
             {currentMultiplayerScreen=="nameentry" && (
                 <div className="modal">
-                <div className="modal-content">
-                    <h2>Enter Your Name</h2>
-                    <input 
-                        type="text" 
-                        value={userName} 
-                        onChange={(e) => setUserName(e.target.value)} 
-                        placeholder="Your name" 
-                        className='input'
-                    />
-                    <button onClick={handleNameSubmit}>Submit</button>
-                </div>
+                    <div className="modal-content">
+                        <h2>Enter Your Name</h2>
+                        <input 
+                            type="text" 
+                            value={userName} 
+                            onChange={(e) => setUserName(e.target.value)} 
+                            placeholder="Your name" 
+                            className='input'
+                        />
+                        <button onClick={handleNameSubmit}>Submit</button>
+                    </div>
               </div>
+            )}
+            {currentMultiplayerScreen=="roomwaiting" && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h2>Waiting for opponent to join...</h2>
+                    </div>
+                </div>
             )}
             {currentMultiplayerScreen=="gamescreen" && (
                 <div>
@@ -107,7 +162,7 @@ function Multiplayer ({goToPage}) {
                         setTimeLeft(5);
                     }}>Test button disable</button>
                     <button onClick={() => {
-                        server.emit('requestNumbers',5);
+                        server.emit('requestNumbers');
                         setGetNumberButtonState(true);
                     }} disabled={getNumberButtonState}>Get numbers</button>
                     <button onClick={() => {
@@ -117,7 +172,7 @@ function Multiplayer ({goToPage}) {
                         setPlaySlotOperators(Array(4).fill());
                         setGetNumberButtonState(false);
                     }}>Reset Room</button>
-                    <p>It is {isYourTurn ? "" : "not"}your turn</p>
+                    <p>It is {isYourTurn ? "" : "not "}your turn</p>
                     <GameArea playSlotNumbers={playSlotNumbers}
                         playSlotOperators={playSlotOperators}
                         bankNumbers={bankNumbers}
@@ -127,8 +182,12 @@ function Multiplayer ({goToPage}) {
                         setBankNumbers={setBankNumbers}
                         isTimeUp={isTimeUp}
                         handleSubmission={handleSubmission}
+                        isYourTurn={isYourTurn}
                     />
-                    <button onClick={()=>goToPage("Menu")}>Return to Menu</button>
+                    <button onClick={()=>{
+                        server.emit('exitRoom');
+                        goToPage("Menu");
+                    }}>Return to Menu</button>
                 </div>
             )}
         </div>     
