@@ -27,17 +27,34 @@ function Multiplayer ({goToPage}) {
             setBankNumbers(data.numbers);
             setTargetResult(data.targetResult);
           });
+
+        server.on("error", ({message}) => {
+            alert("Error: "+message);
+        })
     }, []);
 
     useEffect(() => {
+        server.on("startGame", (firstPlayer) => {
+            if (firstPlayer==userName) {
+                setIsYourTurn(true);
+                setTimeLeft(60);
+                setCurrentMultiplayerScreen("gamescreen");
+            }
+            setCurrentMultiplayerScreen("gamescreen");
+        })
+    }, [userName])
+
+    useEffect(() => {
         server.on('roomfull', () => {
-            // alert('roomfull')
             setSelectedRoom(null);
+            alert("This room is full! Please select anothoer room");
         });
         if (selectedRoom!=null) {
             server.on('joinRoomSuccess', () => {
                 // alert('success '+ selectedRoom);
                 setCurrentRoom(selectedRoom);
+                setSelectedRoom(null);
+                setCurrentMultiplayerScreen("roomwaiting");
             });
         }
     }, [selectedRoom])
@@ -63,22 +80,29 @@ function Multiplayer ({goToPage}) {
         }
     }, [selectedRoom])
 
-    useEffect(() => {
-        // alert(currentRoom);
-        if (currentRoom!=null) {
-            setIsYourTurn(true);
-            setTimeLeft(60);
-            setCurrentMultiplayerScreen("gamescreen");
-        }
-    }, [currentRoom])
+    // useEffect(() => {
+    //     // alert(currentRoom);
+        // if (currentRoom!=null) {
+        //     setIsYourTurn(true);
+        //     setTimeLeft(60);
+        //     setCurrentMultiplayerScreen("gamescreen");
+        // }
+    // }, [currentRoom])
 
     const handleNameSubmit = () => {
         setCurrentMultiplayerScreen("selectroom");
     }
 
-    const handleSubmission = () => {
-        alert("Multiplayer submission has not been implemented yet.\nNumbers: " + playSlotNumbers + "\nOperators: "+ playSlotOperators)
+    const handleSubmission = (numbers,operators) => {
+        // alert("Multiplayer submission has not been implemented yet.\nNumbers: " + playSlotNumbers + "\nOperators: "+ playSlotOperators)
+        server.emit('checkAns', {nums: numbers, operators: operators, timeUsed: 60-timeLeft, room:currentRoom})
     }
+
+    useEffect(() => {
+        server.on('answerChecked', ({booleanResult}) => {
+            alert("Test "+booleanResult);
+        })
+    }, [])
 
     return (
         <div>
@@ -107,18 +131,25 @@ function Multiplayer ({goToPage}) {
             )}
             {currentMultiplayerScreen=="nameentry" && (
                 <div className="modal">
-                <div className="modal-content">
-                    <h2>Enter Your Name</h2>
-                    <input 
-                        type="text" 
-                        value={userName} 
-                        onChange={(e) => setUserName(e.target.value)} 
-                        placeholder="Your name" 
-                        className='input'
-                    />
-                    <button onClick={handleNameSubmit}>Submit</button>
-                </div>
+                    <div className="modal-content">
+                        <h2>Enter Your Name</h2>
+                        <input 
+                            type="text" 
+                            value={userName} 
+                            onChange={(e) => setUserName(e.target.value)} 
+                            placeholder="Your name" 
+                            className='input'
+                        />
+                        <button onClick={handleNameSubmit}>Submit</button>
+                    </div>
               </div>
+            )}
+            {currentMultiplayerScreen=="roomwaiting" && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h2>Waiting for opponent to join...</h2>
+                    </div>
+                </div>
             )}
             {currentMultiplayerScreen=="gamescreen" && (
                 <div>
@@ -131,7 +162,7 @@ function Multiplayer ({goToPage}) {
                         setTimeLeft(5);
                     }}>Test button disable</button>
                     <button onClick={() => {
-                        server.emit('requestNumbers',5);
+                        server.emit('requestNumbers');
                         setGetNumberButtonState(true);
                     }} disabled={getNumberButtonState}>Get numbers</button>
                     <button onClick={() => {
@@ -141,7 +172,7 @@ function Multiplayer ({goToPage}) {
                         setPlaySlotOperators(Array(4).fill());
                         setGetNumberButtonState(false);
                     }}>Reset Room</button>
-                    <p>It is {isYourTurn ? "" : "not"}your turn</p>
+                    <p>It is {isYourTurn ? "" : "not "}your turn</p>
                     <GameArea playSlotNumbers={playSlotNumbers}
                         playSlotOperators={playSlotOperators}
                         bankNumbers={bankNumbers}
@@ -151,8 +182,12 @@ function Multiplayer ({goToPage}) {
                         setBankNumbers={setBankNumbers}
                         isTimeUp={isTimeUp}
                         handleSubmission={handleSubmission}
+                        isYourTurn={isYourTurn}
                     />
-                    <button onClick={()=>goToPage("Menu")}>Return to Menu</button>
+                    <button onClick={()=>{
+                        server.emit('exitRoom');
+                        goToPage("Menu");
+                    }}>Return to Menu</button>
                 </div>
             )}
         </div>     
