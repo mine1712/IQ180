@@ -81,7 +81,7 @@ function genNumbers(targetLength){
 }
 
 let stats = {};
-let keys = {"Room 1":{timeCalled:0,numbers:[],ans:null,turn:null,users:[],id:[]},"Room 2":{timeCalled:0,numbers:[],ans:null,turn:null, users:[],id:[]},"Room 3":{timeCalled:0,numbers:[],ans:null,turn:null, users:[],id:[]}};
+let keys = {"Room 1":{timeCalled:0,numbers:[],ans:null,turn:null,users:[]},"Room 2":{timeCalled:0,numbers:[],ans:null,turn:null, users:[]},"Room 3":{timeCalled:0,numbers:[],ans:null,turn:null, users:[]}};
 let targetLength = 5;
 
 io.on('connection', (socket) => {
@@ -128,7 +128,7 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', ({ room, name }) => {
     // Check if room exists
     if(keys[room] === undefined){
-      keys[room] = {timeCalled:0,numbers:[],ans:null,turn:null, users:[], };
+      keys[room] = {timeCalled:0,numbers:[],ans:null,turn:null, users:[] };
     }
     // Check if room is full
     if(io.sockets.adapter.rooms.get(room)?.size === 2) {
@@ -206,8 +206,21 @@ io.on('connection', (socket) => {
   socket.on('exitRoom', () => {
     const temp = Array.from(socket.rooms);
     let room = temp[1];
-    keys[room].users = 0;
-    keys[room].users.pop(socket.nickname);
+    try {
+      let users = keys[room].users;
+      const userIndex = users.indexOf(socket.nickname);
+      if(userIndex !== -1){
+        users.splice(userIndex, 1);
+      }
+      keys[room].users = users;
+      // Reset the room
+      keys[room].timeCalled = 0;
+      keys[room].numbers = [];
+      keys[room].ans = null;
+      keys[room].turn = null;
+    } catch (error) {
+      console.log('\x1b[31m','WARNING: Ignoring user not found in room','\x1b[0m');
+    }
     socket.leave(room);
     io.to(room).emit('message', `${socket.nickname} has left the room`);
     console.log(`${socket.nickname} has left the room`);
