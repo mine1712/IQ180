@@ -18,12 +18,12 @@ function GameArea({
 }) {
 
     const [currentDragItem, setCurrentDragItem] = useState(null)
-    const [playSlotValues,setPlaySlotValues] = useState(Array(9).fill())
+    const [playSlotValues,setPlaySlotValues] = useState(Array(playSlotNumbers.length+playSlotOperators.length).fill())
 
     useEffect(() => {
         let values=[]
         for (let i=0;i<playSlotNumbers.length;i++) {
-            if (i==4) {
+            if (i==playSlotNumbers.length-1) {
                 values=[...values,playSlotNumbers[i]];
             } else {
                 values=[...values,playSlotNumbers[i],playSlotOperators[i]];
@@ -121,26 +121,35 @@ function GameArea({
             <div>
                 {playSlotValues.map((number,index) => {
                     if (index%2==0) {
-                        if (index==8) {
-                            return (
-                                <Fragment key={'numberPlaySlot'+((index/2)+1)}>
-                                    <NumberPlaySlotBox number={number}
-                                        index={index/2}
-                                        dropHandler={dropHandler}
-                                        dragStartHandler={dragStartHandler}
-                                    />
-                                </Fragment>
-                            )
-                        } else return (
-                            <Fragment key={'numberPlaySlot'+((index/2)+1)}>
+                        return (<Fragment key={'numberPlaySlot'+((index/2)+1)}>
                                 <NumberPlaySlotBox number={number}
                                     index={index/2}
                                     dropHandler={dropHandler}
                                     dragStartHandler={dragStartHandler}
                                 />
                                 
-                            </Fragment>
+                        </Fragment>
                         )
+                        // if (index==playSlotValues.length-1) {
+                        //     return (
+                        //         <Fragment key={'numberPlaySlot'+((index/2)+1)}>
+                        //             <NumberPlaySlotBox number={number}
+                        //                 index={index/2}
+                        //                 dropHandler={dropHandler}
+                        //                 dragStartHandler={dragStartHandler}
+                        //             />
+                        //         </Fragment>
+                        //     )
+                        // } else return (
+                        //     <Fragment key={'numberPlaySlot'+((index/2)+1)}>
+                        //         <NumberPlaySlotBox number={number}
+                        //             index={index/2}
+                        //             dropHandler={dropHandler}
+                        //             dragStartHandler={dragStartHandler}
+                        //         />
+                                
+                        //     </Fragment>
+                        // )
                     } else return (
                         <Fragment key={'operatorPlaySlot'+(index+1)}>
                             <OperatorPlaySlotBox operator={playSlotOperators[(index-1)/2]}
@@ -196,6 +205,9 @@ function GameArea({
             <button onClick={() => {
                 handleSubmission(playSlotNumbers,formatSubmission());
             }} disabled={isTimeUp || !isYourTurn} >Submit answer</button>
+            {/* <button onClick={() => {
+                alert(isTimeUp + " " + isYourTurn);
+            }} >Test</button> */}
         </div>
     );
 }
