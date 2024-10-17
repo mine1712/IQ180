@@ -81,8 +81,7 @@ function genNumbers(targetLength){
 }
 
 let stats = {};
-let keys = {"Room 1":{timeCalled:0,numbers:[],ans:null,turn:null,users:[]},"Room 2":{timeCalled:0,numbers:[],ans:null,turn:null, users:[]},"Room 3":{timeCalled:0,numbers:[],ans:null,turn:null, users:[]}};
-let targetLength = 5;
+let keys = {"Room 1":{timeCalled:0,numbers:[],ans:null,turn:null,users:[],respose:{correctness:null,timeUsed:null},targetLength:5},"Room 2":{timeCalled:0,numbers:[],ans:null,turn:null, users:[],respose:{correctness:null,timeUsed:null},targetLength:5},"Room 3":{timeCalled:0,numbers:[],ans:null,turn:null, users:[],respose:{correctness:null,timeUsed:null}},targetLength:5};
 
 io.on('connection', (socket) => {
   console.log(`A user with id: ${socket.id} connected`);
@@ -95,7 +94,7 @@ io.on('connection', (socket) => {
       let targetResult;
       // Check whether if the numbers are already generated or not.
       if (keys[room].timeCalled === 0) {
-        const returnVaules = genNumbers(targetLength);
+        const returnVaules = genNumbers(keys[room].targetLength);
         numbers = returnVaules.numbers;
         targetResult = returnVaules.result;
         keys[room].timeCalled = 1;
@@ -108,7 +107,7 @@ io.on('connection', (socket) => {
         targetResult = keys[room].ans;
       }
       else{
-        const returnVaules = genNumbers(targetLength);
+        const returnVaules = genNumbers(keys[room].targetLength);
         numbers = returnVaules.numbers;
         targetResult = returnVaules.result;
         keys[room].timeCalled = 1;
@@ -128,7 +127,7 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', ({ room, name }) => {
     // Check if room exists
     if(keys[room] === undefined){
-      keys[room] = {timeCalled:0,numbers:[],ans:null,turn:null, users:[] };
+      keys[room] = {timeCalled:0,numbers:[],ans:null,turn:null, users:[],respose:{correctness:null,timeUsed:null},targetLength:5 };
     }
     // Check if room is full
     if(io.sockets.adapter.rooms.get(room)?.size === 2) {
@@ -140,9 +139,10 @@ io.on('connection', (socket) => {
     //Set nickname
     socket.nickname = name;
     //setting up the scoreboard
-    if(!room in stats){
-      stats[room] = {name:0};
+    if (!(room in stats)) {
+      stats[room] = {};
     }
+    stats[room][name] = 0;
     socket.join(room);
     keys[room].users.push(socket.nickname);
     console.log('\x1b[32m',`${name} joined ${room}`,'\x1b[0m');
@@ -175,24 +175,78 @@ io.on('connection', (socket) => {
         }
       let playerAnswer = eval(equation);
       let booleanResult = playerAnswer === keys[room].ans;
-      // Update stats  TO FIX this doesn't take time into account
-      if(booleanResult){
-        // Change turn
-        let users = keys[room].users;
-        const userIndex = users.indexOf(socket.nickname);
-        if (userIndex !== -1) {
-          users.splice(userIndex, 1);
+      // Implementation of answer checking
+      if(keys[room].timeCalled ===2){
+        // Show turnEnd page
+        io.to(room).emit('turnEnd');
+        // Both players have answered correctly
+        if(booleanResult && keys[room].respose.correctness === true){
+          if(timeUsed<keys[room].respose.timeUsed){
+            // Second Player wins
+            stats[room][socket.nickname] += 1;
+            io.to(room).emit('updateScore',stats[room]);
+            keys[room].turn = socket.nickname;
+            // Start next game? Second player will start
+            io.to(room).emit('startGame',keys[room].turn);
+          }
+          else if( timeUsed === keys[room].respose.timeUsed ){
+            // Draw both players get score
+            stats[room][socket.nickname] += 1;
+            stats[room][keys[room].users.filter(user => user !== socket.nickname)[0]] += 1;
+            io.to(room).emit('updateScore',stats[room]);
+            // Randomly select the first player
+            const firstPlayer = (Math.random()>0.5)? keys[room].users[1]:keys[room].users[0];
+            keys[room].turn = firstPlayer;
+            // Start next game? 
+            io.to(room).emit('startGame',keys[room].turn);
+          }
+          else{
+            // First Player wins
+            stats[room][keys[room].users.filter(user => user !== socket.nickname)[0]] += 1;
+            // Update the score on the client side
+            io.to(room).emit('updateScore',stats[room]);
+            keys[room].turn = keys[room].users.filter(user => user !== socket.nickname)[0];
+            // Start next game? First player will start
+            io.to(room).emit('startGame',keys[room].turn);
+          }
         }
-        if(stats[room][socket.nickname] === undefined){
-          stats[room][socket.nickname] = 1;
+        // Only the first player has answered correctly
+        else if(keys[room].respose.correctness === true){
+          // First Player wins
+          stats[room][keys[room].users.filter(user => user !== socket.nickname)[0]] += 1;
+          // Update the score on the client side
+          io.to(room).emit('updateScore',stats[room]);
+          keys[room].turn = keys[room].users.filter(user => user !== socket.nickname)[0];
+          // Start next game? First player will start
+          io.to(room).emit('startGame',keys[room].turn);
         }
-        else{
+        // Only Second Player has answered correctly
+        else if(booleanResult){
+          // Second Player wins
           stats[room][socket.nickname] += 1;
-          io.to(room).emit('updateScore', [ socket.nickname, stats[room][socket.nickname] ]);
+          // Update the score on the client side
+          io.to(room).emit('updateScore',stats[room]);
+          keys[room].turn = socket.nickname;
+          // Start next game? Second player will start
+          io.to(room).emit('startGame',keys[room].turn);
+        }
+        // Both players have answered incorrectly
+        else{
+          const firstPlayer = (Math.random()>0.5)? keys[room].users[1]:keys[room].users[0];
+          keys[room].turn = firstPlayer;
+          // Start next game? Randomly select the first player
+          io.to(room).emit('startGame',keys[room].turn);
         }
       }
-      // Emit the result back to the room
-      io.to(room).emit('answerChecked', { booleanResult });
+      else{
+        // Store the response
+        keys[room].respose.correctness = booleanResult;
+        keys[room].respose.timeUsed = timeUsed;
+        keys[room].turn = keys[room].users.filter(user => user !== socket.nickname)[0];
+        // Emit the result back to the room => show a page 
+        socket.emit('turnEnd');
+        io.to(room).emit('startGame',keys[room].turn);
+      }
       // Update score on the client side
       // Show updated stats  TO BE REMOVED IN THE PRODUCTION
       console.dir(stats);
@@ -229,7 +283,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log(`User with id: ${socket.id} disconnected`);
     try {
-      keys[room].users.pop(socket.nickname);
+      keys[room].users = keys[room].users.filter(user => user !== socket.nickname)[0];
     } catch (error) {
       //console.log(error);
       console.log('\x1b[31m','WARNING: Ignoring user not found in room','\x1b[0m');
@@ -254,8 +308,9 @@ io.on('connection', (socket) => {
     socket.emit('keys', keys);
   });
 
-  socket.on('setNumbersLength', (length) => {
-    targetLength = length;
+  socket.on('setNumbersLength', (length, room) => {
+    keys[room].targetLength = length;
+    socket.emit('setLengthSucess', `The target length has been set to ${length}`);
   });
 
 });
