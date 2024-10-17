@@ -182,6 +182,9 @@ io.on('connection', (socket) => {
         // Both players have answered correctly
         if(booleanResult && keys[room].respose.correctness === true){
           if(timeUsed<keys[room].respose.timeUsed){
+            // reset the response
+            keys[room].respose.correctness = null;
+            keys[room].respose.timeUsed = null;
             // Second Player wins
             stats[room][socket.nickname] += 1;
             io.to(room).emit('updateScore',stats[room]);
@@ -190,6 +193,9 @@ io.on('connection', (socket) => {
             io.to(room).emit('startGame',keys[room].turn);
           }
           else if( timeUsed === keys[room].respose.timeUsed ){
+            // reset the response
+            keys[room].respose.correctness = null;
+            keys[room].respose.timeUsed = null;
             // Draw both players get score
             stats[room][socket.nickname] += 1;
             stats[room][keys[room].users.filter(user => user !== socket.nickname)[0]] += 1;
@@ -201,6 +207,9 @@ io.on('connection', (socket) => {
             io.to(room).emit('startGame',keys[room].turn);
           }
           else{
+            // reset the response
+            keys[room].respose.correctness = null;
+            keys[room].respose.timeUsed = null;
             // First Player wins
             stats[room][keys[room].users.filter(user => user !== socket.nickname)[0]] += 1;
             // Update the score on the client side
@@ -212,6 +221,9 @@ io.on('connection', (socket) => {
         }
         // Only the first player has answered correctly
         else if(keys[room].respose.correctness === true){
+          // reset the response
+          keys[room].respose.correctness = null;
+          keys[room].respose.timeUsed = null;
           // First Player wins
           stats[room][keys[room].users.filter(user => user !== socket.nickname)[0]] += 1;
           // Update the score on the client side
@@ -222,6 +234,9 @@ io.on('connection', (socket) => {
         }
         // Only Second Player has answered correctly
         else if(booleanResult){
+          // reset the response
+          keys[room].respose.correctness = null;
+          keys[room].respose.timeUsed = null;
           // Second Player wins
           stats[room][socket.nickname] += 1;
           // Update the score on the client side
@@ -232,6 +247,9 @@ io.on('connection', (socket) => {
         }
         // Both players have answered incorrectly
         else{
+          // reset the response
+          keys[room].respose.correctness = null;
+          keys[room].respose.timeUsed = null;
           const firstPlayer = (Math.random()>0.5)? keys[room].users[1]:keys[room].users[0];
           keys[room].turn = firstPlayer;
           // Start next game? Randomly select the first player
