@@ -47,7 +47,7 @@ const operators = ['+', '-', '*', '/'];
 
 // }
 
-export function generateNumbers() {
+export function generateNumbers(numberLength) {
     let numbers;
     let equation;
     let targetResult;
@@ -56,7 +56,7 @@ export function generateNumbers() {
         // alert(equation)
         equation = "";
         // alert("test")
-        numbers = Array.from({length: 5}, () => Math.floor(Math.random() * 9.9999))
+        numbers = Array.from({length: numberLength}, () => Math.floor(Math.random() * 9.9999))
         for (let i=0; i<numbers.length; i++) {
             equation+=numbers[i];
             if (i!=numbers.length-1) {
