@@ -14,13 +14,13 @@ function Multiplayer ({goToPage}) {
     const [bankOperators,setBankOperators] = useState(['+','-','x','÷'])
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [currentRoom, setCurrentRoom] = useState(null);
-    const [userName, setUserName] = useState(null);
+    const [userName, setUserName] = useState("");
     const [timeLeft,setTimeLeft] = useState(null);
     const [isYourTurn, setIsYourTurn] = useState(false);
     const [isTimeUp,setIsTimeUp] = useState(false);
     const [targetResult,setTargetResult] = useState(null);
     const [getNumberButtonState,setGetNumberButtonState] = useState(false);
-    const [privateRoomCode,setPrivateRoomCode] = useState(null);
+    const [privateRoomCode,setPrivateRoomCode] = useState("");
 
     useEffect(() => {
         server.on('numbers', (data) => {
