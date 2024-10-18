@@ -26,58 +26,58 @@ const io = new Server(server, {
 
 const operators = ['+', '-', '*', '/'];
 
+// shuffle numbers array order
+function shuffle(array) {
+  let currentIndex = array.length;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+
+    // Pick a remaining element...
+    let randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+}
+
 function genNumbers(targetLength){
   let numbers = [];
   let result = 0;
   let count =0;
+  let ops = [];
   for (let i = 0; i < targetLength; i++) {
-    numbers.push(Math.floor(Math.random() * 10));
+    numbers.push(Math.floor(Math.random() * 9)+1);
   }
   while(!Number.isInteger(result) || result<1 || result>500){
     //reset result
     result = 0;
+    ops = [];
     // if the loop runs more than 200 times, reset the numbers
     if(count++>200){
       numbers =[];
       for (let i = 0; i < targetLength; i++) {
-      numbers.push(Math.floor(Math.random() * 10));
+      numbers.push(Math.floor(Math.random() * 9)+1);
       }
       count = 0;
     }
-    for(let i = 0; i < numbers.length; i++){
-      if(numbers[i] !== 0){
-        switch (operators[Math.floor(Math.random() * 4)]) {
-          case '+':
-            result += numbers[i];
-            break;
-          case '-':
-            result -= numbers[i];
-            break;
-          case '*':
-            result *= numbers[i];
-            break;
-          case '/':
-            result /= numbers[i];
-            break;
-          default:
-            throw new Error('Invalid operator');
-        }
+    //randomly select operators
+    for(let i=0; i<targetLength-1; i++){
+      ops.push(operators[Math.floor(Math.random()*4)]);
+    }
+    let equation = "";
+    for (let i=0;i<numbers.length;i++) {
+      equation+=numbers[i];
+      if (i!==numbers.length-1) {
+        equation+=ops[i];
       }
-      else{
-        switch (operators[Math.floor(Math.random() * 3)]) {
-          case '+':
-            result += numbers[i];
-            break;
-          case '-':
-            result -= numbers[i];
-            break;
-          case '*':
-            result *= numbers[i];
-            break;
-          default:
-            throw new Error('Invalid operator');
-        }}}
+    }
+    result = eval(equation);
   }
+  console.log(`answer are: ${numbers} ${ops}`);
+  shuffle(numbers);
   return { numbers, result };
 }
 
@@ -301,7 +301,6 @@ io.on('connection', (socket) => {
           keys[room].respose.timeUsed = timeUsed;
           keys[room].turn = keys[room].users.filter(user => user !== socket.nickname)[0];
           // Emit the result back to the room => show a page 
-          socket.emit('turnEnd');
           io.to(room).emit('swapTurn',keys[room].turn);
         }
         // Update score on the client side
