@@ -4,7 +4,14 @@ import '../css/Multiplayer.css';
 import io from 'socket.io-client';
 import {GameArea} from '../components';
 
-const server = io.connect('http://localhost:5172');
+//Use when testing locally
+const ipAddress = "http://localhost:5172"
+//Use when testing on WAN
+// const ipAddress = "http://[insertiphere]:5172"
+
+
+//Use when testing locally
+const server = io.connect(ipAddress);
 
 function Multiplayer ({goToPage}) {
     const [currentMultiplayerScreen, setCurrentMultiplayerScreen] = useState("nameentry");
