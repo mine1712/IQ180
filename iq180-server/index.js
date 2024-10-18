@@ -165,7 +165,10 @@ io.on('connection', (socket) => {
 
   //TODO 
   socket.on('checkAns', ({nums, operators, timeUsed, room})=>{
-   if(nums){ try {
+    // if nums and operators are valids.
+    let nums_check = nums.filter((value) => value !== null);
+    let operators_check = operators.filter((value) => value !== null);
+    if(nums_check.length === keys[room].targetLength && operators_check.length === (keys[room].targetLength-1) ){ try {
       let equation = "";
         for (let i=0;i<nums.length;i++) {
             equation+=nums[i];
@@ -190,7 +193,7 @@ io.on('connection', (socket) => {
             io.to(room).emit('updateScore',stats[room]);
             keys[room].turn = socket.nickname;
             // Start next game? Second player will start
-            io.to(room).emit('startGame',keys[room].turn);
+            io.to(room).emit('swapTurn',keys[room].turn);
           }
           else if( timeUsed === keys[room].respose.timeUsed ){
             // reset the response
@@ -204,7 +207,7 @@ io.on('connection', (socket) => {
             const firstPlayer = (Math.random()>0.5)? keys[room].users[1]:keys[room].users[0];
             keys[room].turn = firstPlayer;
             // Start next game? 
-            io.to(room).emit('startGame',keys[room].turn);
+            io.to(room).emit('swapTurn',keys[room].turn);
           }
           else{
             // reset the response
@@ -216,7 +219,7 @@ io.on('connection', (socket) => {
             io.to(room).emit('updateScore',stats[room]);
             keys[room].turn = keys[room].users.filter(user => user !== socket.nickname)[0];
             // Start next game? First player will start
-            io.to(room).emit('startGame',keys[room].turn);
+            io.to(room).emit('swapTurn',keys[room].turn);
           }
         }
         // Only the first player has answered correctly
@@ -230,7 +233,7 @@ io.on('connection', (socket) => {
           io.to(room).emit('updateScore',stats[room]);
           keys[room].turn = keys[room].users.filter(user => user !== socket.nickname)[0];
           // Start next game? First player will start
-          io.to(room).emit('startGame',keys[room].turn);
+          io.to(room).emit('swapTurn',keys[room].turn);
         }
         // Only Second Player has answered correctly
         else if(booleanResult){
@@ -243,7 +246,7 @@ io.on('connection', (socket) => {
           io.to(room).emit('updateScore',stats[room]);
           keys[room].turn = socket.nickname;
           // Start next game? Second player will start
-          io.to(room).emit('startGame',keys[room].turn);
+          io.to(room).emit('swapTurn',keys[room].turn);
         }
         // Both players have answered incorrectly
         else{
@@ -253,7 +256,7 @@ io.on('connection', (socket) => {
           const firstPlayer = (Math.random()>0.5)? keys[room].users[1]:keys[room].users[0];
           keys[room].turn = firstPlayer;
           // Start next game? Randomly select the first player
-          io.to(room).emit('startGame',keys[room].turn);
+          io.to(room).emit('swapTurn',keys[room].turn);
         }
       }
       else{
@@ -263,15 +266,24 @@ io.on('connection', (socket) => {
         keys[room].turn = keys[room].users.filter(user => user !== socket.nickname)[0];
         // Emit the result back to the room => show a page 
         socket.emit('turnEnd');
-        io.to(room).emit('startGame',keys[room].turn);
+        io.to(room).emit('swapTurn',keys[room].turn);
       }
       // Update score on the client side
       // Show updated stats  TO BE REMOVED IN THE PRODUCTION
       console.dir(stats);
     } catch (error) {
       io.to(room).emit('error', { message: error.message });
-    }}
-
+    }
+  }
+  // Timeup!! or submitted incorrect numbers (nulls) or incorrect operators (nulls)
+  else{
+    booleanResult = false
+    keys[room].respose.correctness = booleanResult;
+    keys[room].respose.timeUsed = timeUsed;
+    socket.emit('turnEnd');
+    io.to(room).emit('swapTurn',keys[room].turn);
+  }
+  console.log('\x1b[32m',`Player "${socket.nickname}" submitted the "${booleanResult ? "correct": "wrong"}" answer`,'\x1b[0m');
   });
 
   // Exiting room
@@ -319,6 +331,12 @@ io.on('connection', (socket) => {
   socket.on('resetStats', () => {
     stats = {};
     socket.emit('stats', stats);
+  });
+
+  // Reset Room //TODO
+  socket.on('resetRoom', (room) => {
+    keys[room] = {timeCalled:0,numbers:[],ans:null,turn:null,users:keys[room].users,respose:{correctness:null,timeUsed:null},targetLength:5};
+    io.to(room).emit('roomReset', `Room ${room} has been reset`);
   });
 
   // Getting keys //TODO
