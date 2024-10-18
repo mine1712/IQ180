@@ -6,17 +6,17 @@ const RandomLetter = () => {  /*Randomly picks a symbol between the available on
     const getColorForSymbol = (symbol) => {
         switch (symbol) {
             case '+':
-                return '#ff8e86';
+                return 'white';
             case '-':
-                return '#6cf94c';
+                return 'white';
             case '÷':
-                return '#86f6ff';
+                return 'white';
             case 'x':
-                return '#ff86fd';
+                return 'white';
             case '%':
-                return '#f5ff86';
+                return 'white';
             default:
-                return '#ffffff';
+                return 'white';
         }
     };
 

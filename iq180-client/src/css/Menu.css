@@ -1,3 +1,5 @@
+
+
 body, html {
   margin: 0;
   padding: 0;
@@ -12,13 +14,13 @@ body, html {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #fcb564;
+  background-color: #4AC29A;
 }
 
 .game-title {
   font-size: 100px;
   font-weight: bold;
-  color: #bcf599;
+  color: #BDFFF3;
   -webkit-text-stroke: 2px #696956;
   margin-bottom: 50px;
   animation: rotate 8s linear infinite;
@@ -99,3 +101,5 @@ body, html {
 .howtoplay-button:hover {
   transform: scale(1.2); 
 }
+
+/*text 3d*/
