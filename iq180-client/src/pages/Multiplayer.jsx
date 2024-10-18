@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import '../css/Multiplayer.css';
-import '../css/Multiplayer-temp.css';
+// import '../css/Multiplayer-temp.css';
 import io from 'socket.io-client';
 import {GameArea} from '../components';
 
