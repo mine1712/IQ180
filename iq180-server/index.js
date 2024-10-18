@@ -210,7 +210,7 @@ io.on('connection', (socket) => {
               keys[room].respose.correctness = null;
               keys[room].respose.timeUsed = null;
               // Second Player wins
-              stats[socket.id][score] += 1;
+              stats[socket.id].score += 1;
               io.to(room).emit('updateScore', {
                 [socket.nickname]: stats[socket.id].score,
                 [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
@@ -224,8 +224,8 @@ io.on('connection', (socket) => {
               keys[room].respose.correctness = null;
               keys[room].respose.timeUsed = null;
               // Draw both players get score
-              stats[room][socket.nickname] += 1;
-              stats[room][keys[room].users.filter(user => user !== socket.nickname)[0]] += 1;
+              stats[socket.id].score += 1;
+              stats[keys[room].id.filter(user => user !== socket.id)[0]].score += 1;
               io.to(room).emit('updateScore',{
                 [socket.nickname]: stats[socket.id].score,
                 [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
@@ -241,7 +241,7 @@ io.on('connection', (socket) => {
               keys[room].respose.correctness = null;
               keys[room].respose.timeUsed = null;
               // First Player wins
-              stats[room][keys[room].users.filter(user => user !== socket.nickname)[0]] += 1;
+              stats[keys[room].id.filter(user => user !== socket.id)[0]].score += 1;
               // Update the score on the client side
               io.to(room).emit('updateScore',{
                 [socket.nickname]: stats[socket.id].score,
@@ -258,7 +258,7 @@ io.on('connection', (socket) => {
             keys[room].respose.correctness = null;
             keys[room].respose.timeUsed = null;
             // First Player wins
-            stats[room][keys[room].users.filter(user => user !== socket.nickname)[0]] += 1;
+            stats[keys[room].id.filter(user => user !== socket.id)[0]] += 1;
             // Update the score on the client side
             io.to(room).emit('updateScore',{
               [socket.nickname]: stats[socket.id].score,
@@ -315,7 +315,7 @@ io.on('connection', (socket) => {
   //   socket.emit('turnEnd');
   //   io.to(room).emit('swapTurn',keys[room].turn);
   // }
-  console.log('\x1b[32m',`Player "${socket.nickname}" submitted the "${booleanResult ? "correct": "wrong"}" answer`,'\x1b[0m');
+  console.log('\x1b[32m',`Player "${socket.nickname}" submitted the "${booleanResult ? `correct within ${keys[room].respose.timeUsed}`: "wrong"}" answer`,'\x1b[0m');
   });
 
   function exitRoom(){
