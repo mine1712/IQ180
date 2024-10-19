@@ -151,23 +151,24 @@ const Singleplayer = ({ goToPage }) => {
                 </div>
             </div>
             )} */}
-      {currentSingleplayerScreen == "nameentry" && (
-        <>
-          <div className="area">
+      {(currentSingleplayerScreen === "nameentry" ||
+        currentSingleplayerScreen == "gameoptions") && (
+        <div className="area">
           <div className="container">
-              {/* <img className="image-background" src={op}></img> */}
-              <ul class="circles">
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-              </ul>
+            {/* <img className="image-background" src={op}></img> */}
+            <ul class="circles">
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+            </ul>
+            {currentSingleplayerScreen == "nameentry" && (
               <div className="form-container">
                 <div className="set-name-text">Enter Your Name</div>
                 <div className="input-container">
@@ -178,31 +179,32 @@ const Singleplayer = ({ goToPage }) => {
                     placeholder="Your name"
                     className="set-name-input"
                   />
-                  <button className="set-name-button" onClick={handleNameSubmit}>Submit</button>
+                  <button
+                    className="set-name-button"
+                    onClick={handleNameSubmit}
+                  >
+                    Enter
+                  </button>
                 </div>
               </div>
-              </div>
-            </div>
-        </>
-      )}
-      {currentSingleplayerScreen == "gameoptions" && (
-        <div className="modal">
-          <div className="modal-content">
-            <h1>Welcome {userName}!</h1>
-            <h2>Choose your options</h2>
-            <div>
-              <h3 style={{ textAlign: "center", display: "inline" }}>
-                Numbers:{" "}
-              </h3>
-              <input
-                type="text"
-                value={numbersLengthInput}
-                onChange={(e) => setNumbersLengthInput(e.target.value)}
-                placeholder="Default = 5"
-                className="input"
-              />
-            </div>
-            {/* <div>
+            )}
+            {currentSingleplayerScreen == "gameoptions" && (
+              <div className="form-container">
+                {/* <p className="set-Welcome-text"> Welcome {userName}! </p>
+              <p className="set-Welcome-text"> Choose your options </p> */}
+                <div className="welcome-container">
+                  <div className="set-welcome-text">Welcome {userName}!</div>
+                  <div className="set-welcome-text">Choose your options </div>
+                </div>
+                <div className="input-container">
+                  <input
+                    type="text"
+                    value={numbersLengthInput}
+                    onChange={(e) => setNumbersLengthInput(e.target.value)}
+                    placeholder="Number to Play"
+                    className="set-name-input"
+                  />
+                  {/* <div>
                             <h3 style={{textAlign:'center', display:'inline'}}>CSS Test: </h3>
                             <input 
                                 type="text" 
@@ -212,7 +214,15 @@ const Singleplayer = ({ goToPage }) => {
                                 className='input'
                             />
                         </div> */}
-            <button onClick={handleOptionsSubmit}>Submit</button>
+                  <button
+                    className="set-name-button"
+                    onClick={handleOptionsSubmit}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
