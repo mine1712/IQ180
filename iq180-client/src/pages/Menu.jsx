@@ -22,19 +22,6 @@ function Menu({ goToPage }) {
   };
 
   return (
-    <div className="area">
-      <ul class="circles">
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-            </ul>
     <div className="menu-container">
       <div className="game-title">IQ180</div>
       <button
@@ -53,8 +40,7 @@ function Menu({ goToPage }) {
         How to play
       </button>
       {showHowtoplay && <Howtoplay onClose={handleCloseHowtoplay} />}
-      {/* <RandomLetter /> */}
-    </div>
+      <RandomLetter />
     </div>
   );
 }
