@@ -23,6 +23,9 @@ const Singleplayer = ({goToPage}) => {
     const [orderOfOperations, setOrderOfOperations] = useState("pemdas");
     const [roundLengthInput, setRoundLengthInput] = useState("60")
     const [roundLength, setRoundLength] = useState(60);
+    const [attemptsAllowedInput, setAttemptsAllowedInput] = useState("3");
+    const [attemptsAllowed, setAttemptsAllowed] = useState(3);
+    const [attemptsLeft, setAttemptsLeft] = useState(null);
     // const [getNumberButtonState,setGetNumberButtonState] = useState(false);
     // const [privateRoomCode,setPrivateRoomCode] = useState(null);
 
@@ -32,6 +35,7 @@ const Singleplayer = ({goToPage}) => {
         setPlaySlotOperators(Array(numbersLength-1).fill());
         setBankNumbers([]);
         setTimeLeft(null);
+        setAttemptsLeft(null);
         setIsYourTurn(false);
         setIsTimeUp(false);
         setTargetResult(null);
@@ -82,7 +86,10 @@ const Singleplayer = ({goToPage}) => {
             errors.push("Numbers must be an integer from 3-9");
         }
         if (!checkRoundLength(roundLengthInput)) {
-            errors.push("Round length must be integer from 20-120");
+            errors.push("Round Length must be integer from 20-120");
+        }
+        if (!checkAttemptsAllowed(attemptsAllowedInput)) {
+            errors.push("Attempts Allowed must be integer from 1-5");
         }
         if (errors.length !== 0) {
             alert(errors.join("\n"));
@@ -90,6 +97,7 @@ const Singleplayer = ({goToPage}) => {
         }
         setNumbersLength(parseInt(numbersLengthInput));
         setRoundLength(parseInt(roundLengthInput));
+        setAttemptsAllowed(parseInt(attemptsAllowedInput));
         setCurrentSingleplayerScreen("gamescreen");
         // alert(checkNumbersLength(numbersLength));
     }
@@ -107,6 +115,11 @@ const Singleplayer = ({goToPage}) => {
     function checkRoundLength(str) {
         var n = Math.floor(Number(str));
         return n !== Infinity && String(n) === str && n >= 20 && n<=120;
+    }
+
+    function checkAttemptsAllowed(str) {
+        var n = Math.floor(Number(str));
+        return n !== Infinity && String(n) === str && n >= 1 && n<=5;
     }
 
     const handleSubmission = (numbers,operators) => {
@@ -130,12 +143,12 @@ const Singleplayer = ({goToPage}) => {
                     return true;
                 } else {
                     alert(`Incorrect. The result is ${playerAnswer}, but ${targetResult} was expected.`);
-                    setTimeLeft(0);
-                    setPlayerLost(true);
+                    setAttemptsLeft(attemptsLeft-1);
                     return false;
                 }
             } catch (error) {
                 alert("Error in the expression. Please ensure it is well-formed.");
+                setAttemptsLeft(attemptsLeft-1);
                 return false;
             }
             // const playerAnswer = eval(equation);
@@ -171,16 +184,23 @@ const Singleplayer = ({goToPage}) => {
                     return true;
                 } else {
                     alert(`Incorrect. The result is ${result}, but ${targetResult} was expected.`);
-                    setTimeLeft(0);
-                    setPlayerLost(true);
+                    setAttemptsLeft(attemptsLeft-1);
                     return false;
                 }
             }
             alert("Error in the expression. Please ensure it is well-formed.");
+            setAttemptsLeft(attemptsLeft-1);
             return false;
         }
         
     }
+
+    useEffect(() => {
+        if (attemptsLeft===0) {
+            setTimeLeft(0);
+            setPlayerLost(true);
+        }
+    }, [attemptsLeft])
 
     return (
         <div>
@@ -244,12 +264,22 @@ const Singleplayer = ({goToPage}) => {
                             </select>
                         </div>
                         <div>
-                            <h3 style={{textAlign:'center', display:'inline'}}>Round length: </h3>
+                            <h3 style={{textAlign:'center', display:'inline'}}>Round Length: </h3>
                             <input 
                                 type="text" 
                                 value={roundLengthInput} 
                                 onChange={(e) => setRoundLengthInput(e.target.value)} 
                                 placeholder="Default = 60" 
+                                className='input'
+                            />
+                        </div>
+                        <div>
+                            <h3 style={{textAlign:'center', display:'inline'}}>Attempts Allowed: </h3>
+                            <input 
+                                type="text" 
+                                value={attemptsAllowedInput} 
+                                onChange={(e) => setAttemptsAllowedInput(e.target.value)} 
+                                placeholder="Default = 3" 
                                 className='input'
                             />
                         </div>
@@ -276,6 +306,9 @@ const Singleplayer = ({goToPage}) => {
                     )}
                     {timeLeft!==null && (
                         <p>Time remaining = {timeLeft}</p>
+                    )}
+                    {attemptsLeft!== null && (
+                        <p>Attempts left = {attemptsLeft}</p>
                     )}
                     {/* <p>Test = {isRoundInProgress?"yes":"no"}</p> */}
                     {/* <button onClick={() => {
@@ -306,6 +339,7 @@ const Singleplayer = ({goToPage}) => {
                                 setPlaySlotNumbers(Array(numbersLength).fill());
                                 setPlaySlotOperators(Array(numbersLength-1).fill());
                                 setIsRoundInProgress(!isRoundInProgress);
+                                setAttemptsLeft(attemptsAllowed);
                                 }
                             }
                             disabled = {isRoundInProgress}
