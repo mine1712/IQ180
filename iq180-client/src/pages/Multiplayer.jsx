@@ -1,17 +1,8 @@
 import { useState, useEffect } from 'react';
 import '../css/Multiplayer.css';
 // import '../css/Multiplayer-temp.css';
-import io from 'socket.io-client';
+import {server} from '../socket'
 import {GameArea} from '../components';
-
-//Use when testing locally
-const ipAddress = "http://localhost:5172"
-//Use when testing on WAN
-// const ipAddress = "http://[insertiphere]:5172"
-
-
-//Use when testing locally
-const server = io.connect(ipAddress);
 
 function Multiplayer ({goToPage}) {
     const [currentMultiplayerScreen, setCurrentMultiplayerScreen] = useState("nameentry");
@@ -30,39 +21,59 @@ function Multiplayer ({goToPage}) {
     const [privateRoomCode,setPrivateRoomCode] = useState("");
 
     useEffect(() => {
-        server.on('numbers', (data) => {
+        function onNumbers(data) {
             setBankNumbers(data.numbers);
             setTargetResult(data.targetResult);
-          });
-
-        server.on("error", ({message}) => {
+        }
+        function onError({message}) {
             alert("Error: "+message);
-        })
+        }
+        server.on('numbers', onNumbers);
+        server.on("error", onError);
+
+        return () => {
+            server.off('numbers', onNumbers);
+            server.off("error", onError);
+        }
     }, []);
 
     useEffect(() => {
-        server.on("startGame", (firstPlayer) => {
+        function onStartGame(firstPlayer) {
             if (firstPlayer==userName) {
                 setIsYourTurn(true);
                 setTimeLeft(60);
                 setCurrentMultiplayerScreen("gamescreen");
             }
             setCurrentMultiplayerScreen("gamescreen");
-        })
+        }
+
+        server.on("startGame", onStartGame);
+
+        return () => {
+            server.off("startGame", onStartGame);
+        }
     }, [userName])
 
     useEffect(() => {
-        server.on('roomfull', () => {
+        function onRoomFull(){
             setSelectedRoom(null);
             alert("This room is full! Please select anothoer room");
-        });
+        }
+        function onJoinRoomSuccess() {
+            // alert('success '+ selectedRoom);
+            setCurrentRoom(selectedRoom);
+            setSelectedRoom(null);
+            setCurrentMultiplayerScreen("roomwaiting");
+        }
+
+        server.on('roomfull', onRoomFull);
         if (selectedRoom!=null) {
-            server.on('joinRoomSuccess', () => {
-                // alert('success '+ selectedRoom);
-                setCurrentRoom(selectedRoom);
-                setSelectedRoom(null);
-                setCurrentMultiplayerScreen("roomwaiting");
-            });
+            server.on('joinRoomSuccess', onJoinRoomSuccess);
+        }
+
+        return () => {
+            server.off('roomfull', onRoomFull);
+            server.off('joinRoomSuccess', onJoinRoomSuccess);
         }
     }, [selectedRoom])
 
@@ -106,9 +117,14 @@ function Multiplayer ({goToPage}) {
     }
 
     useEffect(() => {
-        server.on('answerChecked', ({booleanResult}) => {
+        function onAnswerChecked({booleanResult}) {
             alert("Test "+booleanResult);
-        })
+        }
+        server.on('answerChecked', onAnswerChecked);
+
+        return () => {
+            server.off('answerChecked', onAnswerChecked);
+        }
     }, [])
 
     return (
