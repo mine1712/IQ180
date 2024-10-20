@@ -20,6 +20,7 @@ const Singleplayer = ({goToPage}) => {
     const [playerLost,setPlayerLost] = useState(false);
     const [numbersLengthInput, setNumbersLengthInput] = useState("5");
     const [numbersLength, setNumbersLength] = useState(5);
+    const [orderOfOperations, setOrderOfOperations] = useState("pemdas");
     // const [getNumberButtonState,setGetNumberButtonState] = useState(false);
     // const [privateRoomCode,setPrivateRoomCode] = useState(null);
 
@@ -94,36 +95,76 @@ const Singleplayer = ({goToPage}) => {
     }
     
     const handleSubmission = (numbers,operators) => {
-        let equation = "";
-        let playerAnswer;
-        for (let i=0;i<numbers.length;i++) {
-            equation+=numbers[i];
-            if (i!==numbers.length-1) {
-                equation+=operators[i];
+        if (orderOfOperations=="pemdas") {
+            let equation = "";
+            let playerAnswer;
+            for (let i=0;i<numbers.length;i++) {
+                equation+=numbers[i];
+                if (i!==numbers.length-1) {
+                    equation+=operators[i];
+                }
             }
-        }
-        // alert(equation)
-        try {
-            playerAnswer = eval(equation);
-            if (playerAnswer === targetResult) {
-                alert("Correct! The solution is valid.");
-                setIsRoundInProgress(false);
-                setIsYourTurn(false)
-                setPlayerScore(playerScore+1);
-                return true;
-            } else {
-                alert(`Incorrect. The result is ${playerAnswer}, but ${targetResult} was expected.`);
-                setTimeLeft(0);
-                setPlayerLost(true);
+            // alert(equation)
+            try {
+                playerAnswer = eval(equation);
+                if (playerAnswer === targetResult) {
+                    alert("Correct! The solution is valid.");
+                    setIsRoundInProgress(false);
+                    setIsYourTurn(false)
+                    setPlayerScore(playerScore+1);
+                    return true;
+                } else {
+                    alert(`Incorrect. The result is ${playerAnswer}, but ${targetResult} was expected.`);
+                    setTimeLeft(0);
+                    setPlayerLost(true);
+                    return false;
+                }
+            } catch (error) {
+                alert("Error in the expression. Please ensure it is well-formed.");
                 return false;
             }
-        } catch (error) {
+            // const playerAnswer = eval(equation);
+            // alert("Player Answer: "+playerAnswer+"\nTarget: "+targetResult);
+            // return 
+        } else if (orderOfOperations=="lefttoright") {
+            let nums_check = numbers.filter((value) => value !== null);
+            let operators_check = operators.filter((value) => value !== null);
+            // let booleanResult;
+            if (nums_check.length === numbersLength && operators_check.length === (numbersLength-1)) {
+                let result = numbers[0];
+                for (let i=1;i<numbers.length;i++) {
+                    switch (operators[i-1]) {
+                        case '+':
+                            result += numbers[i];
+                            break;
+                        case '-':
+                            result -= numbers[i];
+                            break;
+                        case '*':
+                            result *= numbers[i];
+                            break;
+                        case '/':
+                            result /= numbers[i];
+                            break;
+                    }
+                }
+                if (result === targetResult) {
+                    alert("Correct! The solution is valid.");
+                    setIsRoundInProgress(false);
+                    setIsYourTurn(false)
+                    setPlayerScore(playerScore+1);
+                    return true;
+                } else {
+                    alert(`Incorrect. The result is ${result}, but ${targetResult} was expected.`);
+                    setTimeLeft(0);
+                    setPlayerLost(true);
+                    return false;
+                }
+            }
             alert("Error in the expression. Please ensure it is well-formed.");
             return false;
         }
-        // const playerAnswer = eval(equation);
-        // alert("Player Answer: "+playerAnswer+"\nTarget: "+targetResult);
-        // return 
+        
     }
 
     return (
@@ -177,6 +218,15 @@ const Singleplayer = ({goToPage}) => {
                                 placeholder="Default = 5" 
                                 className='input'
                             />
+                        </div>
+                        <div>
+                            <h3 style={{textAlign:'center', display:'inline'}}>Order of Operation: </h3>
+                            <select value={orderOfOperations}
+                                onChange={(e) => setOrderOfOperations(e.target.value)}
+                            >
+                                <option value="pemdas">PEMDAS</option>
+                                <option value="lefttoright">Left to Right</option>
+                            </select>
                         </div>
                         {/* <div>
                             <h3 style={{textAlign:'center', display:'inline'}}>CSS Test: </h3>
