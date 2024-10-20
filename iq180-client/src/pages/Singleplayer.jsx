@@ -21,13 +21,15 @@ const Singleplayer = ({goToPage}) => {
     const [numbersLengthInput, setNumbersLengthInput] = useState("5");
     const [numbersLength, setNumbersLength] = useState(5);
     const [orderOfOperations, setOrderOfOperations] = useState("pemdas");
+    const [roundLengthInput, setRoundLengthInput] = useState("60")
+    const [roundLength, setRoundLength] = useState(60);
     // const [getNumberButtonState,setGetNumberButtonState] = useState(false);
     // const [privateRoomCode,setPrivateRoomCode] = useState(null);
 
     const initializeSingleplayer = () => {
         setPlayerScore(0);
-        setPlaySlotNumbers(Array(5).fill());
-        setPlaySlotOperators(Array(4).fill());
+        setPlaySlotNumbers(Array(numbersLength).fill());
+        setPlaySlotOperators(Array(numbersLength-1).fill());
         setBankNumbers([]);
         setTimeLeft(null);
         setIsYourTurn(false);
@@ -75,11 +77,19 @@ const Singleplayer = ({goToPage}) => {
     }
 
     const handleOptionsSubmit = () => {
+        let errors = [];
         if (!checkNumbersLength(numbersLengthInput)) {
-            alert("Numbers must be an integer from 3-9")
+            errors.push("Numbers must be an integer from 3-9");
+        }
+        if (!checkRoundLength(roundLengthInput)) {
+            errors.push("Round length must be integer from 20-120");
+        }
+        if (errors.length !== 0) {
+            alert(errors.join("\n"));
             return;
         }
-        setNumbersLength(parseInt(numbersLengthInput))
+        setNumbersLength(parseInt(numbersLengthInput));
+        setRoundLength(parseInt(roundLengthInput));
         setCurrentSingleplayerScreen("gamescreen");
         // alert(checkNumbersLength(numbersLength));
     }
@@ -94,6 +104,11 @@ const Singleplayer = ({goToPage}) => {
         return n !== Infinity && String(n) === str && n >= 3 && n<=9;
     }
     
+    function checkRoundLength(str) {
+        var n = Math.floor(Number(str));
+        return n !== Infinity && String(n) === str && n >= 20 && n<=120;
+    }
+
     const handleSubmission = (numbers,operators) => {
         if (orderOfOperations=="pemdas") {
             let equation = "";
@@ -228,6 +243,16 @@ const Singleplayer = ({goToPage}) => {
                                 <option value="lefttoright">Left to Right</option>
                             </select>
                         </div>
+                        <div>
+                            <h3 style={{textAlign:'center', display:'inline'}}>Round length: </h3>
+                            <input 
+                                type="text" 
+                                value={roundLengthInput} 
+                                onChange={(e) => setRoundLengthInput(e.target.value)} 
+                                placeholder="Default = 60" 
+                                className='input'
+                            />
+                        </div>
                         {/* <div>
                             <h3 style={{textAlign:'center', display:'inline'}}>CSS Test: </h3>
                             <input 
@@ -274,7 +299,7 @@ const Singleplayer = ({goToPage}) => {
                     <div style={{textAlign:'center'}}>
                         <button onClick={() => {
                                 setIsYourTurn(true);
-                                setTimeLeft(60);
+                                setTimeLeft(roundLength);
                                 const generated = generateNumbers(numbersLength);
                                 setBankNumbers(generated[0]);
                                 setTargetResult(generated[1]);
