@@ -4,7 +4,14 @@ import '../css/Multiplayer.css';
 import io from 'socket.io-client';
 import {GameArea} from '../components';
 
-const server = io.connect('http://localhost:5172');
+//Use when testing locally
+const ipAddress = "http://localhost:5172"
+//Use when testing on WAN
+// const ipAddress = "http://[insertiphere]:5172"
+
+
+//Use when testing locally
+const server = io.connect(ipAddress);
 
 function Multiplayer ({goToPage}) {
     const [currentMultiplayerScreen, setCurrentMultiplayerScreen] = useState("nameentry");
@@ -14,13 +21,13 @@ function Multiplayer ({goToPage}) {
     const [bankOperators,setBankOperators] = useState(['+','-','x','÷'])
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [currentRoom, setCurrentRoom] = useState(null);
-    const [userName, setUserName] = useState(null);
+    const [userName, setUserName] = useState("");
     const [timeLeft,setTimeLeft] = useState(null);
     const [isYourTurn, setIsYourTurn] = useState(false);
     const [isTimeUp,setIsTimeUp] = useState(false);
     const [targetResult,setTargetResult] = useState(null);
     const [getNumberButtonState,setGetNumberButtonState] = useState(false);
-    const [privateRoomCode,setPrivateRoomCode] = useState(null);
+    const [privateRoomCode,setPrivateRoomCode] = useState("");
 
     useEffect(() => {
         server.on('numbers', (data) => {
