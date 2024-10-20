@@ -19,7 +19,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   // cors set up for react
   cors: {
-    origin: ['http://localhost:5173','http://localhost:5174','http://172.20.10.2:5173','http://172.20.10.1:5173'],
+    origin: ['https://iq-180.vercel.app', 'http://localhost:5173'],
     methods: ['GET', 'POST'],
   },
 });
@@ -405,7 +405,9 @@ io.on('connection', (socket) => {
 });
 
 
+// Setting up the port
+const PORT = process.env.PORT || 5172;
 
-server.listen(5172, () => {
-  console.log('listening on *:5172');
+server.listen(PORT, () => {
+  console.log(`listening on *:${PORT}`);
 }); 
