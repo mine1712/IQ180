@@ -4,20 +4,25 @@ import {GameArea} from '../components';
 import { generateNumbers } from '../utils/numberGenerator'
 
 const Singleplayer = ({goToPage}) => {
+    // Screen Value
     const [currentSingleplayerScreen, setCurrentSingleplayerScreen] = useState("nameentry");
+    // Player Info
     const [playerScore, setPlayerScore] = useState(0);
+    const [userName, setUserName] = useState("");
+    // Game Field Values
     const [playSlotNumbers,setPlaySlotNumbers] = useState(Array(5).fill());
     const [playSlotOperators,setPlaySlotOperators] = useState(Array(4).fill());
     const [bankNumbers,setBankNumbers] = useState([]);
     const [bankOperators,setBankOperators] = useState(['+','-','x','÷'])
     // const [selectedRoom, setSelectedRoom] = useState(null);
-    const [userName, setUserName] = useState("");
+    // Game Variables
     const [timeLeft,setTimeLeft] = useState(null);
-    const [isYourTurn, setIsYourTurn] = useState(false);
     const [isTimeUp,setIsTimeUp] = useState(false);
-    const [targetResult,setTargetResult] = useState(null);
+    const [isYourTurn, setIsYourTurn] = useState(false);
     const [isRoundInProgress,setIsRoundInProgress] = useState(false);
+    const [targetResult,setTargetResult] = useState(null);
     const [playerLost,setPlayerLost] = useState(false);
+    // Configurable values
     const [numbersLengthInput, setNumbersLengthInput] = useState("5");
     const [numbersLength, setNumbersLength] = useState(5);
     const [orderOfOperations, setOrderOfOperations] = useState("pemdas");
@@ -51,12 +56,12 @@ const Singleplayer = ({goToPage}) => {
     // }, []);
 
     useEffect(() => {
-        if (timeLeft > 0 && isYourTurn) {
+        if (timeLeft > 0 && isRoundInProgress) {
             setIsTimeUp(false);
             const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
             return () => clearTimeout(timer);
         } else {
-            if (isYourTurn) {
+            if (isRoundInProgress) {
                 setIsTimeUp(true);
                 setPlayerLost(true);
             }
@@ -331,7 +336,7 @@ const Singleplayer = ({goToPage}) => {
                     {/* <p>It is {isYourTurn ? "" : "not "}your turn</p> */}
                     <div style={{textAlign:'center'}}>
                         <button onClick={() => {
-                                setIsYourTurn(true);
+                                // setIsYourTurn(true);
                                 setTimeLeft(roundLength);
                                 const generated = generateNumbers(numbersLength);
                                 setBankNumbers(generated[0]);
@@ -358,6 +363,7 @@ const Singleplayer = ({goToPage}) => {
                         isTimeUp={isTimeUp}
                         handleSubmission={handleSubmission}
                         isYourTurn={isYourTurn}
+                        isRoundInProgress={isRoundInProgress}
                     />
                     {playerLost && (
                         <h1 style={{textAlign:'center'}}>You lost! Try again?</h1>

@@ -5,20 +5,30 @@ import {server} from '../socket'
 import {GameArea} from '../components';
 
 function Multiplayer ({goToPage}) {
+    // Screen Value
     const [currentMultiplayerScreen, setCurrentMultiplayerScreen] = useState("nameentry");
+    // Player Info
+    const [playerScore, setPlayerScore] = useState(0);
+    const [userName, setUserName] = useState("");
+    // Game Field Values
     const [playSlotNumbers,setPlaySlotNumbers] = useState(Array(5).fill());
     const [playSlotOperators,setPlaySlotOperators] = useState(Array(4).fill());
     const [bankNumbers,setBankNumbers] = useState([]);
     const [bankOperators,setBankOperators] = useState(['+','-','x','÷'])
+    // Room variables
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [currentRoom, setCurrentRoom] = useState(null);
-    const [userName, setUserName] = useState("");
-    const [timeLeft,setTimeLeft] = useState(null);
-    const [isYourTurn, setIsYourTurn] = useState(false);
-    const [isTimeUp,setIsTimeUp] = useState(false);
-    const [targetResult,setTargetResult] = useState(null);
-    const [getNumberButtonState,setGetNumberButtonState] = useState(false);
     const [privateRoomCode,setPrivateRoomCode] = useState("");
+    // Game Variables
+    const [timeLeft,setTimeLeft] = useState(null);
+    const [isTimeUp,setIsTimeUp] = useState(false);
+    const [isYourTurn, setIsYourTurn] = useState(false);
+    const [isRoundInProgress,setIsRoundInProgress] = useState(false);
+    const [targetResult,setTargetResult] = useState(null);
+    // const [getNumberButtonState,setGetNumberButtonState] = useState(false);
+    // TODO: Configurable values
+    const [roundLength, setRoundLength] = useState(60);
+    const [numbersLength, setNumbersLength] = useState(5);
 
     useEffect(() => {
         function onNumbers(data) {
@@ -38,10 +48,36 @@ function Multiplayer ({goToPage}) {
     }, []);
 
     useEffect(() => {
+        function onUpdateScore(scores) {
+            setPlayerScore(scores[userName]);
+            setPlaySlotNumbers(Array(numbersLength).fill());
+            setPlaySlotOperators(Array(numbersLength-1).fill());
+            setTimeLeft(null);
+            setTargetResult(null);
+            alert("The next round is beginning");
+        }
+        function onSwapTurn(nextPlayer) {
+            // alert(nextPlayer)
+            if (nextPlayer==userName) {
+                setIsYourTurn(true);
+            } else {
+                setIsYourTurn(false);
+            }
+        }
+        server.on('updateScore', onUpdateScore);
+        server.on('swapTurn', onSwapTurn);
+
+        return () => {
+            server.off('updateScore', onUpdateScore);
+            server.off('swapTurn', onSwapTurn);
+        }
+    }, [userName]);
+
+    useEffect(() => {
         function onStartGame(firstPlayer) {
             if (firstPlayer==userName) {
                 setIsYourTurn(true);
-                setTimeLeft(60);
+                // setTimeLeft(60);
                 setCurrentMultiplayerScreen("gamescreen");
             }
             setCurrentMultiplayerScreen("gamescreen");
@@ -78,7 +114,7 @@ function Multiplayer ({goToPage}) {
     }, [selectedRoom])
 
     useEffect(() => {
-        if (timeLeft > 0 && isYourTurn) {
+        if (timeLeft > 0 && isRoundInProgress) {
             setIsTimeUp(false);
             const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
             return () => clearTimeout(timer);
@@ -112,20 +148,22 @@ function Multiplayer ({goToPage}) {
     }
 
     const handleSubmission = (numbers,operators) => {
+        // alert(timeLeft);
         // alert("Multiplayer submission has not been implemented yet.\nNumbers: " + playSlotNumbers + "\nOperators: "+ playSlotOperators)
-        server.emit('checkAns', {nums: numbers, operators: operators, timeUsed: 60-timeLeft, room:currentRoom})
+        server.emit('checkAns', {nums: numbers, operators: operators, timeUsed: roundLength-timeLeft, room:currentRoom})
+        setIsRoundInProgress(false);
     }
 
-    useEffect(() => {
-        function onAnswerChecked({booleanResult}) {
-            alert("Test "+booleanResult);
-        }
-        server.on('answerChecked', onAnswerChecked);
+    // useEffect(() => {
+    //     function onAnswerChecked({booleanResult}) {
+    //         alert("Test "+booleanResult);
+    //     }
+    //     server.on('answerChecked', onAnswerChecked);
 
-        return () => {
-            server.off('answerChecked', onAnswerChecked);
-        }
-    }, [])
+    //     return () => {
+    //         server.off('answerChecked', onAnswerChecked);
+    //     }
+    // }, [])
 
     return (
         <div>
@@ -176,10 +214,15 @@ function Multiplayer ({goToPage}) {
             )}
             {currentMultiplayerScreen=="gamescreen" && (
                 <div>
-                    <h1>Target = {targetResult}</h1>
-                    <p>Time remaining = {timeLeft}</p>
-                    <button onClick={() => {
-                        setTimeLeft(60);
+                    <h1>Your score = {playerScore}</h1>
+                    {targetResult!==null && (
+                        <h1>Target = {targetResult}</h1>
+                    )}
+                    {timeLeft!=null && (
+                        <p>Time remaining = {timeLeft}</p>
+                    )}
+                    {/* <button onClick={() => {
+                        setTimeLeft(roundLength);
                     }}>Reset Timer</button>
                     <button onClick={() => {
                         setTimeLeft(5);
@@ -189,13 +232,27 @@ function Multiplayer ({goToPage}) {
                         setGetNumberButtonState(true);
                     }} disabled={getNumberButtonState}>Get numbers</button>
                     <button onClick={() => {
-                        setTimeLeft(60);
+                        setTimeLeft(roundLength);
                         setBankNumbers([]);
-                        setPlaySlotNumbers(Array(5).fill());
-                        setPlaySlotOperators(Array(4).fill());
+                        setPlaySlotNumbers(Array(numbersLength).fill());
+                        setPlaySlotOperators(Array(numbersLength).fill());
                         setGetNumberButtonState(false);
-                    }}>Reset Room</button>
+                    }}>Reset Room</button> */}
                     <p>It is {isYourTurn ? "" : "not "}your turn</p>
+                    <div style={{textAlign:'center'}}>
+                        <button onClick={() => {
+                                setTimeLeft(roundLength);
+                                server.emit('requestNumbers');
+                                setPlaySlotNumbers(Array(numbersLength).fill());
+                                setPlaySlotOperators(Array(numbersLength-1).fill());
+                                setIsRoundInProgress(!isRoundInProgress);
+                                // setAttemptsLeft(attemptsAllowed);
+                                }
+                            }
+                            disabled = {isRoundInProgress || !isYourTurn}
+                            
+                        >Start</button>
+                    </div>
                     <GameArea playSlotNumbers={playSlotNumbers}
                         playSlotOperators={playSlotOperators}
                         bankNumbers={bankNumbers}
@@ -206,6 +263,7 @@ function Multiplayer ({goToPage}) {
                         isTimeUp={isTimeUp}
                         handleSubmission={handleSubmission}
                         isYourTurn={isYourTurn}
+                        isRoundInProgress={isRoundInProgress}
                     />
                     <button onClick={()=>{
                         server.emit('exitRoom');
