@@ -14,7 +14,8 @@ function GameArea({
     setBankNumbers,
     isTimeUp,
     handleSubmission,
-    isYourTurn
+    isYourTurn,
+    isRoundInProgress
 }) {
 
     const [currentDragItem, setCurrentDragItem] = useState(null)
@@ -204,7 +205,7 @@ function GameArea({
             </div>
             <button onClick={() => {
                 handleSubmission(playSlotNumbers,formatSubmission());
-            }} disabled={isTimeUp || !isYourTurn} >Submit answer</button>
+            }} disabled={isTimeUp || !isRoundInProgress} >Submit answer</button>
             {/* <button onClick={() => {
                 alert(isTimeUp + " " + isYourTurn);
             }} >Test</button> */}
