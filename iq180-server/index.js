@@ -368,7 +368,7 @@ io.on('connection', (socket) => {
               keys[room].response.correctness = null;
               keys[room].response.timeUsed = null;
               // Second Player wins
-              stats[room][socket.nickname] += 1;
+              stats[socket.id].score += 1;
               // Update the score on the client side
               io.to(room).emit('updateScore',{
                 [socket.nickname]: stats[socket.id].score,
