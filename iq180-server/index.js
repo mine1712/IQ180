@@ -172,7 +172,7 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', ({ room, name }) => {
     // Check if room exists
     if(keys[room] === undefined){
-      keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,orderofoperations:"pemdas", attemptFirst:1, attemptSecond:1, users_ready:0 };
+      keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,orderofoperations:"pemdas", users_ready:0 };
     }
     // Check if room is full
     if(io.sockets.adapter.rooms.get(room)?.size === 2) {
@@ -276,7 +276,7 @@ io.on('connection', (socket) => {
   }
 
   //TODO 
-  socket.on('checkAns', ({nums, operators, timeUsed, room})=>{
+  socket.on('checkAns', ({nums, operators, timeUsed, room, attemptleft})=>{
     // if nums and operators are valids.
     let nums_check = nums.filter((value) => value !== null);
     let operators_check = operators.filter((value) => value !== null);
@@ -380,10 +380,9 @@ io.on('connection', (socket) => {
           }
             else{
               // Second player has answered incorrectly but still has attempts left
-              if(!booleanResult && keys[room].attemptSecond > 0){
-                keys[room].attemptSecond -= 1;
+              if(!booleanResult && attemptleft > 1){
                 // Emit the wrong answer event to the client and return the number of attempts left
-                socket.emit('wrongAnswer', keys[room].attemptSecond);
+                socket.emit('wrongAnswer', attemptleft-1);
                 return;
               }
               // Both players have answered incorrectly
@@ -400,10 +399,10 @@ io.on('connection', (socket) => {
           
         }
         else{
-          if(!booleanResult && keys[room].attemptFirst > 0){
+          if(!booleanResult && attemptleft > 1){
             keys[room].attemptFirst -= 1;
             // Emit the wrong answer event to the client and return the number of attempts left
-            socket.emit('wrongAnswer', keys[room].attemptFirst);
+            socket.emit('wrongAnswer', attemptleft-1);
             return;
           }
           // Store the response
