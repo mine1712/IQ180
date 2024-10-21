@@ -175,15 +175,9 @@ io.on('connection', (socket) => {
     io.to(room).emit('optionsSet', `Options set successfully`);
   });
 
-  //TODO 
-  socket.on('checkAns', ({nums, operators, timeUsed, room})=>{
-    // if nums and operators are valids.
-    let nums_check = nums.filter((value) => value !== null);
-    let operators_check = operators.filter((value) => value !== null);
-    let booleanResult;
-    if(nums_check.length === keys[room].targetLength && operators_check.length === (keys[room].targetLength-1) ){ 
-      try {
-        let equation = "";
+  // Checking the answer Pemdas
+  function check_pemdas(nums, operators){
+    let equation = "";
           for (let i=0;i<nums.length;i++) {
               equation+=nums[i];
               if (i!==nums.length-1) {
@@ -191,6 +185,44 @@ io.on('connection', (socket) => {
               }
           }
         let playerAnswer = eval(equation);
+        return playerAnswer;
+  }
+
+  // Checking the answer from left to right
+  function check_leftToRight(nums, operators){
+    let playerAnswer = 0;
+    for(let i = 0; i<nums.length;i++){
+      if(i !== operators.length){
+        switch(operators[i]){
+          case '+':
+            playerAnswer += nums[i];
+            break;
+          case '-':
+            playerAnswer -= nums[i];
+            break;
+          case '*':
+            playerAnswer *= nums[i];
+            break;
+          case '/':
+            playerAnswer /= nums[i];
+            break;
+          default:
+            throw new Error('Invalid operator');
+        }
+      }
+    }
+    return playerAnswer;
+  }
+
+  //TODO 
+  socket.on('checkAns', ({nums, operators, timeUsed, room, checkingLefttoright})=>{
+    // if nums and operators are valids.
+    let nums_check = nums.filter((value) => value !== null);
+    let operators_check = operators.filter((value) => value !== null);
+    let booleanResult;
+    if(nums_check.length === keys[room].targetLength && operators_check.length === (keys[room].targetLength-1) ){ 
+      try {
+        let booleanResult = checkingLefttoright? check_leftToRight(nums, operators) : check_pemdas(nums, operators);
         booleanResult = playerAnswer === keys[room].ans;
       } catch (error) {
         io.to(room).emit('error', { message: error.message });
