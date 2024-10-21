@@ -102,13 +102,13 @@ function Multiplayer ({goToPage}) {
             setCurrentMultiplayerScreen("roomwaiting");
         }
 
-        server.on('roomfull', onRoomFull);
+        server.on('roomFull', onRoomFull);
         if (selectedRoom!=null) {
             server.on('joinRoomSuccess', onJoinRoomSuccess);
         }
 
         return () => {
-            server.off('roomfull', onRoomFull);
+            server.off('roomFull', onRoomFull);
             server.off('joinRoomSuccess', onJoinRoomSuccess);
         }
     }, [selectedRoom])
