@@ -138,7 +138,7 @@ io.on('connection', (socket) => {
       // Check whether if the numbers are already generated or not.
       if (keys[room].timeCalled === 0) {
         // generate numbers according to pemdas or left to right
-        const returnVaules = keys[room].checkingLefttoright? getNumbersLeftToRight(keys[room].targetLength) : genNumbers(keys[room].targetLength);
+        const returnVaules = keys[room].orderofoperations==="pemdas" ? genNumbers(keys[room].targetLength) : getNumbersLeftToRight(keys[room].targetLength);
         numbers = returnVaules.numbers;
         targetResult = returnVaules.result;
         keys[room].timeCalled = 1;
@@ -172,7 +172,7 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', ({ room, name }) => {
     // Check if room exists
     if(keys[room] === undefined){
-      keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,checkingLefttoright:false, attemptFirst:1, attemptSecond:1, users_ready:0 };
+      keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,orderofoperations:"pemdas", attemptFirst:1, attemptSecond:1, users_ready:0 };
     }
     // Check if room is full
     if(io.sockets.adapter.rooms.get(room)?.size === 2) {
@@ -222,14 +222,13 @@ io.on('connection', (socket) => {
 
   // Sending current options to the client
   socket.on('getOption',()=>{
-    socket.emit('options',{targetLength:keys[room].targetLength, attempt:keys[room].attemptFirst, leftToRight:keys[room].checkingLefttoright});
+    socket.emit('options',{targetLength:keys[room].targetLength, attempt:keys[room].attemptFirst, orderofoperations:keys[room].orderofoperations});
   });
 
   // Set options (targetLength, attempt, check_leftToRight)
-  socket.on('setOptions', ({targetLength, attempt , check_leftToRight}) => {
+  socket.on('setOptions', ({targetLength, attempt , orderofoperations}) => {
     keys[room].targetLength = targetLength;
-    if(check_leftToRight === null || check_leftToRight === undefined){check_leftToRight = false;}
-    keys[room].checkingLefttoright = check_leftToRight;
+    keys[room].orderofoperations = orderofoperations;
     //check if attempt is an integer prevent from setting it to a string and noninteger
     if(attempt !== null){attempt = parseInt(attempt);} else{attempt = 1;}
     keys[room].attemptFirst = attempt.isInteger()? attempt:1;
