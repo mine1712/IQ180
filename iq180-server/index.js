@@ -43,6 +43,7 @@ function shuffle(array) {
   }
 }
 
+// gen nums according to pemdas
 function genNumbers(targetLength){
   let numbers = [];
   let result = 0;
@@ -81,6 +82,44 @@ function genNumbers(targetLength){
   return { numbers, result };
 }
 
+//gen nums according to lefttoright
+function getNumbersLeftToRight(targetLength){
+  let numbers = [];
+  let result = 0;
+  let count =0;
+  let ops = [];
+  for (let i = 0; i < targetLength; i++) {
+    numbers.push(Math.floor(Math.random() * 9)+1);
+  }
+  while(!Number.isInteger(result) || result<1 || result>500){
+    //reset result
+    result = 0;
+    ops = [];
+    // if the loop runs more than 200 times, reset the numbers
+    if(count++>200){
+      numbers =[];
+      for (let i = 0; i < targetLength; i++) {
+      numbers.push(Math.floor(Math.random() * 9)+1);
+      }
+      count = 0;
+    }
+    //randomly select operators
+    for(let i=0; i<targetLength-1; i++){
+      ops.push(operators[Math.floor(Math.random()*4)]);
+    }
+    let equation = "";
+    for (let i=0;i<numbers.length;i++) {
+      equation+=numbers[i];
+      if (i!==numbers.length-1) {
+        equation+=ops[i];
+      }
+    }
+    result = eval(equation);
+  }
+  console.log(`answer are: ${numbers} ${ops}`);
+  return { numbers, result };
+}
+
 let stats = {};
 // let keys = {"Room 1":{timeCalled:0,numbers:[],ans:null,turn:null,users:[],response:{correctness:null,timeUsed:null},targetLength:5},"Room 2":{timeCalled:0,numbers:[],ans:null,turn:null, users:[],response:{correctness:null,timeUsed:null},targetLength:5},"Room 3":{timeCalled:0,numbers:[],ans:null,turn:null, users:[],response:{correctness:null,timeUsed:null}},targetLength:5};
 let keys = {};
@@ -98,7 +137,8 @@ io.on('connection', (socket) => {
       let targetResult;
       // Check whether if the numbers are already generated or not.
       if (keys[room].timeCalled === 0) {
-        const returnVaules = genNumbers(keys[room].targetLength);
+        // generate numbers according to pemdas or left to right
+        const returnVaules = keys[room].checkingLefttoright? getNumbersLeftToRight(keys[room].targetLength) : genNumbers(keys[room].targetLength);
         numbers = returnVaules.numbers;
         targetResult = returnVaules.result;
         keys[room].timeCalled = 1;
@@ -111,7 +151,8 @@ io.on('connection', (socket) => {
         targetResult = keys[room].ans;
       }
       else{
-        const returnVaules = genNumbers(keys[room].targetLength);
+        // generate numbers according to pemdas or left to right
+        const returnVaules = keys[room].checkingLefttoright? getNumbersLeftToRight(keys[room].targetLength) : genNumbers(keys[room].targetLength);
         numbers = returnVaules.numbers;
         targetResult = returnVaules.result;
         keys[room].timeCalled = 1;
@@ -172,6 +213,7 @@ io.on('connection', (socket) => {
   // Setting up options (targetLength, attempt, check_leftToRight)
   socket.on('setOptions', ({targetLength, attempt , check_leftToRight}) => {
     keys[room].targetLength = targetLength;
+    if(check_leftToRight === null || check_leftToRight === undefined){check_leftToRight = false;}
     keys[room].checkingLefttoright = check_leftToRight;
     //check if attempt is an integer prevent from setting it to a string and noninteger
     if(attempt !== null){attempt = parseInt(attempt);} else{attempt = 1;}
