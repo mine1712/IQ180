@@ -426,6 +426,14 @@ io.on('connection', (socket) => {
   console.log('\x1b[32m',`Player "${socket.nickname}" submitted the "${booleanResult ? `correct within ${timeUsed}`: "wrong"}" answer`,'\x1b[0m');
   });
 
+  function isUserInRoom(socket) {
+    const room = connections[socket.id].room;
+    if (!room || !keys[room]) {
+      return false;
+    }
+    return keys[room].id.includes(socket.id);
+  }
+
   function exitRoom(){
     let room = connections[socket.id].room;
     try {
@@ -433,6 +441,11 @@ io.on('connection', (socket) => {
       const userIndex = users.indexOf(socket.nickname);
       if(userIndex !== -1){
         users.splice(userIndex, 1);
+      }
+      // Emit userDisconnected event to the room
+      if(isUserInRoom(socket)){
+        io.to(room).emit('userDisconnected', socket.nickname );
+        console.log(`User with id: ${socket.id} exited the room`);
       }
       keys[room].users = users;
       keys[room].id = keys[room].id.filter(id => id !== socket.id);
