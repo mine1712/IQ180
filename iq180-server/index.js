@@ -160,7 +160,7 @@ io.on('connection', (socket) => {
         keys[room].ans = targetResult;
       }
       // Only emit the numbers to the requested client ensuring that the numbers are not leaked to other clients!
-      socket.emit('numbers', { numbers, targetResult });
+      socket.emit('numbers', { numbers, targetResult, attempt:keys[room].attempt });
       console.dir(keys);
     }
     else{
@@ -172,7 +172,7 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', ({ room, name }) => {
     // Check if room exists
     if(keys[room] === undefined){
-      keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,orderofoperations:"pemdas", users_ready:0 };
+      keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,orderofoperations:"pemdas", users_ready:0, attempt:1 };
     }
     // Check if room is full
     if(io.sockets.adapter.rooms.get(room)?.size === 2) {
@@ -181,6 +181,7 @@ io.on('connection', (socket) => {
     }
     // Added joinRoomSuccess event to notify the client that the room has been joined successfully
     connections[socket.id].room = room;
+    connections[socket.id].nickname = name;
     socket.emit('joinRoomSuccess', `Room joined successfully`);
     //Set nickname
     socket.nickname = name;
@@ -213,16 +214,20 @@ io.on('connection', (socket) => {
   });
 
   socket.on('playerReady', () => {
+    const temp = Array.from(socket.rooms);
+    let room = temp[1];
     keys[room].users_ready += 1;
     if(keys[room].users_ready === 2 && io.sockets.adapter.rooms.get(room)?.size === 2){
       const randomPlayer = Math.floor(Math.random()*1);
-      socket.emit('startGame', keys[room].users[randomPlayer]);
+      io.to(room).emit('startGame', keys[room].users[randomPlayer]);
     }
   });
 
   // Sending current options to the client
   socket.on('getOption',()=>{
-    socket.emit('options',{targetLength:keys[room].targetLength, attempt:keys[room].attemptFirst, orderofoperations:keys[room].orderofoperations});
+    const temp = Array.from(socket.rooms);
+    let room = temp[1];
+    socket.emit('options',{targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations});
   });
 
   // Set options (targetLength, attempt, check_leftToRight)
@@ -231,8 +236,7 @@ io.on('connection', (socket) => {
     keys[room].orderofoperations = orderofoperations;
     //check if attempt is an integer prevent from setting it to a string and noninteger
     if(attempt !== null){attempt = parseInt(attempt);} else{attempt = 1;}
-    keys[room].attemptFirst = attempt.isInteger()? attempt:1;
-    keys[room].attemptSecond = keys[room].attemptFirst;
+    keys[room].attempt = attempt.isInteger()? attempt:1;
     io.to(room).emit('optionsSet', `Options set successfully`);
   });
 
@@ -484,10 +488,20 @@ io.on('connection', (socket) => {
       // delete connections[socket.id];
       // // console.dir(keys);
       // // console.dir(connections);
-      exitRoom();
-      delete connections[socket.id];
-      console.dir(keys);
-      console.dir(connections);
+      
+      if( connections[socket.id] && connections[socket.id].room && keys[connections[socket.id].room] ){
+        let room = connections[socket.id].room;
+        console.log(keys[connections[socket.id].room].users);
+        keys[room].users = keys[connections[socket.id].room].users.filter(user => user !== connections[socket.id].nickname);
+        keys[room].id = keys[room].id.filter(id => id !== socket.id);
+        // Reset the room
+        keys[room].timeCalled = 0;
+        keys[room].numbers = [];
+        keys[room].ans = null;
+        keys[room].turn = null;}
+        delete connections[socket.id];
+        console.dir(keys);
+        console.dir(connections);
     } catch (error) {
       console.log(error);
       console.log('\x1b[31m','WARNING: Ignoring user not found in room','\x1b[0m');
