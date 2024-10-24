@@ -219,7 +219,8 @@ io.on('connection', (socket) => {
     keys[room].users_ready += 1;
     if(keys[room].users_ready === 2 && io.sockets.adapter.rooms.get(room)?.size === 2){
       const randomPlayer = Math.floor(Math.random()*1);
-      io.to(room).emit('startGame', {firstPlayer:keys[room].users[randomPlayer], attempt:keys[room].attempt});
+      keys[room].turn = keys[room].users[randomPlayer];
+      io.to(room).emit('startGame', {firstPlayer:keys[room].turn, attempt:keys[room].attempt});
     }
   });
 
