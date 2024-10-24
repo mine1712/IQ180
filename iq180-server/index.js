@@ -498,7 +498,11 @@ io.on('connection', (socket) => {
         keys[room].timeCalled = 0;
         keys[room].numbers = [];
         keys[room].ans = null;
-        keys[room].turn = null;}
+        keys[room].turn = null;
+        if(keys[room].users.length === 0){
+          delete keys[room];
+        }
+      }
         delete connections[socket.id];
         console.dir(keys);
         console.dir(connections);
