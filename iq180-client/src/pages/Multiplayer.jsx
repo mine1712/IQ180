@@ -238,7 +238,7 @@ function Multiplayer ({goToPage}) {
         setNumbersLength(parseInt(numbersLengthInput));
         // setRoundLength(parseInt(roundLengthInput));
         setAttemptsAllowed(parseInt(attemptsAllowedInput));
-        server.emit("setoptions",{targetLength:parseInt(numbersLengthInput), attempt:parseInt(attemptsAllowedInput), orderofoperations:orderOfOperations});
+        server.emit("setOptions",{targetLength:parseInt(numbersLengthInput), attempt:parseInt(attemptsAllowedInput), orderofoperations:orderOfOperations});
         setCurrentMultiplayerScreen("roomready");
         // alert(checkNumbersLength(numbersLength));
     }
