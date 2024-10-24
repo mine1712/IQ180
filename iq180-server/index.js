@@ -222,7 +222,7 @@ io.on('connection', (socket) => {
       keys[room].turn = keys[room].users[randomPlayer];
       console.log(`${keys[room].turn} will start the game`);
       //io.to(room).emit('startGame', {firstPlayer:keys[room].turn, attempt:keys[room].attempt});
-      io.to(room).emit('startGame', {turn:keys[room].turn, attempt:keys[room].attempt});
+      io.to(room).emit('startGame', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations});
     }
   });
 

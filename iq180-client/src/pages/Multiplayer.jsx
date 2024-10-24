@@ -91,8 +91,11 @@ function Multiplayer ({goToPage}) {
     })
 
     useEffect(() => {
-        function onStartGame(firstPlayer) {
-            if (firstPlayer==userName) {
+        function onStartGame({turn, targetLength, attempt, orderofoperations}) {
+            setNumbersLength(targetLength);
+            setAttemptsAllowed(attempt);
+            setOrderOfOperations(orderofoperations);
+            if (turn==userName) {
                 setIsYourTurn(true);
                 // setTimeLeft(60);
                 setCurrentMultiplayerScreen("gamescreen");
@@ -106,6 +109,11 @@ function Multiplayer ({goToPage}) {
             server.off("startGame", onStartGame);
         }
     }, [userName])
+
+    useEffect(() => {
+        setPlaySlotNumbers(Array(numbersLength).fill());
+        setPlaySlotOperators(Array(numbersLength-1).fill());
+    }, [numbersLength])
 
     useEffect(() => {
         function onRoomFull(){
@@ -131,12 +139,27 @@ function Multiplayer ({goToPage}) {
     }, [selectedRoom])
 
     useEffect(() => {
+        function onUserDisconnected(name) {
+            alert("Your opponent \""+name+"\" has left the room.\nPlease return to the menu.");
+            setIsRoundInProgress(false);
+            setIsYourTurn(false);
+        }
+
+        server.on("userDisconnected",onUserDisconnected);
+
+        return () => {
+            server.off("userDisconnected",onUserDisconnected);
+        }
+    }, [])
+
+    useEffect(() => {
         if (timeLeft > 0 && isRoundInProgress) {
             setIsTimeUp(false);
             const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
             return () => clearTimeout(timer);
         } else {
             setIsTimeUp(true);
+            //TODO: Tell server that player timed-out
         }
     }, [timeLeft]);
 
@@ -168,7 +191,7 @@ function Multiplayer ({goToPage}) {
         // alert(timeLeft);
         // alert("Multiplayer submission has not been implemented yet.\nNumbers: " + playSlotNumbers + "\nOperators: "+ playSlotOperators)
         server.emit('checkAns', {nums: numbers, operators: operators, timeUsed: roundLength-timeLeft, room:currentRoom, attemptleft:attemptsLeft});
-        // setAttemptsLeft(attemptsLeft-1);
+        setAttemptsLeft(attemptsLeft-1);
         setIsRoundInProgress(false);
     }
 
