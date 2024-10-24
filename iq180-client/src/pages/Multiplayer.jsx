@@ -19,16 +19,22 @@ function Multiplayer ({goToPage}) {
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [currentRoom, setCurrentRoom] = useState(null);
     const [privateRoomCode,setPrivateRoomCode] = useState("");
+    const [isReady, setIsReady] = useState(false);
     // Game Variables
     const [timeLeft,setTimeLeft] = useState(null);
     const [isTimeUp,setIsTimeUp] = useState(false);
     const [isYourTurn, setIsYourTurn] = useState(false);
     const [isRoundInProgress,setIsRoundInProgress] = useState(false);
     const [targetResult,setTargetResult] = useState(null);
+    const [attemptsLeft, setAttemptsLeft] = useState(null);
     // const [getNumberButtonState,setGetNumberButtonState] = useState(false);
     // TODO: Configurable values
     const [roundLength, setRoundLength] = useState(60);
     const [numbersLength, setNumbersLength] = useState(5);
+    const [numbersLengthInput, setNumbersLengthInput] = useState("5");
+    const [orderOfOperations, setOrderOfOperations] = useState("pemdas");
+    const [attemptsAllowed, setAttemptsAllowed] = useState(3);
+    const [attemptsAllowedInput, setAttemptsAllowedInput] = useState("3");
 
     useEffect(() => {
         function onNumbers(data) {
@@ -72,6 +78,17 @@ function Multiplayer ({goToPage}) {
             server.off('swapTurn', onSwapTurn);
         }
     }, [userName]);
+    
+    useEffect(() => {
+        function onGetReady() {
+            setCurrentMultiplayerScreen("roomready");
+        }
+        server.on("getReady",onGetReady);
+
+        return () => {
+            server.off("getReady",onGetReady);
+        }
+    })
 
     useEffect(() => {
         function onStartGame(firstPlayer) {
@@ -150,8 +167,85 @@ function Multiplayer ({goToPage}) {
     const handleSubmission = (numbers,operators) => {
         // alert(timeLeft);
         // alert("Multiplayer submission has not been implemented yet.\nNumbers: " + playSlotNumbers + "\nOperators: "+ playSlotOperators)
-        server.emit('checkAns', {nums: numbers, operators: operators, timeUsed: roundLength-timeLeft, room:currentRoom})
+        server.emit('checkAns', {nums: numbers, operators: operators, timeUsed: roundLength-timeLeft, room:currentRoom, attemptleft:attemptsLeft});
+        // setAttemptsLeft(attemptsLeft-1);
         setIsRoundInProgress(false);
+    }
+
+    useEffect(() => {
+        function onWrongAnswer(attemptleft) {
+            setIsRoundInProgress(true);
+            setAttemptsLeft(attemptleft);
+            alert("Your answer was incorrect!");
+        }
+        server.on("wrongAnswer",onWrongAnswer);
+
+        return () => {
+            server.off("wrongAnswer",onWrongAnswer);
+        }
+    })
+
+    const handleEnterOptions = () => {
+        // alert("test1")
+        server.emit("getOption");
+        // alert("test")
+        setCurrentMultiplayerScreen("roomoptions");
+    }
+
+    useEffect(() => {
+        function onOptions({targetLength, attempt, orderofoperations}) {
+            setNumbersLengthInput(Integer.toString(targetLength));
+            setAttemptsAllowedInput(Integer.toString(attempt));
+            setOrderOfOperations(orderofoperations);
+        }
+        server.on("options",onOptions);
+
+        return () => {
+            server.off("options",onOptions);
+        }
+    }, [])
+
+    function checkNumbersLength(str) {
+        var n = Math.floor(Number(str));
+        return n !== Infinity && String(n) === str && n >= 3 && n<=9;
+    }
+    
+    // function checkRoundLength(str) {
+    //     var n = Math.floor(Number(str));
+    //     return n !== Infinity && String(n) === str && n >= 20 && n<=120;
+    // }
+
+    function checkAttemptsAllowed(str) {
+        var n = Math.floor(Number(str));
+        return n !== Infinity && String(n) === str && n >= 1 && n<=5;
+    }
+
+    const handleOptionsSubmit = () => {
+        let errors = [];
+        if (!checkNumbersLength(numbersLengthInput)) {
+            errors.push("Numbers must be an integer from 3-9");
+        }
+        // if (!checkRoundLength(roundLengthInput)) {
+        //     errors.push("Round Length must be integer from 20-120");
+        // }
+        if (!checkAttemptsAllowed(attemptsAllowedInput)) {
+            errors.push("Attempts Allowed must be integer from 1-5");
+        }
+        if (errors.length !== 0) {
+            alert(errors.join("\n"));
+            return;
+        }
+        setNumbersLength(parseInt(numbersLengthInput));
+        // setRoundLength(parseInt(roundLengthInput));
+        setAttemptsAllowed(parseInt(attemptsAllowedInput));
+        server.emit("setoptions",{targetLength:parseInt(numbersLengthInput), attempt:parseInt(attemptsAllowedInput), orderofoperations:orderOfOperations});
+        setCurrentMultiplayerScreen("roomready");
+        // alert(checkNumbersLength(numbersLength));
+    }
+
+    const handleReady = () => {
+        server.emit("playerReady");
+        setIsReady(true);
     }
 
     // useEffect(() => {
@@ -212,6 +306,74 @@ function Multiplayer ({goToPage}) {
                     </div>
                 </div>
             )}
+            {currentMultiplayerScreen=="roomready" && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h2>Choose your options or ready up!</h2>
+                        <button onClick={handleEnterOptions}>Option</button>
+                        <button onClick={handleReady}
+                            disabled={isReady}>Ready</button>
+                    </div>
+                </div>
+            )}
+            {currentMultiplayerScreen=="roomoptions" && (
+                <div className="modal">
+                    <div className="modal-content">
+                        {/* <h1>Welcome {userName}!</h1> */}
+                        <h2>Choose your options</h2>
+                        <div>
+                            <h3 style={{textAlign:'center', display:'inline'}}>Numbers: </h3>
+                            <input 
+                                type="text" 
+                                value={numbersLengthInput} 
+                                onChange={(e) => setNumbersLengthInput(e.target.value)} 
+                                placeholder="Default = 5" 
+                                className='input'
+                            />
+                        </div>
+                        <div>
+                            <h3 style={{textAlign:'center', display:'inline'}}>Order of Operation: </h3>
+                            <select value={orderOfOperations}
+                                onChange={(e) => setOrderOfOperations(e.target.value)}
+                            >
+                                <option value="pemdas">PEMDAS</option>
+                                <option value="lefttoright">Left to Right</option>
+                            </select>
+                        </div>
+                        {/* <div>
+                            <h3 style={{textAlign:'center', display:'inline'}}>Round Length: </h3>
+                            <input 
+                                type="text" 
+                                value={roundLengthInput} 
+                                onChange={(e) => setRoundLengthInput(e.target.value)} 
+                                placeholder="Default = 60" 
+                                className='input'
+                            />
+                        </div> */}
+                        <div>
+                            <h3 style={{textAlign:'center', display:'inline'}}>Attempts Allowed: </h3>
+                            <input 
+                                type="text" 
+                                value={attemptsAllowedInput} 
+                                onChange={(e) => setAttemptsAllowedInput(e.target.value)} 
+                                placeholder="Default = 3" 
+                                className='input'
+                            />
+                        </div>
+                        {/* <div>
+                            <h3 style={{textAlign:'center', display:'inline'}}>CSS Test: </h3>
+                            <input 
+                                type="text" 
+                                value={numbersLengthInput} 
+                                onChange={(e) => setNumbersLengthInput(e.target.value)} 
+                                placeholder="Default = 5" 
+                                className='input'
+                            />
+                        </div> */}
+                        <button onClick={handleOptionsSubmit}>Submit</button>
+                    </div>
+                </div>
+            )}
             {currentMultiplayerScreen=="gamescreen" && (
                 <div>
                     <h1>Your score = {playerScore}</h1>
@@ -220,6 +382,9 @@ function Multiplayer ({goToPage}) {
                     )}
                     {timeLeft!=null && (
                         <p>Time remaining = {timeLeft}</p>
+                    )}
+                    {attemptsLeft!== null && (
+                        <p>Attempts left = {attemptsLeft}</p>
                     )}
                     {/* <button onClick={() => {
                         setTimeLeft(roundLength);
@@ -246,7 +411,7 @@ function Multiplayer ({goToPage}) {
                                 setPlaySlotNumbers(Array(numbersLength).fill());
                                 setPlaySlotOperators(Array(numbersLength-1).fill());
                                 setIsRoundInProgress(!isRoundInProgress);
-                                // setAttemptsLeft(attemptsAllowed);
+                                setAttemptsLeft(attemptsAllowed);
                                 }
                             }
                             disabled = {isRoundInProgress || !isYourTurn}
