@@ -554,6 +554,44 @@ io.on('connection', (socket) => {
 
 });
 
+app.get('/connections', (req, res) => {
+  res.json(connections);
+});
+
+app.get('/keys', (req, res) => {
+  res.json(keys);
+});
+
+app.get('/stats', (req, res) => {
+  res.json(stats);
+});
+
+app.get('/reset', (req, res) => {
+  keys = {};
+  connections = {};
+  stats = {};
+  io.emit('serverReset');
+  // disconnect all the clients
+  io.sockets.sockets.forEach((socket) => {
+    socket.disconnect(true);
+  });
+  res.send('Resetting server. Kicking everyone out!!!');
+});
+
+app.get('/resetRoom', (req, res) => {
+
+  // this isn't working for some reason
+  let room = req.query.room;
+  console.log(room);
+  console.log(io.sockets.adapter.rooms[room]);
+  if(keys[room] === undefined){
+    res.send(`${room} is not a valid room`);
+    return;
+  }
+  keys[room] = keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,orderofoperations:"pemdas", users_ready:0, attempt:1 }
+  io.to(room).emit('serverReset');
+  res.send(`Room ${room} has been reset`);
+});
 
 // Setting up the port
 const PORT = process.env.PORT || 5172;
