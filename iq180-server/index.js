@@ -286,7 +286,7 @@ io.on('connection', (socket) => {
   }
 
   //TODO 
-  socket.on('checkAns', ({nums, operators, timeUsed, room, attemptleft})=>{
+  socket.on('checkAns', ({nums, operators, timeUsed, room, attemptleft, timeOut})=>{
     // if nums and operators are valids.
     let nums_check = nums.filter((value) => value !== null);
     let operators_check = operators.filter((value) => value !== null);
@@ -298,6 +298,10 @@ io.on('connection', (socket) => {
       } catch (error) {
         io.to(room).emit('error', { message: error.message });
       }}
+      // handleTimeout!
+      else if(timeOut === true){
+        booleanResult = false;
+      }
       else{
         // Invalid numbers or invalid operators
         booleanResult = false;
