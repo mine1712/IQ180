@@ -291,7 +291,7 @@ io.on('connection', (socket) => {
     let nums_check = nums.filter((value) => value !== null);
     let operators_check = operators.filter((value) => value !== null);
     let booleanResult;
-    if(nums_check.length === keys[room].targetLength && operators_check.length === (keys[room].targetLength-1) ){ 
+    if(nums_check.length === keys[room].targetLength && operators_check.length === (keys[room].targetLength-1) && isTimeUp !== true){ 
       try {
         playerAnswer = keys[room].checkingLefttoright? check_leftToRight(nums, operators) : check_pemdas(nums, operators);
         booleanResult = playerAnswer === keys[room].ans;
