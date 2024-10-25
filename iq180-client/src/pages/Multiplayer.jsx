@@ -140,9 +140,11 @@ function Multiplayer ({goToPage}) {
 
     useEffect(() => {
         function onUserDisconnected(name) {
-            alert("Your opponent \""+name+"\" has left the room.\nPlease return to the menu.");
-            setIsRoundInProgress(false);
-            setIsYourTurn(false);
+            if (currentRoom=="gamescreen") {
+                alert("Your opponent \""+name+"\" has left the room.\nPlease return to the menu.");
+                setIsRoundInProgress(false);
+                setIsYourTurn(false);
+            }
         }
 
         server.on("userDisconnected",onUserDisconnected);
@@ -150,7 +152,7 @@ function Multiplayer ({goToPage}) {
         return () => {
             server.off("userDisconnected",onUserDisconnected);
         }
-    }, [])
+    }, [currentRoom])
 
     useEffect(() => {
         if (timeLeft > 0 && isRoundInProgress) {
@@ -310,6 +312,11 @@ function Multiplayer ({goToPage}) {
                         {selectedRoom!=null && (
                             <p>Waiting for server</p>
                         )}
+                        <div>
+                            <button onClick={()=>{
+                                goToPage("Menu");
+                                }}>Return to Menu</button>
+                        </div>
                 </div>
             </div>
             )}
@@ -342,6 +349,12 @@ function Multiplayer ({goToPage}) {
                         <button onClick={handleEnterOptions}>Option</button>
                         <button onClick={handleReady}
                             disabled={isReady}>Ready</button>
+                        <div>
+                            <button onClick={()=>{
+                                server.emit('exitRoom');
+                                goToPage("Menu");
+                                }}>Return to Menu</button>
+                        </div>
                     </div>
                 </div>
             )}
@@ -399,7 +412,9 @@ function Multiplayer ({goToPage}) {
                                 className='input'
                             />
                         </div> */}
-                        <button onClick={handleOptionsSubmit}>Submit</button>
+                        <div>
+                            <button onClick={handleOptionsSubmit}>Submit</button>
+                        </div>
                     </div>
                 </div>
             )}
