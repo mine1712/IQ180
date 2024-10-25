@@ -286,7 +286,7 @@ io.on('connection', (socket) => {
   }
 
   //TODO 
-  socket.on('checkAns', ({nums, operators, timeUsed, room, attemptleft, timeOut})=>{
+  socket.on('checkAns', ({nums, operators, timeUsed, room, attemptleft, isTimeUp})=>{
     // if nums and operators are valids.
     let nums_check = nums.filter((value) => value !== null);
     let operators_check = operators.filter((value) => value !== null);
@@ -299,7 +299,7 @@ io.on('connection', (socket) => {
         io.to(room).emit('error', { message: error.message });
       }}
       // handleTimeout!
-      else if(timeOut === true){
+      else if(isTimeUp === true){
         booleanResult = false;
       }
       else{
