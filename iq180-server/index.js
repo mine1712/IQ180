@@ -512,6 +512,7 @@ io.on('connection', (socket) => {
         if(keys[room].users.length === 0){
           delete keys[room];
         }
+        io.to(room).emit('userDisconnected', connections[socket.id].nickname );
       }
         delete connections[socket.id];
         console.dir(keys);
