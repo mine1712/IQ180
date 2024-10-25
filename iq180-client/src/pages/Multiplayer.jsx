@@ -157,11 +157,17 @@ function Multiplayer ({goToPage}) {
             setIsTimeUp(false);
             const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
             return () => clearTimeout(timer);
-        } else {
+        } else if (timeLeft===0 && isRoundInProgress){
             setIsTimeUp(true);
-            //TODO: Tell server that player timed-out
         }
-    }, [timeLeft]);
+    }, [timeLeft,isRoundInProgress]);
+
+    useEffect(() => {
+        if (isTimeUp && isRoundInProgress) {
+            setIsRoundInProgress(false);
+            server.emit('checkAns', {nums: Array(numbersLength).fill(), operators: Array(numbersLength-1).fill(), timeUsed: roundLength-timeLeft, room:currentRoom, attemptleft:0,isTimeUp: true});
+        }
+    },[isTimeUp,isRoundInProgress]);
 
     const handleRoomSelection = (room) => {
         setSelectedRoom(room);
@@ -190,7 +196,7 @@ function Multiplayer ({goToPage}) {
     const handleSubmission = (numbers,operators) => {
         // alert(timeLeft);
         // alert("Multiplayer submission has not been implemented yet.\nNumbers: " + playSlotNumbers + "\nOperators: "+ playSlotOperators)
-        server.emit('checkAns', {nums: numbers, operators: operators, timeUsed: roundLength-timeLeft, room:currentRoom, attemptleft:attemptsLeft});
+        server.emit('checkAns', {nums: numbers, operators: operators, timeUsed: roundLength-timeLeft, room:currentRoom, attemptleft:attemptsLeft, isTimeUp: isTimeUp});
         setAttemptsLeft(attemptsLeft-1);
         setIsRoundInProgress(false);
     }
