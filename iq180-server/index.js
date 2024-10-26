@@ -13,13 +13,14 @@ const cors = require('cors');
 app.use(cors());
 const { Server } = require('socket.io');
 const { exit } = require('process');
+const path = require('path');
 
 const server = http.createServer(app);
 
 const io = new Server(server, {
   // cors set up for react
   cors: {
-    origin: ['https://iq-180.vercel.app', 'http://localhost:5173', 'http://localhost:5174'],
+    origin: ['https://iq-180.vercel.app', 'http://localhost:5173'],
     methods: ['GET', 'POST'],
   },
 });
@@ -518,42 +519,46 @@ io.on('connection', (socket) => {
         delete connections[socket.id];
         console.dir(keys);
         console.dir(connections);
+        delete stats[socket.id];
     } catch (error) {
       console.log(error);
       console.log('\x1b[31m','WARNING: Ignoring user not found in room','\x1b[0m');
     }
   });
 
-  // These are the functions that will be called from the backend
+  // // These are the functions that will be called from the backend
   
-  // Getting stats //TODO
-  socket.on('getStats', () => {
-    socket.emit('stats', stats);
-  });
+  // // Getting stats //TODO
+  // socket.on('getStats', () => {
+  //   socket.emit('stats', stats);
+  // });
 
-  // Resetting stats //TODO
-  socket.on('resetStats', () => {
-    stats = {};
-    socket.emit('stats', stats);
-  });
+  // // Resetting stats //TODO
+  // socket.on('resetStats', () => {
+  //   stats = {};
+  //   socket.emit('stats', stats);
+  // });
 
-  // Reset Room //TODO
-  socket.on('resetRoom', (room) => {
-    keys[room] = {timeCalled:0,numbers:[],ans:null,turn:null, users:keys[room].users, id:keys[room].id,response:{correctness:null,timeUsed:null},targetLength:5};
-    io.to(room).emit('roomReset', `Room ${room} has been reset`);
-  });
+  // // Reset Room //TODO
+  // socket.on('resetRoom', (room) => {
+  //   keys[room] = {timeCalled:0,numbers:[],ans:null,turn:null, users:keys[room].users, id:keys[room].id,response:{correctness:null,timeUsed:null},targetLength:5};
+  //   io.to(room).emit('roomReset', `Room ${room} has been reset`);
+  // });
 
-  // Getting keys //TODO
-  socket.on('getKeys', () => {
-    socket.emit('keys', keys);
-  });
+  // // Getting keys //TODO
+  // socket.on('getKeys', () => {
+  //   socket.emit('keys', keys);
+  // });
 
-  socket.on('setNumbersLength', (length, room) => {
-    keys[room].targetLength = length;
-    socket.emit('setLengthSucess', `The target length has been set to ${length}`);
-  });
+  // socket.on('setNumbersLength', (length, room) => {
+  //   keys[room].targetLength = length;
+  //   socket.emit('setLengthSucess', `The target length has been set to ${length}`);
+  // });
 
 });
+
+app.use(express.json());
+app.use(express.static(path.join(__dirname, '../iq180-admin/dist')));
 
 app.get('/connections', (req, res) => {
   res.json(connections);
@@ -579,16 +584,34 @@ app.get('/reset', (req, res) => {
   res.send('Resetting server. Kicking everyone out!!!');
 });
 
-app.get('/resetRoom', (req, res) => {
-  // this isn't working for some reason
-  let room = req.query.room;
+app.post('/resetRoom', (req, res) => {
+  const room = req.body.room;
   console.log(room);
-  console.log(io.sockets.adapter.rooms[room]);
-  if(keys[room] === undefined){
-    res.send(`${room} is not a valid room`);
+  if (!room) {
+    res.status(400).send('Room parameter is missing');
     return;
   }
-  keys[room] = keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,orderofoperations:"pemdas", users_ready:0, attempt:1 }
+  if (keys[room] === undefined) {
+    res.status(404).send(`${room} is not a valid room`);
+    return;
+  }
+  if(keys[room].users.length === 1){
+    io.to(room).emit('serverReset');
+    delete stats[keys[room].id[0]];
+    const socket = io.sockets.sockets.get(keys[room].id[0]);
+    socket.leave(room);
+  }
+  else if(keys[room].users.length === 2){
+    io.to(room).emit('serverReset');
+    delete stats[keys[room].id[0]];
+    delete stats[keys[room].id[1]];
+    const socket1 = io.sockets.sockets.get(keys[room].id[0]);
+    const socket2 = io.sockets.sockets.get(keys[room].id[1]);
+    socket1.leave(room);
+    socket2.leave(room);
+  }
+  delete keys[room];
+  console.log(keys);
   io.to(room).emit('serverReset');
   res.send(`Room ${room} has been reset`);
 });
