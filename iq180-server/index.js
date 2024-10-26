@@ -590,7 +590,7 @@ io.on('connection', (socket) => {
 });
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, './dist')));
+app.use(express.static(path.join(__dirname, '../iq180-admin/dist')));
 
 app.get('/connections', (req, res) => {
   res.json(connections);
