@@ -172,7 +172,7 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', ({ room, name }) => {
     // Check if room exists
     if(keys[room] === undefined){
-      keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,orderofoperations:"pemdas", users_ready:0, attempt:1 };
+      keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,orderofoperations:"pemdas", users_ready:0, attempt:3 };
     }
     // Check if room is full
     if(io.sockets.adapter.rooms.get(room)?.size === 2) {
@@ -220,7 +220,9 @@ io.on('connection', (socket) => {
     if(keys[room].users_ready === 2 && io.sockets.adapter.rooms.get(room)?.size === 2){
       const randomPlayer = Math.floor(Math.random()*1);
       keys[room].turn = keys[room].users[randomPlayer];
-      io.to(room).emit('startGame', {firstPlayer:keys[room].turn, attempt:keys[room].attempt});
+      console.log(`${keys[room].turn} will start the game`);
+      //io.to(room).emit('startGame', {firstPlayer:keys[room].turn, attempt:keys[room].attempt});
+      io.to(room).emit('startGame', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations});
     }
   });
 
@@ -233,11 +235,14 @@ io.on('connection', (socket) => {
 
   // Set options (targetLength, attempt, check_leftToRight)
   socket.on('setOptions', ({targetLength, attempt , orderofoperations}) => {
+    const temp = Array.from(socket.rooms);
+    let room = temp[1];
     keys[room].targetLength = targetLength;
     keys[room].orderofoperations = orderofoperations;
     //check if attempt is an integer prevent from setting it to a string and noninteger
+    console.log(attempt);
     if(attempt !== null){attempt = parseInt(attempt);} else{attempt = 1;}
-    keys[room].attempt = attempt.isInteger()? attempt:1;
+    keys[room].attempt = attempt;
     io.to(room).emit('optionsSet', `Options set successfully`);
   });
 
@@ -281,18 +286,22 @@ io.on('connection', (socket) => {
   }
 
   //TODO 
-  socket.on('checkAns', ({nums, operators, timeUsed, room, attemptleft})=>{
+  socket.on('checkAns', ({nums, operators, timeUsed, room, attemptleft, isTimeUp})=>{
     // if nums and operators are valids.
     let nums_check = nums.filter((value) => value !== null);
     let operators_check = operators.filter((value) => value !== null);
     let booleanResult;
-    if(nums_check.length === keys[room].targetLength && operators_check.length === (keys[room].targetLength-1) ){ 
+    if(nums_check.length === keys[room].targetLength && operators_check.length === (keys[room].targetLength-1) && isTimeUp !== true){ 
       try {
         playerAnswer = keys[room].checkingLefttoright? check_leftToRight(nums, operators) : check_pemdas(nums, operators);
         booleanResult = playerAnswer === keys[room].ans;
       } catch (error) {
         io.to(room).emit('error', { message: error.message });
       }}
+      // handleTimeout!
+      else if(isTimeUp === true){
+        booleanResult = false;
+      }
       else{
         // Invalid numbers or invalid operators
         booleanResult = false;
@@ -503,6 +512,7 @@ io.on('connection', (socket) => {
         if(keys[room].users.length === 0){
           delete keys[room];
         }
+        io.to(room).emit('userDisconnected', connections[socket.id].nickname );
       }
         delete connections[socket.id];
         console.dir(keys);
