@@ -227,68 +227,92 @@ const Singleplayer = ({ goToPage }) => {
         </div>
       )}
       {currentSingleplayerScreen == "gamescreen" && (
-        <div>
-          {/* <h1 style={{textAlign:'center'}}>Welcome {userName}</h1> */}
-          <h1>Your score = {playerScore}</h1>
-          {targetResult !== null && <h1>Target = {targetResult}</h1>}
-          {timeLeft !== null && <p>Time remaining = {timeLeft}</p>}
-          {/* <p>Test = {isRoundInProgress?"yes":"no"}</p> */}
-          {/* <button onClick={() => {
+        <div className="gamescreen-container">
+          <div className="player-container">
+            <span>Player1: {playerScore}</span>
+          </div>
+          <div className="time-container">
+            <span>Time: {typeof timeLeft === "number" ? timeLeft : "-"}</span>
+          </div>
+          <div className="content-container">
+            {/* <h1 style={{textAlign:'center'}}>Welcome {userName}</h1> */}
+            <div className="target-container">
+              <span>
+                Target: {typeof targetResult === "number" ? targetResult : "-"}
+              </span>
+            </div>
+            {/* <p>Test = {isRoundInProgress?"yes":"no"}</p> */}
+            {/* <button onClick={() => {
                         setTimeLeft(60);
                     }}>Reset Timer</button>
                     <button onClick={() => {
                         setTimeLeft(5);
                     }}>Test button disable</button> */}
-          {/* <button onClick={() => {
+            {/* <button onClick={() => {
                         server.emit('requestNumbers');
                         setGetNumberButtonState(true);
                     }} disabled={getNumberButtonState}>Get numbers</button> */}
-          {/* <button onClick={() => {
+            {/* <button onClick={() => {
                         setTimeLeft(60);
                         setBankNumbers([]);
                         setPlaySlotNumbers(Array(5).fill());
                         setPlaySlotOperators(Array(4).fill());
                         // setGetNumberButtonState(false);
                     }}>Reset Room</button> */}
-          {/* <p>It is {isYourTurn ? "" : "not "}your turn</p> */}
-          <div style={{ textAlign: "center" }}>
-            <button
-              onClick={() => {
-                setIsYourTurn(true);
-                setTimeLeft(60);
-                const generated = generateNumbers(numbersLength);
-                setBankNumbers(generated[0]);
-                setTargetResult(generated[1]);
-                setPlaySlotNumbers(Array(numbersLength).fill());
-                setPlaySlotOperators(Array(numbersLength - 1).fill());
-                setIsRoundInProgress(!isRoundInProgress);
+            {/* <p>It is {isYourTurn ? "" : "not "}your turn</p> */}
+            <div style={{ textAlign: "center" }}>
+              <button
+                className="singleplayer-start-button"
+                onClick={() => {
+                  setIsYourTurn(true);
+                  setTimeLeft(60);
+                  const generated = generateNumbers(numbersLength);
+                  setBankNumbers(generated[0]);
+                  setTargetResult(generated[1]);
+                  setPlaySlotNumbers(Array(numbersLength).fill());
+                  setPlaySlotOperators(Array(numbersLength - 1).fill());
+                  setIsRoundInProgress(!isRoundInProgress);
+                }}
+                disabled={isRoundInProgress}
+              >
+                Start
+              </button>
+            </div>
+            <GameArea
+              playSlotNumbers={playSlotNumbers}
+              playSlotOperators={playSlotOperators}
+              bankNumbers={bankNumbers}
+              bankOperators={bankOperators}
+              setPlaySlotNumbers={setPlaySlotNumbers}
+              setPlaySlotOperators={setPlaySlotOperators}
+              setBankNumbers={setBankNumbers}
+              isTimeUp={isTimeUp}
+              handleSubmission={handleSubmission}
+              isYourTurn={isYourTurn}
+            />
+            {playerLost && <h1 style={{ color: "white" }}>!Time is Over!</h1>}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 30,
               }}
-              disabled={isRoundInProgress}
             >
-              Start
-            </button>
-          </div>
-
-          <GameArea
-            playSlotNumbers={playSlotNumbers}
-            playSlotOperators={playSlotOperators}
-            bankNumbers={bankNumbers}
-            bankOperators={bankOperators}
-            setPlaySlotNumbers={setPlaySlotNumbers}
-            setPlaySlotOperators={setPlaySlotOperators}
-            setBankNumbers={setBankNumbers}
-            isTimeUp={isTimeUp}
-            handleSubmission={handleSubmission}
-            isYourTurn={isYourTurn}
-          />
-          {playerLost && (
-            <h1 style={{ textAlign: "center" }}>You lost! Try again?</h1>
-          )}
-          <div style={{ textAlign: "center" }}>
-            {playerLost && (
-              <button onClick={initializeSingleplayer}>Restart Game</button>
-            )}
-            <button onClick={() => goToPage("Menu")}>Return to Menu</button>
+              {playerLost && (
+                <button
+                  className="singleplayer-start-button"
+                  onClick={initializeSingleplayer}
+                >
+                  Restart Game
+                </button>
+              )}
+              <button
+                className="singleplayer-start-button"
+                onClick={() => goToPage("Menu")}
+              >
+                Return to Menu
+              </button>
+            </div>
           </div>
         </div>
       )}

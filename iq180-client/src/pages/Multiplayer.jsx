@@ -109,144 +109,158 @@ function Multiplayer({ goToPage }) {
       alert("Test " + booleanResult);
     });
   }, []);
-
+  console.log(currentMultiplayerScreen);
   return (
-    <div>
-      {currentMultiplayerScreen == "selectroom" && (
-        <div className="modal">
-          <div className="modal-content">
-            <h1>Welcome {userName}!</h1>
-            <h2>Select a Room</h2>
-            <button onClick={() => handleRoomSelection("Room 1")}>
-              Room 1
-            </button>
-            <button onClick={() => handleRoomSelection("Room 2")}>
-              Room 2
-            </button>
-            <button onClick={() => handleRoomSelection("Room 3")}>
-              Room 3
-            </button>
-            <h2>or enter a Private Room Code</h2>
-            <input
-              type="text"
-              value={privateRoomCode}
-              onChange={(e) => setPrivateRoomCode(e.target.value)}
-              placeholder="Your Code"
-              className="input"
-            />
-            <button onClick={() => handleRoomSelection(privateRoomCode)}>
-              Submit
-            </button>
-            {selectedRoom != null && <p>Waiting for server</p>}
-          </div>
-        </div>
-      )}
-      {currentMultiplayerScreen == "nameentry" && (
-        <>
-          <div className="area">
-            <div className="container">
-              <ul class="circles">
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-              </ul>
-              <div className="form-container">
-                <div className="set-name-text">Enter Your Name</div>
+    <div className="area">
+      <div className="container">
+        {/* <img className="image-background" src={op}></img> */}
+        <ul class="circles">
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+        {currentMultiplayerScreen == "selectroom" && (
+          <div className="form-container">
+            <div className="set-welcome-text">Welcome {userName}!</div>
+            <div className="multiplayer-welcome-container">
+              <div className="selectroom-container">
+                <div className="set-welcome-text">Select a Room </div>
+                <div className="input-container">
+                  <button
+                    className="set-name-button"
+                    onClick={() => handleRoomSelection("Room 1")}
+                  >
+                    Room 1
+                  </button>
+                  <button
+                    className="set-name-button"
+                    onClick={() => handleRoomSelection("Room 2")}
+                  >
+                    Room 2
+                  </button>
+                  <button
+                    className="set-name-button"
+                    onClick={() => handleRoomSelection("Room 3")}
+                  >
+                    Room 3
+                  </button>
+                </div>
+              </div>
+              <div className="enter-private-container">
+                <div className="set-welcome-text">Enter private room code </div>
                 <div className="input-container">
                   <input
                     type="text"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
-                    placeholder="Your name"
-                    className="set-name-input"
+                    value={privateRoomCode}
+                    onChange={(e) => setPrivateRoomCode(e.target.value)}
+                    placeholder="Your Code"
+                    className="input"
                   />
                   <button
                     className="set-name-button"
-                    onClick={handleNameSubmit}
+                    onClick={() => handleRoomSelection(privateRoomCode)}
                   >
                     Enter
                   </button>
+                  {selectedRoom != null && <p>Waiting for server</p>}
                 </div>
               </div>
             </div>
           </div>
-        </>
-      )}
-      {currentMultiplayerScreen == "roomwaiting" && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Waiting for opponent to join...</h2>
+        )}
+        {currentMultiplayerScreen == "nameentry" && (
+          <div className="form-container">
+            <div className="set-name-text">Enter Your Name</div>
+            <div className="input-container">
+              <input
+                type="text"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                placeholder="Your name"
+                className="set-name-input"
+              />
+              <button className="set-name-button" onClick={handleNameSubmit}>
+                Enter
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-      {currentMultiplayerScreen == "gamescreen" && (
-        <div>
-          <h1>Target = {targetResult}</h1>
-          <p>Time remaining = {timeLeft}</p>
-          <button
-            onClick={() => {
-              setTimeLeft(60);
-            }}
-          >
-            Reset Timer
-          </button>
-          <button
-            onClick={() => {
-              setTimeLeft(5);
-            }}
-          >
-            Test button disable
-          </button>
-          <button
-            onClick={() => {
-              server.emit("requestNumbers");
-              setGetNumberButtonState(true);
-            }}
-            disabled={getNumberButtonState}
-          >
-            Get numbers
-          </button>
-          <button
-            onClick={() => {
-              setTimeLeft(60);
-              setBankNumbers([]);
-              setPlaySlotNumbers(Array(5).fill());
-              setPlaySlotOperators(Array(4).fill());
-              setGetNumberButtonState(false);
-            }}
-          >
-            Reset Room
-          </button>
-          <p>It is {isYourTurn ? "" : "not "}your turn</p>
-          <GameArea
-            playSlotNumbers={playSlotNumbers}
-            playSlotOperators={playSlotOperators}
-            bankNumbers={bankNumbers}
-            bankOperators={bankOperators}
-            setPlaySlotNumbers={setPlaySlotNumbers}
-            setPlaySlotOperators={setPlaySlotOperators}
-            setBankNumbers={setBankNumbers}
-            isTimeUp={isTimeUp}
-            handleSubmission={handleSubmission}
-            isYourTurn={isYourTurn}
-          />
-          <button
-            onClick={() => {
-              server.emit("exitRoom");
-              goToPage("Menu");
-            }}
-          >
-            Return to Menu
-          </button>
-        </div>
-      )}
+        )}
+        {currentMultiplayerScreen == "roomwaiting" && (
+          <div className="modal">
+            <div className="modal-content">
+              <h2>Waiting for opponent to join...</h2>
+            </div>
+          </div>
+        )}
+        {currentMultiplayerScreen == "gamescreen" && (
+          <div>
+            <h1>Target = {targetResult}</h1>
+            <p>Time remaining = {timeLeft}</p>
+            <button
+              onClick={() => {
+                setTimeLeft(60);
+              }}
+            >
+              Reset Timer
+            </button>
+            <button
+              onClick={() => {
+                setTimeLeft(5);
+              }}
+            >
+              Test button disable
+            </button>
+            <button
+              onClick={() => {
+                server.emit("requestNumbers");
+                setGetNumberButtonState(true);
+              }}
+              disabled={getNumberButtonState}
+            >
+              Get numbers
+            </button>
+            <button
+              onClick={() => {
+                setTimeLeft(60);
+                setBankNumbers([]);
+                setPlaySlotNumbers(Array(5).fill());
+                setPlaySlotOperators(Array(4).fill());
+                setGetNumberButtonState(false);
+              }}
+            >
+              Reset Room
+            </button>
+            <p>It is {isYourTurn ? "" : "not "}your turn</p>
+            <GameArea
+              playSlotNumbers={playSlotNumbers}
+              playSlotOperators={playSlotOperators}
+              bankNumbers={bankNumbers}
+              bankOperators={bankOperators}
+              setPlaySlotNumbers={setPlaySlotNumbers}
+              setPlaySlotOperators={setPlaySlotOperators}
+              setBankNumbers={setBankNumbers}
+              isTimeUp={isTimeUp}
+              handleSubmission={handleSubmission}
+              isYourTurn={isYourTurn}
+            />
+            <button
+              onClick={() => {
+                server.emit("exitRoom");
+                goToPage("Menu");
+              }}
+            >
+              Return to Menu
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

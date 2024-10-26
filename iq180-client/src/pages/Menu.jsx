@@ -23,22 +23,25 @@ function Menu({ goToPage }) {
 
   return (
     <div className="menu-container">
+      <img src="wave.svg" alt=""></img>
       <div className="game-title">IQ180</div>
-      <button
-        className="multiplayer-button"
-        onClick={() => goToPage("Multiplayer")}
-      >
-        Multiplayer
-      </button>
-      <button
-        className="singleplayer-button"
-        onClick={() => goToPage("Singleplayer")}
-      >
-        Singleplayer
-      </button>
-      <button className="howtoplay-button" onClick={handleHowtoplayClick}>
-        How to play
-      </button>
+      <div className="all-menu-containter">
+        <button
+          className="multiplayer-button"
+          onClick={() => goToPage("Multiplayer")}
+        >
+          Multiplayer
+        </button>
+        <button
+          className="singleplayer-button"
+          onClick={() => goToPage("Singleplayer")}
+        >
+          Singleplayer
+        </button>
+        <button className="howtoplay-button" onClick={handleHowtoplayClick}>
+          How to play
+        </button>
+      </div>
       {showHowtoplay && <Howtoplay onClose={handleCloseHowtoplay} />}
       <RandomLetter />
     </div>
