@@ -447,7 +447,7 @@ function Multiplayer ({goToPage}) {
                         setPlaySlotOperators(Array(numbersLength).fill());
                         setGetNumberButtonState(false);
                     }}>Reset Room</button> */}
-                    <p>It is {isYourTurn ? "" : "not "}your turn</p>
+                    {/* <p>It is {isYourTurn ? "" : "not "}your turn</p> */}
                     <div style={{textAlign:'center'}}>
                         <button onClick={() => {
                                 setTimeLeft(roundLength);
@@ -462,7 +462,8 @@ function Multiplayer ({goToPage}) {
                             
                         >Start</button>
                     </div>
-                    <GameArea playSlotNumbers={playSlotNumbers}
+                    {isYourTurn && (
+                        <GameArea playSlotNumbers={playSlotNumbers}
                         playSlotOperators={playSlotOperators}
                         bankNumbers={bankNumbers}
                         bankOperators={bankOperators}
@@ -473,7 +474,11 @@ function Multiplayer ({goToPage}) {
                         handleSubmission={handleSubmission}
                         isYourTurn={isYourTurn}
                         isRoundInProgress={isRoundInProgress}
-                    />
+                        />
+                    )}
+                    {!isYourTurn && (
+                        <h1 style={{textAlign:'center'}}>Please wait until it's your turn!</h1>
+                    )}
                     <button onClick={()=>{
                         server.emit('exitRoom');
                         goToPage("Menu");
