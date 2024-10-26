@@ -19,7 +19,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   // cors set up for react
   cors: {
-    origin: ['https://iq-180.vercel.app', 'http://localhost:5173'],
+    origin: ['https://iq-180.vercel.app', 'http://localhost:5173', 'http://localhost:5174'],
     methods: ['GET', 'POST'],
   },
 });
@@ -126,7 +126,7 @@ let keys = {};
 let connections = {};
 
 io.on('connection', (socket) => {
-  connections[socket.id] = {room:null};
+  connections[socket.id] = {room:null,nickname:null};
   console.log(`A user with id: ${socket.id} connected`);
 
   socket.on('requestNumbers', () => {
@@ -476,6 +476,7 @@ io.on('connection', (socket) => {
     io.to(room).emit('message', `${socket.nickname} has left the room`);
     console.log(`${socket.nickname} has left the room`);
     connections[socket.id].room = null;
+    connections[socket.id].nickname = null;
     if (keys[room].users.length === 0) {
       delete keys[room];
     }
@@ -579,7 +580,6 @@ app.get('/reset', (req, res) => {
 });
 
 app.get('/resetRoom', (req, res) => {
-
   // this isn't working for some reason
   let room = req.query.room;
   console.log(room);
