@@ -182,7 +182,6 @@ io.on('connection', (socket) => {
     // Added joinRoomSuccess event to notify the client that the room has been joined successfully
     connections[socket.id].room = room;
     connections[socket.id].nickname = name;
-    connections[socket.id].nickname = name;
     socket.emit('joinRoomSuccess', `Room joined successfully`);
     //Set nickname
     socket.nickname = name;
@@ -217,8 +216,6 @@ io.on('connection', (socket) => {
   socket.on('playerReady', () => {
     const temp = Array.from(socket.rooms);
     let room = temp[1];
-    const temp = Array.from(socket.rooms);
-    let room = temp[1];
     keys[room].users_ready += 1;
     if(keys[room].users_ready === 2 && io.sockets.adapter.rooms.get(room)?.size === 2){
       const randomPlayer = Math.floor(Math.random()*1);
@@ -231,9 +228,6 @@ io.on('connection', (socket) => {
 
   // Sending current options to the client
   socket.on('getOption',()=>{
-    const temp = Array.from(socket.rooms);
-    let room = temp[1];
-    socket.emit('options',{targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations});
     const temp = Array.from(socket.rooms);
     let room = temp[1];
     socket.emit('options',{targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations});
