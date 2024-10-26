@@ -140,7 +140,7 @@ function App() {
                         if (response.ok) {
                           alert(key + " reset successfully");
                         } else {
-                          alert("Failed to reset " + key);
+                          alert(await response.text());
                         }
                       }}
                     >
