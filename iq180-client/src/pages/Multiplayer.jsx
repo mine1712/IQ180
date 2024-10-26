@@ -310,6 +310,21 @@ function Multiplayer ({goToPage}) {
     //     }
     // }, [])
 
+
+    useEffect(() => {
+        const handleServerReset = () => {
+            alert("Server has been reset");
+            goToPage("Menu");
+            setServerReset(false);
+        };
+
+        server.on('serverReset', handleServerReset);
+
+        return () => {
+            server.off('serverReset', handleServerReset);
+        };
+    }, [goToPage]);
+
     return (
         <div>
             {currentMultiplayerScreen=="selectroom" && (
