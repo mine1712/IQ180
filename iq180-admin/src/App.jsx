@@ -5,7 +5,7 @@ import "./App.css";
 import { useEffect } from "react";
 
 function App() {
-  const [data, setData] = useState({ connections: {}, keys: {}, stats: {} });
+  const [data, setData] = useState({ connections: {}, keys: {}, stats: {}, answers:{} });
 
   // getting connection data from the server
   const fetchConnection = async () => {
@@ -28,10 +28,18 @@ function App() {
     setData((prev) => ({ ...prev, stats: data }));
   };
 
+  //getting answers data from the server
+  const fetchAns = async () => {
+    const response = await fetch("http://localhost:5172/answers");
+    const data = await response.json();
+    setData((prev) => ({ ...prev, answers: data }));
+  };
+
   function getData() {
     fetchConnection();
     fetchKeys();
     fetchStats();
+    fetchAns();
   }
 
   useEffect(() => {
@@ -108,6 +116,7 @@ function App() {
                     ) : (
                       <span>{data["keys"][key]["users"][0]}</span>
                     )}
+                    {data && data["answers"] && data["answers"][key]? (<span><br/>answer: {JSON.stringify(data["answers"][key]).slice(1,-1)}</span>):null}
                   </span>
 
                   <div>
