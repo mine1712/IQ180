@@ -140,7 +140,7 @@ function Multiplayer ({goToPage}) {
 
     useEffect(() => {
         function onUserDisconnected(name) {
-            if (currentRoom=="gamescreen") {
+            if (currentMultiplayerScreen=="gamescreen") {
                 alert("Your opponent \""+name+"\" has left the room.\nPlease return to the menu.");
                 setIsRoundInProgress(false);
                 setIsYourTurn(false);
@@ -152,7 +152,7 @@ function Multiplayer ({goToPage}) {
         return () => {
             server.off("userDisconnected",onUserDisconnected);
         }
-    }, [currentRoom])
+    }, [currentMultiplayerScreen])
 
     useEffect(() => {
         if (timeLeft > 0 && isRoundInProgress) {

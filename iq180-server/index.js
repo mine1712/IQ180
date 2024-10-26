@@ -172,7 +172,7 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', ({ room, name }) => {
     // Check if room exists
     if(keys[room] === undefined){
-      keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,orderofoperations:"pemdas", users_ready:0, attempt:1 };
+      keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,orderofoperations:"pemdas", users_ready:0, attempt:3 };
     }
     // Check if room is full
     if(io.sockets.adapter.rooms.get(room)?.size === 2) {
