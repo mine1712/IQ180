@@ -632,25 +632,22 @@ app.post('/resetRoom', (req, res) => {
     res.status(404).send(`${room} is not a valid room`);
     return;
   }
-  if(keys[room].users.length === 1){
-    io.to(room).emit('serverReset');
-    delete stats[keys[room].id[0]];
-    const socket = io.sockets.sockets.get(keys[room].id[0]);
-    socket.leave(room);
+  if(keys[room].users.length === 2){
+    stats[keys[room].id[0]].score = 0;
+    stats[keys[room].id[1]].score = 0;
+    keys[room].users_ready = 2;
+    keys[room].timeCalled = 0;
+    keys[room].numbers = [];
+    keys[room].ans = null;
+    keys[room].response = {correctness:null,timeUsed:null};
+    const randomPlayer = Math.floor(Math.random()*1);
+    keys[room].turn = keys[room].users[randomPlayer];
+    io.to(room).emit('resetRoom', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations});
   }
-  else if(keys[room].users.length === 2){
-    io.to(room).emit('serverReset');
-    delete stats[keys[room].id[0]];
-    delete stats[keys[room].id[1]];
-    const socket1 = io.sockets.sockets.get(keys[room].id[0]);
-    const socket2 = io.sockets.sockets.get(keys[room].id[1]);
-    socket1.leave(room);
-    socket2.leave(room);
+  else{
+    res.status(400).send('Room does not have 2 players');
+    return;
   }
-  delete keys[room];
-  delete answers[room];
-  console.log(keys);
-  io.to(room).emit('serverReset');
   res.send(`Room ${room} has been reset`);
 });
 
