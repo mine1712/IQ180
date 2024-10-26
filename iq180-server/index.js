@@ -645,7 +645,7 @@ app.post('/resetRoom', (req, res) => {
     io.to(room).emit('resetRoom', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations});
   }
   else{
-    res.status(400).send('Room does not have 2 players');
+    res.status(400).send(`${room} does not have 2 players`);
     return;
   }
   res.send(`Room ${room} has been reset`);
