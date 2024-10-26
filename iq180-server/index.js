@@ -20,7 +20,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   // cors set up for react
   cors: {
-    origin: ['https://iq-180.vercel.app', 'http://localhost:5173'],
+    origin: ['https://iq-180.vercel.app', 'http://localhost:5173', 'http://localhost:5174'],
     methods: ['GET', 'POST'],
   },
 });
@@ -79,8 +79,15 @@ function genNumbers(targetLength){
     result = eval(equation);
   }
   console.log(`answer are: ${numbers} ${ops}`);
+  let ans ='';
+  for(let i=0; i<numbers.length; i++){
+    ans+=numbers[i];
+    if(i<numbers.length-1){
+      ans+=ops[i];
+    }
+  }
   shuffle(numbers);
-  return { numbers, result };
+  return { numbers, result, ans};
 }
 
 //gen nums according to lefttoright
@@ -118,13 +125,22 @@ function getNumbersLeftToRight(targetLength){
     result = eval(equation);
   }
   console.log(`answer are: ${numbers} ${ops}`);
-  return { numbers, result };
+  let ans ='';
+  for(let i=0; i<numbers.length; i++){
+    ans+=numbers[i];
+    if(i<numbers.length-1){
+      ans+=ops[i];
+    }
+  }
+  shuffle(numbers);
+  return { numbers, result , ans};
 }
 
 let stats = {};
 // let keys = {"Room 1":{timeCalled:0,numbers:[],ans:null,turn:null,users:[],response:{correctness:null,timeUsed:null},targetLength:5},"Room 2":{timeCalled:0,numbers:[],ans:null,turn:null, users:[],response:{correctness:null,timeUsed:null},targetLength:5},"Room 3":{timeCalled:0,numbers:[],ans:null,turn:null, users:[],response:{correctness:null,timeUsed:null}},targetLength:5};
 let keys = {};
 let connections = {};
+let answers = {};
 
 io.on('connection', (socket) => {
   connections[socket.id] = {room:null,nickname:null};
@@ -139,12 +155,19 @@ io.on('connection', (socket) => {
       // Check whether if the numbers are already generated or not.
       if (keys[room].timeCalled === 0) {
         // generate numbers according to pemdas or left to right
-        const returnVaules = keys[room].orderofoperations==="pemdas" ? genNumbers(keys[room].targetLength) : getNumbersLeftToRight(keys[room].targetLength);
+        let returnVaules;
+        if( keys[room].orderofoperations==="pemdas"){
+          returnVaules = genNumbers(keys[room].targetLength);
+        }
+        else{
+          returnVaules = getNumbersLeftToRight(keys[room].targetLength);
+        }
         numbers = returnVaules.numbers;
         targetResult = returnVaules.result;
         keys[room].timeCalled = 1;
         keys[room].numbers = numbers;
         keys[room].ans = targetResult;
+        answers[room] = returnVaules.ans;
       }
       else if(keys[room].timeCalled === 1){
         keys[room].timeCalled += 1;
@@ -153,12 +176,19 @@ io.on('connection', (socket) => {
       }
       else{
         // generate numbers according to pemdas or left to right
-        const returnVaules = keys[room].checkingLefttoright? getNumbersLeftToRight(keys[room].targetLength) : genNumbers(keys[room].targetLength);
+        let returnVaules;
+        if( keys[room].orderofoperations==="pemdas"){
+          returnVaules = genNumbers(keys[room].targetLength);
+        }
+        else{
+          returnVaules = getNumbersLeftToRight(keys[room].targetLength);
+        }
         numbers = returnVaules.numbers;
         targetResult = returnVaules.result;
         keys[room].timeCalled = 1;
         keys[room].numbers = numbers;
         keys[room].ans = targetResult;
+        answers[room] = returnVaules.ans;
       }
       // Only emit the numbers to the requested client ensuring that the numbers are not leaked to other clients!
       socket.emit('numbers', { numbers, targetResult });
@@ -480,6 +510,7 @@ io.on('connection', (socket) => {
     connections[socket.id].nickname = null;
     if (keys[room].users.length === 0) {
       delete keys[room];
+      delete answers[room];
     }
     else if(keys[room].users.length === 1){
       io.to(room).emit('waitingForPlayer', 'Waiting for another player to join');
@@ -513,6 +544,7 @@ io.on('connection', (socket) => {
         keys[room].turn = null;
         if(keys[room].users.length === 0){
           delete keys[room];
+          delete answers[room];
         }
         io.to(room).emit('userDisconnected', connections[socket.id].nickname );
       }
@@ -558,7 +590,7 @@ io.on('connection', (socket) => {
 });
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../iq180-admin/dist')));
+app.use(express.static(path.join(__dirname, './dist')));
 
 app.get('/connections', (req, res) => {
   res.json(connections);
@@ -572,10 +604,15 @@ app.get('/stats', (req, res) => {
   res.json(stats);
 });
 
+app.get('/answers', (req, res) => {
+  res.json(answers);
+});
+
 app.get('/reset', (req, res) => {
   keys = {};
   connections = {};
   stats = {};
+  answers = {};
   io.emit('serverReset');
   // disconnect all the clients
   io.sockets.sockets.forEach((socket) => {
@@ -611,6 +648,7 @@ app.post('/resetRoom', (req, res) => {
     socket2.leave(room);
   }
   delete keys[room];
+  delete answers[room];
   console.log(keys);
   io.to(room).emit('serverReset');
   res.send(`Room ${room} has been reset`);
