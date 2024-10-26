@@ -9,28 +9,28 @@ function App() {
 
   // getting connection data from the server
   const fetchConnection = async () => {
-    const response = await fetch("http://localhost:5172/connections");
+    const response = await fetch("./connections");
     const data = await response.json();
     setData((prev) => ({ ...prev, connections: data }));
   };
 
   //getting keys data from the server
   const fetchKeys = async () => {
-    const response = await fetch("http://localhost:5172/keys");
+    const response = await fetch("./keys");
     const data = await response.json();
     setData((prev) => ({ ...prev, keys: data }));
   };
 
   //getting stats data from the server
   const fetchStats = async () => {
-    const response = await fetch("http://localhost:5172/stats");
+    const response = await fetch("./stats");
     const data = await response.json();
     setData((prev) => ({ ...prev, stats: data }));
   };
 
   //getting answers data from the server
   const fetchAns = async () => {
-    const response = await fetch("http://localhost:5172/answers");
+    const response = await fetch("./answers");
     const data = await response.json();
     setData((prev) => ({ ...prev, answers: data }));
   };
@@ -63,7 +63,7 @@ function App() {
           onClick={async () => {
             let response;
             try {
-              response = await fetch("http://localhost:5172/reset", {
+              response = await fetch("./reset", {
                 method: "GET",
               });
             } catch (err) {
@@ -125,7 +125,7 @@ function App() {
                         let response;
                         try {
                           response = await fetch(
-                            "http://localhost:5172/resetRoom",
+                            "./resetRoom",
                             {
                               method: "POST",
                               headers: {
