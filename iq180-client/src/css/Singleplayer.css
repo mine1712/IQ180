@@ -316,21 +316,24 @@ form {
 
 /*game play page*/
 .gamescreen-container {
-  background-color: #4AC29A;
+  /* background-color: #4AC29A; */
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
+  width: 100%;
 }
 
 .content-container {
-  border: solid 2px blue;
+  /*border: solid 2px blue;*/
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 40px;
+  overflow: auto;
+  padding-bottom: 20px;
 }
 
 .playername-container {

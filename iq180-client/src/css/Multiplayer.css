@@ -75,3 +75,23 @@
   align-items: center;
   gap: 20px;
 }
+
+.target-time-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.multiplayer-time-container {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 0px 0px 10px 10px;
+  box-shadow: 25px 25px 10px -15px rgba(0,0,0,0.1);
+  width: 150px;
+  padding: 15px 40px;
+  color: #4AC29A;
+  font-weight: 700;
+  font-size: 30px;
+  text-align: center;
+}
