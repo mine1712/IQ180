@@ -36,6 +36,8 @@ function Multiplayer ({goToPage}) {
     const [attemptsAllowed, setAttemptsAllowed] = useState(3);
     const [attemptsAllowedInput, setAttemptsAllowedInput] = useState("3");
 
+    const [isConnected, setIsConnected] = useState(server.connected);
+
     useEffect(() => {
         function onNumbers(data) {
             setBankNumbers(data.numbers);
@@ -138,6 +140,15 @@ function Multiplayer ({goToPage}) {
         }
     }, [selectedRoom])
 
+    const checkSocketConnection = () => {
+        if (!server.connected) {
+            console.log('Socket is disconnected');
+            // Handle the disconnection logic here
+        } else {
+            console.log('Socket is connected');
+        }
+    };
+
     useEffect(() => {
         function onUserDisconnected(name) {
             if (currentMultiplayerScreen=="gamescreen") {
@@ -149,8 +160,17 @@ function Multiplayer ({goToPage}) {
 
         server.on("userDisconnected",onUserDisconnected);
 
+        // Check connection status on mount
+        setIsConnected(server.connected);
+
+        // Listen for connection and disconnection events
+        server.on('connect', () => setIsConnected(true));
+        server.on('disconnect', () => setIsConnected(false));
+
         return () => {
             server.off("userDisconnected",onUserDisconnected);
+            server.off('connect');
+            server.off('disconnect');
         }
     }, [currentMultiplayerScreen])
 
