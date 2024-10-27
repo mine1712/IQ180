@@ -608,6 +608,10 @@ app.get('/answers', (req, res) => {
   res.json(answers);
 });
 
+app.get('/allData', (req, res) => {
+  res.json({connections, keys, stats, answers});
+});
+
 app.get('/reset', (req, res) => {
   keys = {};
   connections = {};

@@ -35,11 +35,14 @@ function App() {
     setData((prev) => ({ ...prev, answers: data }));
   };
 
+  const fetchAll = async () => {
+    const response = await fetch("./allData");
+    const data = await response.json();
+    setData(data);
+  };
+
   function getData() {
-    fetchConnection();
-    fetchKeys();
-    fetchStats();
-    fetchAns();
+    fetchAll();
   }
 
   useEffect(() => {
