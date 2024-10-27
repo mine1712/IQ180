@@ -161,7 +161,7 @@ function Multiplayer ({goToPage}) {
         server.on("userDisconnected",onUserDisconnected);
 
         // Check connection status on mount
-        setIsConnected(server.connected);
+        // setIsConnected(server.connected);
 
         // Listen for connection and disconnection events
         // server.on('connect', () => setIsConnected(true));
@@ -298,6 +298,28 @@ function Multiplayer ({goToPage}) {
         server.emit("playerReady");
         setIsReady(true);
     }
+
+    useEffect(() => {
+        function onResetRoom({turn, targetLength, attempt, orderofoperations}) {
+            setNumbersLength(targetLength);
+            setAttemptsAllowed(attempt);
+            setOrderOfOperations(orderofoperations);
+            setIsRoundInProgress(false);
+            setPlayerScore(0);
+            setPlaySlotNumbers(Array(numbersLength).fill());
+            setPlaySlotOperators(Array(numbersLength-1).fill());
+            setTimeLeft(null);
+            setTargetResult(null);
+            if (turn==userName) {
+                setIsYourTurn(true);
+                // setTimeLeft(60);
+                // setCurrentMultiplayerScreen("gamescreen");
+            }
+            // setCurrentMultiplayerScreen("gamescreen");
+        }
+
+        server.on("resetRoom",onResetRoom);
+    })
 
     // useEffect(() => {
     //     function onAnswerChecked({booleanResult}) {
