@@ -164,13 +164,13 @@ function Multiplayer ({goToPage}) {
         setIsConnected(server.connected);
 
         // Listen for connection and disconnection events
-        server.on('connect', () => setIsConnected(true));
-        server.on('disconnect', () => setIsConnected(false));
+        // server.on('connect', () => setIsConnected(true));
+        // server.on('disconnect', () => setIsConnected(false));
 
         return () => {
             server.off("userDisconnected",onUserDisconnected);
-            server.off('connect');
-            server.off('disconnect');
+            // server.off('connect');
+            // server.off('disconnect');
         }
     }, [currentRoom])
 
@@ -311,19 +311,19 @@ function Multiplayer ({goToPage}) {
     // }, [])
 
 
-    useEffect(() => {
-        const handleServerReset = () => {
-            alert("Server has been reset");
-            goToPage("Menu");
-            setServerReset(false);
-        };
+    // useEffect(() => {
+    //     const handleServerReset = () => {
+    //         alert("Server has been reset");
+    //         goToPage("Menu");
+    //         setServerReset(false);
+    //     };
 
-        server.on('serverReset', handleServerReset);
+    //     server.on('serverReset', handleServerReset);
 
-        return () => {
-            server.off('serverReset', handleServerReset);
-        };
-    }, [goToPage]);
+    //     return () => {
+    //         server.off('serverReset', handleServerReset);
+    //     };
+    // }, [goToPage]);
 
     return (
         <div>
