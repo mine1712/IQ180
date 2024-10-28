@@ -522,6 +522,8 @@ io.on('connection', (socket) => {
   socket.on('exitRoom', ()=>{
     console.log(`User with id: ${socket.id} exited the room`);
     exitRoom()
+    delete connections[socket.id];
+    socket.disconnect();
   });
 
   socket.on('disconnect', () => {
