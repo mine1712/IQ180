@@ -551,7 +551,6 @@ io.on('connection', (socket) => {
         delete connections[socket.id];
         console.dir(keys);
         console.dir(connections);
-        delete stats[socket.id];
     } catch (error) {
       console.log(error);
       console.log('\x1b[31m','WARNING: Ignoring user not found in room','\x1b[0m');
