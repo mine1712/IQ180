@@ -151,7 +151,7 @@ function Multiplayer ({goToPage}) {
 
     useEffect(() => {
         function onUserDisconnected(name) {
-            if (currentRoom=="gamescreen") {
+            if (currentMultiplayerScreen=="gamescreen") {
                 alert("Your opponent \""+name+"\" has left the room.\nPlease return to the menu.");
                 setIsRoundInProgress(false);
                 setIsYourTurn(false);
@@ -161,18 +161,18 @@ function Multiplayer ({goToPage}) {
         server.on("userDisconnected",onUserDisconnected);
 
         // Check connection status on mount
-        setIsConnected(server.connected);
+        // setIsConnected(server.connected);
 
         // Listen for connection and disconnection events
-        server.on('connect', () => setIsConnected(true));
-        server.on('disconnect', () => setIsConnected(false));
+        // server.on('connect', () => setIsConnected(true));
+        // server.on('disconnect', () => setIsConnected(false));
 
         return () => {
             server.off("userDisconnected",onUserDisconnected);
-            server.off('connect');
-            server.off('disconnect');
+            // server.off('connect');
+            // server.off('disconnect');
         }
-    }, [currentRoom])
+    }, [currentMultiplayerScreen])
 
     useEffect(() => {
         if (timeLeft > 0 && isRoundInProgress) {
@@ -299,6 +299,28 @@ function Multiplayer ({goToPage}) {
         setIsReady(true);
     }
 
+    useEffect(() => {
+        function onResetRoom({turn, targetLength, attempt, orderofoperations}) {
+            setNumbersLength(targetLength);
+            setAttemptsAllowed(attempt);
+            setOrderOfOperations(orderofoperations);
+            setIsRoundInProgress(false);
+            setPlayerScore(0);
+            setPlaySlotNumbers(Array(numbersLength).fill());
+            setPlaySlotOperators(Array(numbersLength-1).fill());
+            setTimeLeft(null);
+            setTargetResult(null);
+            if (turn==userName) {
+                setIsYourTurn(true);
+                // setTimeLeft(60);
+                // setCurrentMultiplayerScreen("gamescreen");
+            }
+            // setCurrentMultiplayerScreen("gamescreen");
+        }
+
+        server.on("resetRoom",onResetRoom);
+    })
+
     // useEffect(() => {
     //     function onAnswerChecked({booleanResult}) {
     //         alert("Test "+booleanResult);
@@ -311,19 +333,19 @@ function Multiplayer ({goToPage}) {
     // }, [])
 
 
-    useEffect(() => {
-        const handleServerReset = () => {
-            alert("Server has been reset");
-            goToPage("Menu");
-            setServerReset(false);
-        };
+    // useEffect(() => {
+    //     const handleServerReset = () => {
+    //         alert("Server has been reset");
+    //         goToPage("Menu");
+    //         setServerReset(false);
+    //     };
 
-        server.on('serverReset', handleServerReset);
+    //     server.on('serverReset', handleServerReset);
 
-        return () => {
-            server.off('serverReset', handleServerReset);
-        };
-    }, [goToPage]);
+    //     return () => {
+    //         server.off('serverReset', handleServerReset);
+    //     };
+    // }, [goToPage]);
 
     return (
         <div>
@@ -482,7 +504,7 @@ function Multiplayer ({goToPage}) {
                         setPlaySlotOperators(Array(numbersLength).fill());
                         setGetNumberButtonState(false);
                     }}>Reset Room</button> */}
-                    <p>It is {isYourTurn ? "" : "not "}your turn</p>
+                    {/* <p>It is {isYourTurn ? "" : "not "}your turn</p> */}
                     <div style={{textAlign:'center'}}>
                         <button onClick={() => {
                                 setTimeLeft(roundLength);
@@ -497,7 +519,8 @@ function Multiplayer ({goToPage}) {
                             
                         >Start</button>
                     </div>
-                    <GameArea playSlotNumbers={playSlotNumbers}
+                    {isYourTurn && (
+                        <GameArea playSlotNumbers={playSlotNumbers}
                         playSlotOperators={playSlotOperators}
                         bankNumbers={bankNumbers}
                         bankOperators={bankOperators}
@@ -508,7 +531,11 @@ function Multiplayer ({goToPage}) {
                         handleSubmission={handleSubmission}
                         isYourTurn={isYourTurn}
                         isRoundInProgress={isRoundInProgress}
-                    />
+                        />
+                    )}
+                    {!isYourTurn && (
+                        <h1 style={{textAlign:'center'}}>Please wait until it's your turn!</h1>
+                    )}
                     <button onClick={()=>{
                         server.emit('exitRoom');
                         goToPage("Menu");
