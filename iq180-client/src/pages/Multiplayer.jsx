@@ -10,6 +10,7 @@ function Multiplayer ({goToPage}) {
     // Player Info
     const [playerScore, setPlayerScore] = useState(0);
     const [userName, setUserName] = useState("");
+    const [playerID, setPlayerID] = useState(null);
     // Game Field Values
     const [playSlotNumbers,setPlaySlotNumbers] = useState(Array(5).fill());
     const [playSlotOperators,setPlaySlotOperators] = useState(Array(4).fill());
@@ -56,6 +57,13 @@ function Multiplayer ({goToPage}) {
     }, []);
 
     useEffect(() => {
+        if (server.id !== undefined) {
+            setPlayerID(server.id);
+            alert(server.id);
+        }
+    }, [server.id])
+
+    useEffect(() => {
         function onUpdateScore(scores) {
             setPlayerScore(scores[userName]);
             setPlaySlotNumbers(Array(numbersLength).fill());
@@ -66,7 +74,7 @@ function Multiplayer ({goToPage}) {
         }
         function onSwapTurn(nextPlayer) {
             // alert(nextPlayer)
-            if (nextPlayer==userName) {
+            if (nextPlayer==playerID) {
                 setIsYourTurn(true);
             } else {
                 setIsYourTurn(false);
@@ -79,7 +87,7 @@ function Multiplayer ({goToPage}) {
             server.off('updateScore', onUpdateScore);
             server.off('swapTurn', onSwapTurn);
         }
-    }, [userName]);
+    }, [userName,playerID]);
     
     useEffect(() => {
         function onGetReady() {
@@ -97,7 +105,7 @@ function Multiplayer ({goToPage}) {
             setNumbersLength(targetLength);
             setAttemptsAllowed(attempt);
             setOrderOfOperations(orderofoperations);
-            if (turn==userName) {
+            if (turn==playerID) {
                 setIsYourTurn(true);
                 // setTimeLeft(60);
                 setCurrentMultiplayerScreen("gamescreen");
@@ -110,7 +118,7 @@ function Multiplayer ({goToPage}) {
         return () => {
             server.off("startGame", onStartGame);
         }
-    }, [userName])
+    }, [playerID])
 
     useEffect(() => {
         setPlaySlotNumbers(Array(numbersLength).fill());
@@ -310,7 +318,7 @@ function Multiplayer ({goToPage}) {
             setPlaySlotOperators(Array(numbersLength-1).fill());
             setTimeLeft(null);
             setTargetResult(null);
-            if (turn==userName) {
+            if (turn==playerID) {
                 setIsYourTurn(true);
                 // setTimeLeft(60);
                 // setCurrentMultiplayerScreen("gamescreen");
@@ -319,7 +327,11 @@ function Multiplayer ({goToPage}) {
         }
 
         server.on("resetRoom",onResetRoom);
-    })
+
+        return () => {
+            server.off("resetRoom",onResetRoom);
+        }
+    }, [playerID])
 
     // useEffect(() => {
     //     function onAnswerChecked({booleanResult}) {
