@@ -216,11 +216,6 @@ io.on('connection', (socket) => {
     socket.emit('joinRoomSuccess', `Room joined successfully`);
     //Set nickname
     socket.nickname = name;
-    //setting up the scoreboard
-    if (!(room in stats)) {
-      stats[socket.id] = {};
-    }
-    stats[socket.id] = {nickname: name, score:0 };
     socket.join(room);
     keys[room].users.push(socket.nickname);
     keys[room].id.push(socket.id);
@@ -249,6 +244,8 @@ io.on('connection', (socket) => {
     let room = temp[1];
     keys[room].users_ready += 1;
     if(keys[room].users_ready === 2 && io.sockets.adapter.rooms.get(room)?.size === 2){
+      stats[keys[room].id[0]] = {nickname: keys[room].users[0], score:0 };
+      stats[keys[room].id[1]] = {nickname: keys[room].users[1], score:0 };
       const randomPlayer = Math.floor(Math.random()*1);
       keys[room].turn = keys[room].users[randomPlayer];
       console.log(`${keys[room].turn} will start the game`);
