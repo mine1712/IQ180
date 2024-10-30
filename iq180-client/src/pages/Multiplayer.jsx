@@ -59,7 +59,7 @@ function Multiplayer ({goToPage}) {
     useEffect(() => {
         if (server.id !== undefined) {
             setPlayerID(server.id);
-            alert(server.id);
+            // alert(server.id);
         }
     }, [server.id])
 
@@ -70,6 +70,7 @@ function Multiplayer ({goToPage}) {
             setPlaySlotOperators(Array(numbersLength-1).fill());
             setTimeLeft(null);
             setTargetResult(null);
+            setAttemptsLeft(null);
             alert("The next round is beginning");
         }
         function onSwapTurn(nextPlayer) {
@@ -87,7 +88,7 @@ function Multiplayer ({goToPage}) {
             server.off('updateScore', onUpdateScore);
             server.off('swapTurn', onSwapTurn);
         }
-    }, [userName,playerID]);
+    }, [numbersLength,playerID]);
     
     useEffect(() => {
         function onGetReady() {
@@ -314,14 +315,17 @@ function Multiplayer ({goToPage}) {
             setOrderOfOperations(orderofoperations);
             setIsRoundInProgress(false);
             setPlayerScore(0);
-            setPlaySlotNumbers(Array(numbersLength).fill());
-            setPlaySlotOperators(Array(numbersLength-1).fill());
+            setPlaySlotNumbers(Array(targetLength).fill());
+            setPlaySlotOperators(Array(targetLength-1).fill());
             setTimeLeft(null);
             setTargetResult(null);
+            setAttemptsLeft(null);
             if (turn==playerID) {
                 setIsYourTurn(true);
                 // setTimeLeft(60);
                 // setCurrentMultiplayerScreen("gamescreen");
+            } else {
+                setIsYourTurn(false);
             }
             // setCurrentMultiplayerScreen("gamescreen");
         }
