@@ -149,7 +149,7 @@ io.on('connection', (socket) => {
   socket.on('requestNumbers', () => {
     const temp = Array.from(socket.rooms);
     let room = temp[1];
-    if (keys[room].turn === socket.nickname) {
+    if (keys[room].turn === socket.id) {
       let numbers;
       let targetResult;
       // Check whether if the numbers are already generated or not.
@@ -347,8 +347,8 @@ io.on('connection', (socket) => {
                 // Second Player wins
                 stats[socket.id].score += 1;
                 io.to(room).emit('updateScore', {
-                  [socket.nickname]: stats[socket.id].score,
-                  [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
+                  [socket.id]: stats[socket.id].score,
+                  [keys[room].id.filter(user => user !== socket.id)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
                 });
                 keys[room].turn = socket.id;
                 // Start next game? Second player will start
@@ -362,8 +362,8 @@ io.on('connection', (socket) => {
                 stats[socket.id].score += 1;
                 stats[keys[room].id.filter(user => user !== socket.id)[0]].score += 1;
                 io.to(room).emit('updateScore',{
-                  [socket.nickname]: stats[socket.id].score,
-                  [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
+                  [socket.id]: stats[socket.id].score,
+                  [keys[room].id.filter(user => user !== socket.id)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
                 });
                 // Randomly select the first player
                 const firstPlayer = (Math.random()>0.5)? keys[room].id[1]:keys[room].id[0];
@@ -379,8 +379,8 @@ io.on('connection', (socket) => {
                 stats[keys[room].id.filter(user => user !== socket.id)[0]].score += 1;
                 // Update the score on the client side
                 io.to(room).emit('updateScore',{
-                  [socket.nickname]: stats[socket.id].score,
-                  [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
+                  [socket.id]: stats[socket.id].score,
+                  [keys[room].id.filter(user => user !== socket.id)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
                 });
                 keys[room].turn = keys[room].id.filter(user => user !== socket.id)[0];
                 // Start next game? First player will start
@@ -396,8 +396,8 @@ io.on('connection', (socket) => {
               stats[keys[room].id.filter(user => user !== socket.id)[0]] += 1;
               // Update the score on the client side
               io.to(room).emit('updateScore',{
-                [socket.nickname]: stats[socket.id].score,
-                [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
+                [socket.id]: stats[socket.id].score,
+                [keys[room].id.filter(user => user !== socket.id)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
               });
               keys[room].turn = keys[room].id.filter(user => user !== socket.id)[0];
               // Start next game? First player will start
@@ -412,8 +412,8 @@ io.on('connection', (socket) => {
               stats[socket.id].score += 1;
               // Update the score on the client side
               io.to(room).emit('updateScore',{
-                [socket.nickname]: stats[socket.id].score,
-                [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
+                [socket.id]: stats[socket.id].score,
+                [keys[room].id.filter(user => user !== socket.id)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
               });
               keys[room].turn = socket.id;
               // Start next game? Second player will start
@@ -643,7 +643,7 @@ app.post('/resetRoom', (req, res) => {
     keys[room].ans = null;
     keys[room].response = {correctness:null,timeUsed:null};
     const randomPlayer = Math.floor(Math.random()*1);
-    keys[room].turn = keys[room].users[randomPlayer];
+    keys[room].turn = keys[room].id[randomPlayer];
     io.to(room).emit('resetRoom', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations});
   }
   else{

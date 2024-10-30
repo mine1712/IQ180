@@ -65,7 +65,7 @@ function Multiplayer ({goToPage}) {
 
     useEffect(() => {
         function onUpdateScore(scores) {
-            setPlayerScore(scores[userName]);
+            setPlayerScore(scores[playerID]);
             setPlaySlotNumbers(Array(numbersLength).fill());
             setPlaySlotOperators(Array(numbersLength-1).fill());
             setTimeLeft(null);

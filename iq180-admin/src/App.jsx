@@ -3,6 +3,7 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import { useEffect } from "react";
+// import { response } from "express"; // Removed unnecessary import
 
 function App() {
   const [data, setData] = useState({ connections: {}, keys: {}, stats: {}, answers:{} });
@@ -100,6 +101,23 @@ function App() {
                 </div>
               ))}
             </p>
+            <button onClick={ async () => {
+              let response = null;
+              try{
+                response = await fetch('/resetScores', {
+                  method:'GET'
+                })
+              }
+              catch (err) {
+                console.log(err);
+              }
+              if (response.ok) {
+                alert("Score reset successfully");
+              } else {
+                alert(await response.text());
+              }
+            } }>reset score</button>
+        
           </div>
         )}
       </div>
