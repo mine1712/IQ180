@@ -247,7 +247,7 @@ io.on('connection', (socket) => {
       stats[keys[room].id[0]] = {nickname: keys[room].users[0], score:0 };
       stats[keys[room].id[1]] = {nickname: keys[room].users[1], score:0 };
       const randomPlayer = Math.floor(Math.random() * 2);
-      keys[room].turn = keys[room].users[randomPlayer];
+      keys[room].turn = keys[room].id[randomPlayer];
       console.log(`${keys[room].turn} will start the game`);
       //io.to(room).emit('startGame', {firstPlayer:keys[room].turn, attempt:keys[room].attempt});
       io.to(room).emit('startGame', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations});
@@ -350,7 +350,7 @@ io.on('connection', (socket) => {
                   [socket.nickname]: stats[socket.id].score,
                   [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
                 });
-                keys[room].turn = socket.nickname;
+                keys[room].turn = socket.id;
                 // Start next game? Second player will start
                 io.to(room).emit('swapTurn',keys[room].turn);
               }
@@ -366,7 +366,7 @@ io.on('connection', (socket) => {
                   [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
                 });
                 // Randomly select the first player
-                const firstPlayer = (Math.random()>0.5)? keys[room].users[1]:keys[room].users[0];
+                const firstPlayer = (Math.random()>0.5)? keys[room].id[1]:keys[room].id[0];
                 keys[room].turn = firstPlayer;
                 // Start next game? 
                 io.to(room).emit('swapTurn',keys[room].turn);
@@ -382,7 +382,7 @@ io.on('connection', (socket) => {
                   [socket.nickname]: stats[socket.id].score,
                   [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
                 });
-                keys[room].turn = keys[room].users.filter(user => user !== socket.nickname)[0];
+                keys[room].turn = keys[room].id.filter(user => user !== socket.id)[0];
                 // Start next game? First player will start
                 io.to(room).emit('swapTurn',keys[room].turn);
               }
@@ -399,7 +399,7 @@ io.on('connection', (socket) => {
                 [socket.nickname]: stats[socket.id].score,
                 [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
               });
-              keys[room].turn = keys[room].users.filter(user => user !== socket.nickname)[0];
+              keys[room].turn = keys[room].id.filter(user => user !== socket.id)[0];
               // Start next game? First player will start
               io.to(room).emit('swapTurn',keys[room].turn);
             }
@@ -415,7 +415,7 @@ io.on('connection', (socket) => {
                 [socket.nickname]: stats[socket.id].score,
                 [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
               });
-              keys[room].turn = socket.nickname;
+              keys[room].turn = socket.id;
               // Start next game? Second player will start
               io.to(room).emit('swapTurn',keys[room].turn);
             }
@@ -432,7 +432,7 @@ io.on('connection', (socket) => {
                 // reset the response
                 keys[room].response.correctness = null;
                 keys[room].response.timeUsed = null;
-                const firstPlayer = (Math.random()>0.5)? keys[room].users[1]:keys[room].users[0];
+                const firstPlayer = (Math.random()>0.5)? keys[room].id[1]:keys[room].id[0];
                 keys[room].turn = firstPlayer;
                 // Start next game? Randomly select the first player
                 io.to(room).emit('swapTurn',keys[room].turn);
@@ -449,7 +449,7 @@ io.on('connection', (socket) => {
           // Store the response
           keys[room].response.correctness = booleanResult;
           keys[room].response.timeUsed = timeUsed;
-          keys[room].turn = keys[room].users.filter(user => user !== socket.nickname)[0];
+          keys[room].turn = keys[room].id.filter(user => user !== socket.id)[0];
           // Emit the result back to the room => show a page 
           io.to(room).emit('swapTurn',keys[room].turn);
         }
