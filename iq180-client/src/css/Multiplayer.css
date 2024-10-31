@@ -106,3 +106,27 @@
 #divider{
   border:1px solid black;
 }
+
+.center-button-container {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  margin-top: 20px; /* Optional: Add margin for spacing */
+}
+
+button.return {
+  transition: border 0.25s ease-in-out; /* Add transition for smooth animation */
+}
+
+button.return:hover{
+  border: 1px solid #646cff; /* Add 1px blue border on hover */
+}
+
+@keyframes countdown {
+  from {
+    stroke-dashoffset: 0px;
+  }
+  to {
+    stroke-dashoffset: 113px;
+  }
+}
