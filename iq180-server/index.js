@@ -13,13 +13,14 @@ const cors = require('cors');
 app.use(cors());
 const { Server } = require('socket.io');
 const { exit } = require('process');
+const path = require('path');
 
 const server = http.createServer(app);
 
 const io = new Server(server, {
   // cors set up for react
   cors: {
-    origin: ['https://iq-180.vercel.app', 'http://localhost:5173'],
+    origin: ['https://iq-180.vercel.app', 'http://localhost:5173', 'http://localhost:5174'],
     methods: ['GET', 'POST'],
   },
 });
@@ -78,8 +79,15 @@ function genNumbers(targetLength){
     result = eval(equation);
   }
   console.log(`answer are: ${numbers} ${ops}`);
+  let ans ='';
+  for(let i=0; i<numbers.length; i++){
+    ans+=numbers[i];
+    if(i<numbers.length-1){
+      ans+=ops[i];
+    }
+  }
   shuffle(numbers);
-  return { numbers, result };
+  return { numbers, result, ans};
 }
 
 //gen nums according to lefttoright
@@ -117,33 +125,49 @@ function getNumbersLeftToRight(targetLength){
     result = eval(equation);
   }
   console.log(`answer are: ${numbers} ${ops}`);
-  return { numbers, result };
+  let ans ='';
+  for(let i=0; i<numbers.length; i++){
+    ans+=numbers[i];
+    if(i<numbers.length-1){
+      ans+=ops[i];
+    }
+  }
+  shuffle(numbers);
+  return { numbers, result , ans};
 }
 
 let stats = {};
 // let keys = {"Room 1":{timeCalled:0,numbers:[],ans:null,turn:null,users:[],response:{correctness:null,timeUsed:null},targetLength:5},"Room 2":{timeCalled:0,numbers:[],ans:null,turn:null, users:[],response:{correctness:null,timeUsed:null},targetLength:5},"Room 3":{timeCalled:0,numbers:[],ans:null,turn:null, users:[],response:{correctness:null,timeUsed:null}},targetLength:5};
 let keys = {};
 let connections = {};
+let answers = {};
 
 io.on('connection', (socket) => {
-  connections[socket.id] = {room:null};
+  connections[socket.id] = {room:null,nickname:null};
   console.log(`A user with id: ${socket.id} connected`);
 
   socket.on('requestNumbers', () => {
     const temp = Array.from(socket.rooms);
     let room = temp[1];
-    if (keys[room].turn === socket.nickname) {
+    if (keys[room].turn === socket.id) {
       let numbers;
       let targetResult;
       // Check whether if the numbers are already generated or not.
       if (keys[room].timeCalled === 0) {
         // generate numbers according to pemdas or left to right
-        const returnVaules = keys[room].orderofoperations==="pemdas" ? genNumbers(keys[room].targetLength) : getNumbersLeftToRight(keys[room].targetLength);
+        let returnVaules;
+        if( keys[room].orderofoperations==="pemdas"){
+          returnVaules = genNumbers(keys[room].targetLength);
+        }
+        else{
+          returnVaules = getNumbersLeftToRight(keys[room].targetLength);
+        }
         numbers = returnVaules.numbers;
         targetResult = returnVaules.result;
         keys[room].timeCalled = 1;
         keys[room].numbers = numbers;
         keys[room].ans = targetResult;
+        answers[room] = returnVaules.ans;
       }
       else if(keys[room].timeCalled === 1){
         keys[room].timeCalled += 1;
@@ -152,12 +176,19 @@ io.on('connection', (socket) => {
       }
       else{
         // generate numbers according to pemdas or left to right
-        const returnVaules = keys[room].checkingLefttoright? getNumbersLeftToRight(keys[room].targetLength) : genNumbers(keys[room].targetLength);
+        let returnVaules;
+        if( keys[room].orderofoperations==="pemdas"){
+          returnVaules = genNumbers(keys[room].targetLength);
+        }
+        else{
+          returnVaules = getNumbersLeftToRight(keys[room].targetLength);
+        }
         numbers = returnVaules.numbers;
         targetResult = returnVaules.result;
         keys[room].timeCalled = 1;
         keys[room].numbers = numbers;
         keys[room].ans = targetResult;
+        answers[room] = returnVaules.ans;
       }
       // Only emit the numbers to the requested client ensuring that the numbers are not leaked to other clients!
       socket.emit('numbers', { numbers, targetResult });
@@ -185,11 +216,6 @@ io.on('connection', (socket) => {
     socket.emit('joinRoomSuccess', `Room joined successfully`);
     //Set nickname
     socket.nickname = name;
-    //setting up the scoreboard
-    if (!(room in stats)) {
-      stats[socket.id] = {};
-    }
-    stats[socket.id] = {nickname: name, score:0 };
     socket.join(room);
     keys[room].users.push(socket.nickname);
     keys[room].id.push(socket.id);
@@ -218,8 +244,10 @@ io.on('connection', (socket) => {
     let room = temp[1];
     keys[room].users_ready += 1;
     if(keys[room].users_ready === 2 && io.sockets.adapter.rooms.get(room)?.size === 2){
-      const randomPlayer = Math.floor(Math.random()*1);
-      keys[room].turn = keys[room].users[randomPlayer];
+      stats[keys[room].id[0]] = {nickname: keys[room].users[0], score:0 };
+      stats[keys[room].id[1]] = {nickname: keys[room].users[1], score:0 };
+      const randomPlayer = Math.floor(Math.random() * 2);
+      keys[room].turn = keys[room].id[randomPlayer];
       console.log(`${keys[room].turn} will start the game`);
       //io.to(room).emit('startGame', {firstPlayer:keys[room].turn, attempt:keys[room].attempt});
       io.to(room).emit('startGame', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations});
@@ -319,10 +347,10 @@ io.on('connection', (socket) => {
                 // Second Player wins
                 stats[socket.id].score += 1;
                 io.to(room).emit('updateScore', {
-                  [socket.nickname]: stats[socket.id].score,
-                  [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
+                  [socket.id]: stats[socket.id].score,
+                  [keys[room].id.filter(user => user !== socket.id)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
                 });
-                keys[room].turn = socket.nickname;
+                keys[room].turn = socket.id;
                 // Start next game? Second player will start
                 io.to(room).emit('swapTurn',keys[room].turn);
               }
@@ -334,11 +362,11 @@ io.on('connection', (socket) => {
                 stats[socket.id].score += 1;
                 stats[keys[room].id.filter(user => user !== socket.id)[0]].score += 1;
                 io.to(room).emit('updateScore',{
-                  [socket.nickname]: stats[socket.id].score,
-                  [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
+                  [socket.id]: stats[socket.id].score,
+                  [keys[room].id.filter(user => user !== socket.id)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
                 });
                 // Randomly select the first player
-                const firstPlayer = (Math.random()>0.5)? keys[room].users[1]:keys[room].users[0];
+                const firstPlayer = (Math.random()>0.5)? keys[room].id[1]:keys[room].id[0];
                 keys[room].turn = firstPlayer;
                 // Start next game? 
                 io.to(room).emit('swapTurn',keys[room].turn);
@@ -351,10 +379,10 @@ io.on('connection', (socket) => {
                 stats[keys[room].id.filter(user => user !== socket.id)[0]].score += 1;
                 // Update the score on the client side
                 io.to(room).emit('updateScore',{
-                  [socket.nickname]: stats[socket.id].score,
-                  [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
+                  [socket.id]: stats[socket.id].score,
+                  [keys[room].id.filter(user => user !== socket.id)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
                 });
-                keys[room].turn = keys[room].users.filter(user => user !== socket.nickname)[0];
+                keys[room].turn = keys[room].id.filter(user => user !== socket.id)[0];
                 // Start next game? First player will start
                 io.to(room).emit('swapTurn',keys[room].turn);
               }
@@ -368,10 +396,10 @@ io.on('connection', (socket) => {
               stats[keys[room].id.filter(user => user !== socket.id)[0]] += 1;
               // Update the score on the client side
               io.to(room).emit('updateScore',{
-                [socket.nickname]: stats[socket.id].score,
-                [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
+                [socket.id]: stats[socket.id].score,
+                [keys[room].id.filter(user => user !== socket.id)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
               });
-              keys[room].turn = keys[room].users.filter(user => user !== socket.nickname)[0];
+              keys[room].turn = keys[room].id.filter(user => user !== socket.id)[0];
               // Start next game? First player will start
               io.to(room).emit('swapTurn',keys[room].turn);
             }
@@ -384,10 +412,10 @@ io.on('connection', (socket) => {
               stats[socket.id].score += 1;
               // Update the score on the client side
               io.to(room).emit('updateScore',{
-                [socket.nickname]: stats[socket.id].score,
-                [keys[room].users.filter(user => user !== socket.nickname)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
+                [socket.id]: stats[socket.id].score,
+                [keys[room].id.filter(user => user !== socket.id)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
               });
-              keys[room].turn = socket.nickname;
+              keys[room].turn = socket.id;
               // Start next game? Second player will start
               io.to(room).emit('swapTurn',keys[room].turn);
             }
@@ -404,7 +432,7 @@ io.on('connection', (socket) => {
                 // reset the response
                 keys[room].response.correctness = null;
                 keys[room].response.timeUsed = null;
-                const firstPlayer = (Math.random()>0.5)? keys[room].users[1]:keys[room].users[0];
+                const firstPlayer = (Math.random()>0.5)? keys[room].id[1]:keys[room].id[0];
                 keys[room].turn = firstPlayer;
                 // Start next game? Randomly select the first player
                 io.to(room).emit('swapTurn',keys[room].turn);
@@ -421,7 +449,7 @@ io.on('connection', (socket) => {
           // Store the response
           keys[room].response.correctness = booleanResult;
           keys[room].response.timeUsed = timeUsed;
-          keys[room].turn = keys[room].users.filter(user => user !== socket.nickname)[0];
+          keys[room].turn = keys[room].id.filter(user => user !== socket.id)[0];
           // Emit the result back to the room => show a page 
           io.to(room).emit('swapTurn',keys[room].turn);
         }
@@ -476,8 +504,10 @@ io.on('connection', (socket) => {
     io.to(room).emit('message', `${socket.nickname} has left the room`);
     console.log(`${socket.nickname} has left the room`);
     connections[socket.id].room = null;
+    connections[socket.id].nickname = null;
     if (keys[room].users.length === 0) {
       delete keys[room];
+      delete answers[room];
     }
     else if(keys[room].users.length === 1){
       io.to(room).emit('waitingForPlayer', 'Waiting for another player to join');
@@ -489,6 +519,8 @@ io.on('connection', (socket) => {
   socket.on('exitRoom', ()=>{
     console.log(`User with id: ${socket.id} exited the room`);
     exitRoom()
+    delete connections[socket.id];
+    socket.disconnect();
   });
 
   socket.on('disconnect', () => {
@@ -511,6 +543,7 @@ io.on('connection', (socket) => {
         keys[room].turn = null;
         if(keys[room].users.length === 0){
           delete keys[room];
+          delete answers[room];
         }
         io.to(room).emit('userDisconnected', connections[socket.id].nickname );
       }
@@ -523,37 +556,102 @@ io.on('connection', (socket) => {
     }
   });
 
-  // These are the functions that will be called from the backend
+  // // These are the functions that will be called from the backend
   
-  // Getting stats //TODO
-  socket.on('getStats', () => {
-    socket.emit('stats', stats);
-  });
+  // // Getting stats //TODO
+  // socket.on('getStats', () => {
+  //   socket.emit('stats', stats);
+  // });
 
-  // Resetting stats //TODO
-  socket.on('resetStats', () => {
-    stats = {};
-    socket.emit('stats', stats);
-  });
+  // // Resetting stats //TODO
+  // socket.on('resetStats', () => {
+  //   stats = {};
+  //   socket.emit('stats', stats);
+  // });
 
-  // Reset Room //TODO
-  socket.on('resetRoom', (room) => {
-    keys[room] = {timeCalled:0,numbers:[],ans:null,turn:null, users:keys[room].users, id:keys[room].id,response:{correctness:null,timeUsed:null},targetLength:5};
-    io.to(room).emit('roomReset', `Room ${room} has been reset`);
-  });
+  // // Reset Room //TODO
+  // socket.on('resetRoom', (room) => {
+  //   keys[room] = {timeCalled:0,numbers:[],ans:null,turn:null, users:keys[room].users, id:keys[room].id,response:{correctness:null,timeUsed:null},targetLength:5};
+  //   io.to(room).emit('roomReset', `Room ${room} has been reset`);
+  // });
 
-  // Getting keys //TODO
-  socket.on('getKeys', () => {
-    socket.emit('keys', keys);
-  });
+  // // Getting keys //TODO
+  // socket.on('getKeys', () => {
+  //   socket.emit('keys', keys);
+  // });
 
-  socket.on('setNumbersLength', (length, room) => {
-    keys[room].targetLength = length;
-    socket.emit('setLengthSucess', `The target length has been set to ${length}`);
-  });
+  // socket.on('setNumbersLength', (length, room) => {
+  //   keys[room].targetLength = length;
+  //   socket.emit('setLengthSucess', `The target length has been set to ${length}`);
+  // });
 
 });
 
+app.use(express.json());
+app.use(express.static(path.join(__dirname, '../iq180-admin/dist')));
+
+app.get('/connections', (req, res) => {
+  res.json(connections);
+});
+
+app.get('/keys', (req, res) => {
+  res.json(keys);
+});
+
+app.get('/stats', (req, res) => {
+  res.json(stats);
+});
+
+app.get('/answers', (req, res) => {
+  res.json(answers);
+});
+
+app.get('/allData', (req, res) => {
+  res.json({connections, keys, stats, answers});
+});
+
+app.get('/reset', (req, res) => {
+  keys = {};
+  connections = {};
+  stats = {};
+  answers = {};
+  io.emit('serverReset');
+  // disconnect all the clients
+  io.sockets.sockets.forEach((socket) => {
+    socket.disconnect(true);
+  });
+  res.send('Resetting server. Kicking everyone out!!!');
+});
+
+app.post('/resetRoom', (req, res) => {
+  const room = req.body.room;
+  console.log(room);
+  if (!room) {
+    res.status(400).send('Room parameter is missing');
+    return;
+  }
+  if (keys[room] === undefined) {
+    res.status(404).send(`${room} is not a valid room`);
+    return;
+  }
+  if(keys[room].users.length === 2){
+    stats[keys[room].id[0]].score = 0;
+    stats[keys[room].id[1]].score = 0;
+    keys[room].users_ready = 2;
+    keys[room].timeCalled = 0;
+    keys[room].numbers = [];
+    keys[room].ans = null;
+    keys[room].response = {correctness:null,timeUsed:null};
+    const randomPlayer = Math.floor(Math.random()*1);
+    keys[room].turn = keys[room].id[randomPlayer];
+    io.to(room).emit('resetRoom', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations});
+  }
+  else{
+    res.status(400).send(`${room} does not have 2 players`);
+    return;
+  }
+  res.send(`Room ${room} has been reset`);
+});
 
 // Setting up the port
 const PORT = process.env.PORT || 5172;
