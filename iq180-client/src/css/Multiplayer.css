@@ -89,7 +89,6 @@
   padding: 0;
   font-weight: 600;
   font-size:18px;
-  text-transform: capitalize;
 }
 
 .score-bar {
@@ -101,6 +100,7 @@
 
 .score-label {
   margin: 0 10px; /* Optional: Add margin between scores */
+  text-transform: capitalize;
 }
 
 #divider{

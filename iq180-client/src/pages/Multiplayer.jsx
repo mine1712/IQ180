@@ -497,8 +497,9 @@ function Multiplayer ({goToPage}) {
                 <div>
                     <nav className="score-container">
                         <ul className="score-bar">
-                            <li className="score-label player">Your score: {playerScore}</li>
-                            <li className="score-label opponent">Opponent's score: {opponentScore}</li>
+                            <li className="score-label player">YOUR SCORE: {playerScore}</li>
+                            <li className='score-label name'>{userName}</li>
+                            <li className="score-label opponent">OPPONENT'S SCORE: {opponentScore}</li>
                         </ul>
                     </nav>
                     <div id="divider"></div>
