@@ -9,6 +9,7 @@ function Multiplayer ({goToPage}) {
     const [currentMultiplayerScreen, setCurrentMultiplayerScreen] = useState("nameentry");
     // Player Info
     const [playerScore, setPlayerScore] = useState(0);
+    const [opponentScore, setOponentScore] = useState(0);
     const [userName, setUserName] = useState("");
     const [playerID, setPlayerID] = useState(null);
     // Game Field Values
@@ -66,6 +67,7 @@ function Multiplayer ({goToPage}) {
     useEffect(() => {
         function onUpdateScore(scores) {
             setPlayerScore(scores[playerID]);
+            setOponentScore(Object.keys(scores).filter(key => key !== playerID).map(key => scores[key])[0]);
             setPlaySlotNumbers(Array(numbersLength).fill());
             setPlaySlotOperators(Array(numbersLength-1).fill());
             setTimeLeft(null);
@@ -493,7 +495,13 @@ function Multiplayer ({goToPage}) {
             )}
             {currentMultiplayerScreen=="gamescreen" && (
                 <div>
-                    <h1>Your score = {playerScore}</h1>
+                    <nav className="score-container">
+                        <ul className="score-bar">
+                            <li className="score-label player">Your score: {playerScore}</li>
+                            <li className="score-label opponent">Opponent's score: {opponentScore}</li>
+                        </ul>
+                    </nav>
+                    <div id="divider"></div>
                     {targetResult!==null && (
                         <h1>Target = {targetResult}</h1>
                     )}
