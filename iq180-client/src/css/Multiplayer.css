@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap');
+
+* {
+  font-family: 'Oxanium', sans-serif; /* Apply the Oxanium font to all elements */
+}
+
 #numberPlaySlotBox {
   display: inline-block; /* Makes it a box */
   padding: 10px; /* Adjust padding as needed */

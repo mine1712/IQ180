@@ -497,7 +497,7 @@ function Multiplayer ({goToPage}) {
                 <div>
                     <nav className="score-container">
                         <ul className="score-bar">
-                            <li className="score-label player">YOUR SCORE: {playerScore}</li>
+                            <li className="score-label player" style={{marginRight:'64px'}}>YOUR SCORE: {playerScore}</li>
                             <li className='score-label name'>{userName}</li>
                             <li className="score-label opponent">OPPONENT'S SCORE: {opponentScore}</li>
                         </ul>
@@ -510,7 +510,7 @@ function Multiplayer ({goToPage}) {
                         }}> 
                         {targetResult!==null && (
                             <div style={{fontSize: '18px',
-                                fontWeight: '600', margin:'10px'}}><>{targetResult}</></div>
+                                fontWeight: '600', margin:'10px', marginRight:'50px'}}><>{targetResult}</></div>
                         )}
                         {timeLeft!=null && (
                             <div id ="countdown"style ={{position: 'relative',
@@ -532,7 +532,7 @@ function Multiplayer ({goToPage}) {
                                         strokeWidth: '2px',
                                         stroke: 'black',
                                         fill: 'none',
-                                        animation: timeLeft !== 0 ? 'countdown 60s linear infinite forwards' : 'none'}}></circle>
+                                        animation: timeLeft !== 0 && isYourTurn ? 'countdown 60s linear infinite forwards' : 'none'}}></circle>
                                 </svg>
                             </div>
                         )}
