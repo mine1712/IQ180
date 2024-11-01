@@ -596,6 +596,14 @@ io.on('connection', (socket) => {
   //   socket.emit('setLengthSucess', `The target length has been set to ${length}`);
   // });
 
+  socket.on('fetchLeaderBoard',() => {
+    temp = stats;
+    const statsArray = Object.entries(stats);
+    statsArray.sort(([, a], [, b]) => b.score - a.score);
+    const sortedStats = Object.fromEntries(statsArray);
+    socket.emit('leaderBoard', sortedStats);
+  });
+
 });
 
 app.use(express.json());
