@@ -203,7 +203,7 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', ({ room, name }) => {
     // Check if room exists
     if(keys[room] === undefined){
-      keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,orderofoperations:"pemdas", users_ready:0, attempt:3 };
+      keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,orderofoperations:"pemdas",roundLength:60, users_ready:0, attempt:3 };
     }
     // Check if room is full
     if(io.sockets.adapter.rooms.get(room)?.size === 2) {
@@ -250,7 +250,7 @@ io.on('connection', (socket) => {
       keys[room].turn = keys[room].id[randomPlayer];
       console.log(`${keys[room].turn} will start the game`);
       //io.to(room).emit('startGame', {firstPlayer:keys[room].turn, attempt:keys[room].attempt});
-      io.to(room).emit('startGame', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations});
+      io.to(room).emit('startGame', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations,roundLength:keys[room].roundLength});
     }
   });
 
@@ -258,15 +258,16 @@ io.on('connection', (socket) => {
   socket.on('getOption',()=>{
     const temp = Array.from(socket.rooms);
     let room = temp[1];
-    socket.emit('options',{targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations});
+    socket.emit('options',{targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations,roundLength:keys[room].roundLength});
   });
 
   // Set options (targetLength, attempt, check_leftToRight)
-  socket.on('setOptions', ({targetLength, attempt , orderofoperations}) => {
+  socket.on('setOptions', ({targetLength, attempt , orderofoperations, roundLength}) => {
     const temp = Array.from(socket.rooms);
     let room = temp[1];
     keys[room].targetLength = targetLength;
     keys[room].orderofoperations = orderofoperations;
+    keys[room].roundLength = roundLength;
     //check if attempt is an integer prevent from setting it to a string and noninteger
     console.log(attempt);
     if(attempt !== null){attempt = parseInt(attempt);} else{attempt = 1;}
@@ -315,7 +316,7 @@ io.on('connection', (socket) => {
 
   //TODO 
   socket.on('checkAns', ({nums, operators, timeUsed, room, attemptleft, isTimeUp})=>{
-    // if nums and operators are valids.
+    try{// if nums and operators are valids.
     let nums_check = nums.filter((value) => value !== null);
     let operators_check = operators.filter((value) => value !== null);
     let booleanResult;
@@ -422,9 +423,9 @@ io.on('connection', (socket) => {
           }
             else{
               // Second player has answered incorrectly but still has attempts left
+              socket.emit('wrongAnswer', attemptleft-1);
               if(!booleanResult && attemptleft > 1){
                 // Emit the wrong answer event to the client and return the number of attempts left
-                socket.emit('wrongAnswer', attemptleft-1);
                 return;
               }
               // Both players have answered incorrectly
@@ -441,10 +442,12 @@ io.on('connection', (socket) => {
           
         }
         else{
-          if(!booleanResult && attemptleft > 1){
+          if(!booleanResult){
             // Emit the wrong answer event to the client and return the number of attempts left
             socket.emit('wrongAnswer', attemptleft-1);
-            return;
+            if (attemptleft > 1) {
+              return;
+            }
           }
           // Store the response
           keys[room].response.correctness = booleanResult;
@@ -466,7 +469,12 @@ io.on('connection', (socket) => {
   //   io.to(room).emit('swapTurn',keys[room].turn);
   // }
   console.log('\x1b[32m',`Player "${socket.nickname}" submitted the "${booleanResult ? `correct within ${timeUsed}`: "wrong"}" answer`,'\x1b[0m');
-  });
+  }
+  catch(error){
+    console.log('\x1b[31m',`ERROR: ${error}`,'\x1b[0m');
+  }
+}
+);
 
   function isUserInRoom(socket) {
     const room = connections[socket.id].room;
@@ -505,13 +513,16 @@ io.on('connection', (socket) => {
     console.log(`${socket.nickname} has left the room`);
     connections[socket.id].room = null;
     connections[socket.id].nickname = null;
-    if (keys[room].users.length === 0) {
+    try{if (keys[room].users.length === 0) {
       delete keys[room];
       delete answers[room];
     }
     else if(keys[room].users.length === 1){
       io.to(room).emit('waitingForPlayer', 'Waiting for another player to join');
-    }
+    }}
+    catch(error){
+      console.log('\x1b[31m',`WARNING: ${error}`,'\x1b[0m1');
+      }
     // console.dir(keys);
     // console.dir(connections);
   }

@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap');
+
+* {
+  font-family: 'Oxanium', sans-serif; /* Apply the Oxanium font to all elements */
+}
+
 #numberPlaySlotBox {
   display: inline-block; /* Makes it a box */
   padding: 10px; /* Adjust padding as needed */
@@ -82,4 +88,51 @@
   border-color: rgba(0, 0, 0, 0.1);
   box-shadow: 0;
   background-color: #ffffff;
+}
+
+.score-container {
+  margin: 0;
+  padding: 0;
+  font-weight: 600;
+  font-size:18px;
+}
+
+.score-bar {
+  display: flex;
+  justify-content: space-between; /* Adjusts spacing between scores */
+  padding: 10px; /* Optional: Add padding for better spacing */
+  list-style-type: none; /* Remove bullet points from list items */
+}
+
+.score-label {
+  margin: 0 10px; /* Optional: Add margin between scores */
+  text-transform: capitalize;
+}
+
+#divider{
+  border:1px solid black;
+}
+
+.center-button-container {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  margin-top: 20px; /* Optional: Add margin for spacing */
+}
+
+button.return {
+  transition: border 0.25s ease-in-out; /* Add transition for smooth animation */
+}
+
+button.return:hover{
+  border: 1px solid #646cff; /* Add 1px blue border on hover */
+}
+
+@keyframes countdown {
+  from {
+    stroke-dashoffset: 0px;
+  }
+  to {
+    stroke-dashoffset: 113px;
+  }
 }

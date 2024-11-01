@@ -38,15 +38,15 @@ Client
 - [X] (0.5) Can put your nickname when the game starts.  
 - [X] (0.5) Welcome message appears on the game starts.  
 - [X] (0.5) Player’s name and score are appeared on the game client.  
-- [ ] (0.5) Player cannot see anything until his/her turn.  
+- [X] (0.5) Player cannot see anything until his/her turn.  
 - [X] (0.5) Time can be counted down.  
 - [X] (0.5) Every chosen digit has to be disabled.  
 - [X] (0.5) The equation has to be checked.  
 - [X] (0.5) Increase a score when the equation has been solved.
   
 Server  
-- [ ] (1.0) Server program shows the number of concurrent clients that are online.  
-- [ ] (1.0) Server has a reset button to reset player’s scores and current game.  
+- [X] (1.0) Server program shows the number of concurrent clients that are online.  
+- [X] (1.0) Server has a reset button to reset player’s scores and current game.  
 - [X] (1.0) Server randomizes the five digits and the final result when the game starts and also randomizes the first player for the first game.
   
 Extra features (1.0 per feature)
@@ -54,9 +54,9 @@ Extra features (1.0 per feature)
 - [ ] Feature 2: Background Rain Toggle
 - [ ] Feature 3: Background Color Toggle
 - [X] Feature 4: Change number of numbers (Default needs to be 5 numbers according to the original assignment.)
-- [ ] Feature 5: 
+- [X] Feature 5: Change the game's timer.
 - [ ] Feature 6: Background music.
 - [X] Feature 7: Singleplayer
-- [ ] Feature 8: 
-- [ ] Feature 9: 
-- [ ] Feature 10:  
+- [X] Feature 8: Change the order of operations used in the game..
+- [X] Feature 9: Change the amount of attempts allowed on each equation.
+- [ ] Feature 10: Leaderboard
