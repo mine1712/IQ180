@@ -203,7 +203,7 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', ({ room, name }) => {
     // Check if room exists
     if(keys[room] === undefined){
-      keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,orderofoperations:"pemdas", users_ready:0, attempt:3 };
+      keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,orderofoperations:"pemdas",roundLength:60, users_ready:0, attempt:3 };
     }
     // Check if room is full
     if(io.sockets.adapter.rooms.get(room)?.size === 2) {
@@ -250,7 +250,7 @@ io.on('connection', (socket) => {
       keys[room].turn = keys[room].id[randomPlayer];
       console.log(`${keys[room].turn} will start the game`);
       //io.to(room).emit('startGame', {firstPlayer:keys[room].turn, attempt:keys[room].attempt});
-      io.to(room).emit('startGame', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations});
+      io.to(room).emit('startGame', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations,roundLength:keys[room].roundLength});
     }
   });
 
@@ -258,15 +258,16 @@ io.on('connection', (socket) => {
   socket.on('getOption',()=>{
     const temp = Array.from(socket.rooms);
     let room = temp[1];
-    socket.emit('options',{targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations});
+    socket.emit('options',{targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations,roundLength:keys[room].roundLength});
   });
 
   // Set options (targetLength, attempt, check_leftToRight)
-  socket.on('setOptions', ({targetLength, attempt , orderofoperations}) => {
+  socket.on('setOptions', ({targetLength, attempt , orderofoperations, roundLength}) => {
     const temp = Array.from(socket.rooms);
     let room = temp[1];
     keys[room].targetLength = targetLength;
     keys[room].orderofoperations = orderofoperations;
+    keys[room].roundLength = roundLength;
     //check if attempt is an integer prevent from setting it to a string and noninteger
     console.log(attempt);
     if(attempt !== null){attempt = parseInt(attempt);} else{attempt = 1;}
