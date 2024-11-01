@@ -262,15 +262,15 @@ function Multiplayer ({goToPage}) {
         // alert("test1")
         server.emit("getOption");
         // alert("test")
-        setCurrentMultiplayerScreen("roomoptions");
     }
 
     useEffect(() => {
         function onOptions({targetLength, attempt, orderofoperations, roundLength}) {
-            setNumbersLengthInput(targetLength);
-            setAttemptsAllowedInput(attempt);
+            setNumbersLengthInput(targetLength.toString());
+            setAttemptsAllowedInput(attempt.toString());
             setOrderOfOperations(orderofoperations);
-            setRoundLengthInput(roundLength);
+            setRoundLengthInput(roundLength.toString());
+            setCurrentMultiplayerScreen("roomoptions");
         }
         server.on("options",onOptions);
 
@@ -280,18 +280,18 @@ function Multiplayer ({goToPage}) {
     }, [])
 
     function checkNumbersLength(str) {
-        var n = parseInt(str);
-        return Number.isInteger(n) && n >= 3 && n<=9;
+        var n = Math.floor(Number(str));
+        return n !== Infinity && String(n) === str && n >= 3 && n<=9;
     }
     
     function checkRoundLength(str) {
-        var n = parseInt(str);
-        return Number.isInteger(n) && n >= 20 && n<=120;
+        var n = Math.floor(Number(str));
+        return n !== Infinity && String(n) === str && n >= 20 && n<=120;
     }
 
     function checkAttemptsAllowed(str) {
-        var n = parseInt(str);
-        return Number.isInteger(n) && n >= 1 && n<=5;
+        var n = Math.floor(Number(str));
+        return n !== Infinity && String(n) === str && n >= 1 && n<=5;
     }
 
     const handleOptionsSubmit = () => {
