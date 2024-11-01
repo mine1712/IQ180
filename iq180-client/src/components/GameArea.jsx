@@ -1,5 +1,5 @@
 import { useState, useEffect, Fragment } from 'react';
-import NumberPlaySlotBox from "./numberPlaySlotBox";
+import NumberPlaySlotBox from "./NumberPlaySlotBox";
 import OperatorPlaySlotBox from "./OperatorPlaySlotBox";
 import NumberBankBox from "./NumberBankBox";
 import OperatorBankBox from "./OperatorBankBox";
