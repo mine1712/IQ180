@@ -394,7 +394,7 @@ io.on('connection', (socket) => {
               keys[room].response.correctness = null;
               keys[room].response.timeUsed = null;
               // First Player wins
-              stats[keys[room].id.filter(user => user !== socket.id)[0]] += 1;
+              stats[keys[room].id.filter(user => user !== socket.id)[0]].score += 1;
               // Update the score on the client side
               io.to(room).emit('updateScore',{
                 [socket.id]: stats[socket.id].score,
@@ -428,16 +428,22 @@ io.on('connection', (socket) => {
                 // Emit the wrong answer event to the client and return the number of attempts left
                 return;
               }
-              // Both players have answered incorrectly
-              else{
-                // reset the response
-                keys[room].response.correctness = null;
-                keys[room].response.timeUsed = null;
-                const firstPlayer = (Math.random()>0.5)? keys[room].id[1]:keys[room].id[0];
-                keys[room].turn = firstPlayer;
-                // Start next game? Randomly select the first player
-                io.to(room).emit('swapTurn',keys[room].turn);
+              if(keys[room].response.correctness) {
+                stats[keys[room].id.filter(user => user !== socket.id)[0]].score += 1;
               }
+              // Both players have answered incorrectly
+              io.to(room).emit('updateScore',{
+                [socket.id]: stats[socket.id].score,
+                [keys[room].id.filter(user => user !== socket.id)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
+              });
+              
+              // reset the response
+              keys[room].response.correctness = null;
+              keys[room].response.timeUsed = null;
+              const firstPlayer = (Math.random()>0.5)? keys[room].id[1]:keys[room].id[0];
+              keys[room].turn = firstPlayer;
+              // Start next game? Randomly select the first player
+              io.to(room).emit('swapTurn',keys[room].turn);
             }
           
         }
