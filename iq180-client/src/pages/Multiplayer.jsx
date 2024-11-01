@@ -107,10 +107,10 @@ function Multiplayer ({goToPage}) {
 
     useEffect(() => {
         function onStartGame({turn, targetLength, attempt, orderofoperations, roundLength}) {
-            setNumbersLength(String(targetLength));
-            setAttemptsAllowed(String(attempt));
+            setNumbersLength(targetLength);
+            setAttemptsAllowed(attempt);
             setOrderOfOperations(orderofoperations);
-            setRoundLength(String(roundLength));
+            setRoundLength(roundLength);
             if (turn==playerID) {
                 setIsYourTurn(true);
                 // setTimeLeft(60);
@@ -199,7 +199,7 @@ function Multiplayer ({goToPage}) {
     }, [timeLeft,isRoundInProgress]);
 
     useEffect(() => {
-        if (isTimeUp && isRoundInProgress) {
+        if (isTimeUp && isRoundInProgress && !timeLeft) {
             setIsRoundInProgress(false);
             server.emit('checkAns', {nums: Array(numbersLength).fill(), operators: Array(numbersLength-1).fill(), timeUsed: roundLength-timeLeft, room:currentRoom, attemptleft:0,isTimeUp: true});
         }
