@@ -11,7 +11,7 @@ const Leaderboard = ({ onClose }) => {
 
   useEffect(() => {
     function onLeaderBoard(sortedStats) {
-      alert(sortedStats);
+      // alert(sortedStats);
       setData(sortedStats);
     }
 
