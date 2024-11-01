@@ -442,10 +442,12 @@ io.on('connection', (socket) => {
           
         }
         else{
-          if(!booleanResult && attemptleft > 1){
+          if(!booleanResult){
             // Emit the wrong answer event to the client and return the number of attempts left
             socket.emit('wrongAnswer', attemptleft-1);
-            return;
+            if (attemptleft > 1) {
+              return;
+            }
           }
           // Store the response
           keys[room].response.correctness = booleanResult;
