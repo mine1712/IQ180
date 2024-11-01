@@ -91,11 +91,28 @@ body, html {
   color: white;
   border: 1px solid white;
   border-radius: 5px;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
   cursor: pointer;
   transition: transform 0.2s ease;
   z-index: 1;
 }
 .howtoplay-button:hover {
+  transform: scale(1.2); 
+}
+
+.leaderboard-button {
+  font-size: 24px;
+  font-weight: bold;
+  padding: 10px 20px;
+  background-color: #83befd;
+  color: white;
+  border: 1px solid white;
+  border-radius: 5px;
+  margin-bottom: 50px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 1;
+}
+.leaderboard-button:hover {
   transform: scale(1.2); 
 }

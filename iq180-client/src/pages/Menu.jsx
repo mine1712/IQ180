@@ -1,12 +1,13 @@
 // Menu.js
 import React, { useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
-import {Howtoplay} from '../components';
+import {Howtoplay,Leaderboard} from '../components';
 import RandomLetter from '../components/Effects';
 import '../css/Menu.css';
 
 function Menu({goToPage}) {
-  const [showHowtoplay, setShowHowtoplay] = useState(false); 
+  const [showHowtoplay, setShowHowtoplay] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false); 
   // const navigate = useNavigate();
 
   // const handlePlayClick = () => {
@@ -21,6 +22,14 @@ function Menu({goToPage}) {
     setShowHowtoplay(false);
   };
 
+  const handleLeaderboardClick = () => {
+    setShowLeaderboard(true);
+  }
+
+  const handleCloseLeaderboard = () => {
+    setShowLeaderboard(false);
+  }
+
   return (
     <div className="menu-container">
       <h1 className="game-title">IQ180</h1>
@@ -33,7 +42,11 @@ function Menu({goToPage}) {
       <button className="howtoplay-button" onClick={handleHowtoplayClick}>
         How to play
       </button>
+      <button className="leaderboard-button" onClick={handleLeaderboardClick}>
+        Leaderboard
+      </button>
       {showHowtoplay && <Howtoplay onClose={handleCloseHowtoplay} />}
+      {showLeaderboard && <Leaderboard onClose={handleCloseLeaderboard} />}
       <RandomLetter />
     </div>
   );
