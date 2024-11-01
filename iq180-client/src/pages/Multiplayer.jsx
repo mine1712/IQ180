@@ -105,10 +105,11 @@ function Multiplayer ({goToPage}) {
     })
 
     useEffect(() => {
-        function onStartGame({turn, targetLength, attempt, orderofoperations}) {
+        function onStartGame({turn, targetLength, attempt, orderofoperations, roundLength}) {
             setNumbersLength(targetLength);
             setAttemptsAllowed(attempt);
             setOrderOfOperations(orderofoperations);
+            setRoundLength(roundLength);
             if (turn==playerID) {
                 setIsYourTurn(true);
                 // setTimeLeft(60);
@@ -534,7 +535,7 @@ function Multiplayer ({goToPage}) {
                                         strokeWidth: '2px',
                                         stroke: 'black',
                                         fill: 'none',
-                                        animation: timeLeft !== 0 && isYourTurn ? 'countdown 60s linear infinite forwards' : 'none'}}></circle>
+                                        animation: timeLeft !== 0 && isYourTurn ? `countdown ${roundLength}s linear infinite forwards` : 'none'}}></circle>
                                 </svg>
                             </div>
                         )}
