@@ -103,14 +103,14 @@ function Multiplayer ({goToPage}) {
         return () => {
             server.off("getReady",onGetReady);
         }
-    })
+    },[]);
 
     useEffect(() => {
         function onStartGame({turn, targetLength, attempt, orderofoperations, roundLength}) {
-            setNumbersLength(targetLength);
-            setAttemptsAllowed(attempt);
+            setNumbersLength(String(targetLength));
+            setAttemptsAllowed(String(attempt));
             setOrderOfOperations(orderofoperations);
-            setRoundLength(roundLength);
+            setRoundLength(String(roundLength));
             if (turn==playerID) {
                 setIsYourTurn(true);
                 // setTimeLeft(60);
@@ -260,10 +260,10 @@ function Multiplayer ({goToPage}) {
 
     useEffect(() => {
         function onOptions({targetLength, attempt, orderofoperations, roundLength}) {
-            setNumbersLengthInput(Integer.toString(targetLength));
-            setAttemptsAllowedInput(Integer.toString(attempt));
+            setNumbersLengthInput(targetLength);
+            setAttemptsAllowedInput(attempt);
             setOrderOfOperations(orderofoperations);
-            setRoundLengthInput(Integer.toString(roundLength));
+            setRoundLengthInput(roundLength);
         }
         server.on("options",onOptions);
 
@@ -273,18 +273,18 @@ function Multiplayer ({goToPage}) {
     }, [])
 
     function checkNumbersLength(str) {
-        var n = Math.floor(Number(str));
-        return n !== Infinity && String(n) === str && n >= 3 && n<=9;
+        var n = parseInt(str);
+        return Number.isInteger(n) && n >= 3 && n<=9;
     }
     
     function checkRoundLength(str) {
-        var n = Math.floor(Number(str));
-        return n !== Infinity && String(n) === str && n >= 20 && n<=120;
+        var n = parseInt(str);
+        return Number.isInteger(n) && n >= 20 && n<=120;
     }
 
     function checkAttemptsAllowed(str) {
-        var n = Math.floor(Number(str));
-        return n !== Infinity && String(n) === str && n >= 1 && n<=5;
+        var n = parseInt(str);
+        return Number.isInteger(n) && n >= 1 && n<=5;
     }
 
     const handleOptionsSubmit = () => {

@@ -430,6 +430,15 @@ io.on('connection', (socket) => {
               }
               if(keys[room].response.correctness) {
                 stats[keys[room].id.filter(user => user !== socket.id)[0]].score += 1;
+                keys[room].response.correctness = null;
+                keys[room].response.timeUsed = null;
+                keys[room].turn = keys[room].id.filter(user => user !== socket.id)[0];
+                io.to(room).emit('updateScore',{
+                  [socket.id]: stats[socket.id].score,
+                  [keys[room].id.filter(user => user !== socket.id)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score
+                });
+                io.to(room).emit('swapTurn',keys[room].turn);
+                return;
               }
               // Both players have answered incorrectly
               io.to(room).emit('updateScore',{
