@@ -230,7 +230,7 @@ function Multiplayer ({goToPage}) {
         // alert(timeLeft);
         // alert("Multiplayer submission has not been implemented yet.\nNumbers: " + playSlotNumbers + "\nOperators: "+ playSlotOperators)
         server.emit('checkAns', {nums: numbers, operators: operators, timeUsed: roundLength-timeLeft, room:currentRoom, attemptleft:attemptsLeft, isTimeUp: isTimeUp});
-        setAttemptsLeft(attemptsLeft-1);
+        // setAttemptsLeft(attemptsLeft-1);
         setIsRoundInProgress(false);
     }
 
