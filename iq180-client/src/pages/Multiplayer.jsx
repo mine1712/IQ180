@@ -537,7 +537,7 @@ function Multiplayer ({goToPage}) {
                                         strokeWidth: '2px',
                                         stroke: 'black',
                                         fill: 'none',
-                                        animation: timeLeft !== 0 && isYourTurn ? `countdown ${roundLength}s linear infinite forwards` : 'none'}}></circle>
+                                        animation: timeLeft !== 0 && isRoundInProgress ? `countdown ${roundLength}s linear infinite forwards` : 'none'}}></circle>
                                 </svg>
                             </div>
                         )}
