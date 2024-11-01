@@ -78,6 +78,7 @@ function Multiplayer ({goToPage}) {
         }
         function onSwapTurn(nextPlayer) {
             // alert(nextPlayer)
+            setIsRoundInProgress(false);
             if (nextPlayer==playerID) {
                 setIsYourTurn(true);
             } else {
@@ -233,14 +234,13 @@ function Multiplayer ({goToPage}) {
         // alert("Multiplayer submission has not been implemented yet.\nNumbers: " + playSlotNumbers + "\nOperators: "+ playSlotOperators)
         server.emit('checkAns', {nums: numbers, operators: operators, timeUsed: roundLength-timeLeft, room:currentRoom, attemptleft:attemptsLeft, isTimeUp: isTimeUp});
         // setAttemptsLeft(attemptsLeft-1);
-        setIsRoundInProgress(false);
     }
 
     useEffect(() => {
         function onWrongAnswer(attemptleft) {
-            if (attemptleft!==0) {
-                setIsRoundInProgress(true);
-            }
+            // if (attemptleft===0) {
+            //     setIsRoundInProgress(false);
+            // }
             setAttemptsLeft(attemptleft);
             alert("Your answer was incorrect!");
         }
