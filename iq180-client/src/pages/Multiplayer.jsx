@@ -238,7 +238,9 @@ function Multiplayer ({goToPage}) {
 
     useEffect(() => {
         function onWrongAnswer(attemptleft) {
-            setIsRoundInProgress(true);
+            if (attemptleft!==0) {
+                setIsRoundInProgress(true);
+            }
             setAttemptsLeft(attemptleft);
             alert("Your answer was incorrect!");
         }
