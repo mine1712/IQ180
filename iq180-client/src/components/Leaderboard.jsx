@@ -26,11 +26,10 @@ const Leaderboard = ({ onClose }) => {
     <div className="leaderboard-modal">
       <div className="modal-content">
         <span className="close-button" onClick={onClose}>&times;</span>
-        <h2>Leaderboard (WIP)</h2>     
+        <h2>Leaderboard</h2>     
         {!data ||
         Object.keys(data).length < 1 ? null : (
           <div>
-            <h2>Score board</h2>{" "}
             <p>
               {Object.keys(data).map((key) => (
                 <div key={key}>
