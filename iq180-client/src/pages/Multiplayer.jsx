@@ -40,6 +40,13 @@ function Multiplayer ({goToPage}) {
     const [attemptsAllowedInput, setAttemptsAllowedInput] = useState("3");
 
     const [isConnected, setIsConnected] = useState(server.connected);
+    const [dashOffSet, setDashOffSet] = useState(113);
+
+    useEffect(() => {
+        const circumference = 2 * Math.PI * 18; 
+        const offset = circumference - (timeLeft / roundLength) * circumference;
+        setDashOffSet(offset);
+      }, [timeLeft, roundLength]);
 
     useEffect(() => {
         function onNumbers(data) {
@@ -532,12 +539,13 @@ function Multiplayer ({goToPage}) {
                                     height: '40px',
                                     transform: 'rotateY(-180deg) rotateZ(-90deg)'}}>
                                     <circle r="18" cx="20" cy="20" style={{strokeDasharray: '113px',
-                                        strokeDashoffset: '0px',
+                                        strokeDashoffset: `${dashOffSet}px`,
                                         strokeLinecap: 'round',
                                         strokeWidth: '2px',
                                         stroke: 'black',
                                         fill: 'none',
-                                        animation: timeLeft !== 0 && isRoundInProgress ? `countdown ${roundLength}s linear infinite forwards` : 'none'}}></circle>
+                                        transition: 'stroke-dashoffset 1s linear'
+                                        }}></circle>
                                 </svg>
                             </div>
                         )}
