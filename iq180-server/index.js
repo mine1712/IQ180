@@ -423,9 +423,9 @@ io.on('connection', (socket) => {
           }
             else{
               // Second player has answered incorrectly but still has attempts left
+              socket.emit('wrongAnswer', attemptleft-1);
               if(!booleanResult && attemptleft > 1){
                 // Emit the wrong answer event to the client and return the number of attempts left
-                socket.emit('wrongAnswer', attemptleft-1);
                 return;
               }
               // Both players have answered incorrectly

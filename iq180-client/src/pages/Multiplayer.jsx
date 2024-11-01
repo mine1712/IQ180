@@ -515,7 +515,7 @@ function Multiplayer ({goToPage}) {
                         }}> 
                         {targetResult!==null && (
                             <div style={{fontSize: '18px',
-                                fontWeight: '600', margin:'10px', marginRight:'50px'}}><>{targetResult}</></div>
+                                fontWeight: '600', margin:'10px', minWidth:'67px'}}><>{isRoundInProgress ?targetResult:null}</></div>
                         )}
                         {timeLeft!=null && (
                             <div id ="countdown"style ={{position: 'relative',
@@ -542,7 +542,7 @@ function Multiplayer ({goToPage}) {
                             </div>
                         )}
                         {attemptsLeft!== null && (
-                            <div style={{ fontSize: '18px', margin: '10px',minWidth:'67px' }}>
+                            <div style={{ fontSize: '18px', margin: '10px',minWidth:'67px', textAlign:'right' }}>
                                 {Array.from({ length: attemptsLeft }).map((_, index) => (
                                     <svg key={index} fill="#000000" height="20px" width="20px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 471.701 471.701">
                                         <g>
