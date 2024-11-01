@@ -22,6 +22,7 @@ function Multiplayer ({goToPage}) {
     const [currentRoom, setCurrentRoom] = useState(null);
     const [privateRoomCode,setPrivateRoomCode] = useState("");
     const [isReady, setIsReady] = useState(false);
+    const [waitOptions, setWaitOptions] = useState(false);
     // Game Variables
     const [timeLeft,setTimeLeft] = useState(null);
     const [isTimeUp,setIsTimeUp] = useState(false);
@@ -261,6 +262,7 @@ function Multiplayer ({goToPage}) {
     const handleEnterOptions = () => {
         // alert("test1")
         server.emit("getOption");
+        setWaitOptions(true);
         // alert("test")
     }
 
@@ -270,6 +272,7 @@ function Multiplayer ({goToPage}) {
             setAttemptsAllowedInput(attempt.toString());
             setOrderOfOperations(orderofoperations);
             setRoundLengthInput(roundLength.toString());
+            setWaitOptions(false);
             setCurrentMultiplayerScreen("roomoptions");
         }
         server.on("options",onOptions);
@@ -436,6 +439,11 @@ function Multiplayer ({goToPage}) {
                         <button onClick={handleEnterOptions}>Option</button>
                         <button onClick={handleReady}
                             disabled={isReady}>Ready</button>
+                        <div>
+                            {waitOptions && (
+                                <p>Waiting for server</p>
+                            )}
+                        </div>
                         <div>
                             <button onClick={()=>{
                                 server.emit('exitRoom');
