@@ -601,6 +601,7 @@ io.on('connection', (socket) => {
     const statsArray = Object.entries(stats);
     statsArray.sort(([, a], [, b]) => b.score - a.score);
     const sortedStats = Object.fromEntries(statsArray);
+    console.log(sortedStats);
     socket.emit('leaderBoard', sortedStats);
   });
 
