@@ -32,6 +32,7 @@ function Multiplayer ({goToPage}) {
     // const [getNumberButtonState,setGetNumberButtonState] = useState(false);
     // TODO: Configurable values
     const [roundLength, setRoundLength] = useState(60);
+    const [roundLengthInput, setRoundLengthInput] = useState("60");
     const [numbersLength, setNumbersLength] = useState(5);
     const [numbersLengthInput, setNumbersLengthInput] = useState("5");
     const [orderOfOperations, setOrderOfOperations] = useState("pemdas");
@@ -255,10 +256,11 @@ function Multiplayer ({goToPage}) {
     }
 
     useEffect(() => {
-        function onOptions({targetLength, attempt, orderofoperations}) {
+        function onOptions({targetLength, attempt, orderofoperations, roundLength}) {
             setNumbersLengthInput(Integer.toString(targetLength));
             setAttemptsAllowedInput(Integer.toString(attempt));
             setOrderOfOperations(orderofoperations);
+            setRoundLengthInput(Integer.toString(roundLength));
         }
         server.on("options",onOptions);
 
@@ -272,10 +274,10 @@ function Multiplayer ({goToPage}) {
         return n !== Infinity && String(n) === str && n >= 3 && n<=9;
     }
     
-    // function checkRoundLength(str) {
-    //     var n = Math.floor(Number(str));
-    //     return n !== Infinity && String(n) === str && n >= 20 && n<=120;
-    // }
+    function checkRoundLength(str) {
+        var n = Math.floor(Number(str));
+        return n !== Infinity && String(n) === str && n >= 20 && n<=120;
+    }
 
     function checkAttemptsAllowed(str) {
         var n = Math.floor(Number(str));
@@ -287,9 +289,9 @@ function Multiplayer ({goToPage}) {
         if (!checkNumbersLength(numbersLengthInput)) {
             errors.push("Numbers must be an integer from 3-9");
         }
-        // if (!checkRoundLength(roundLengthInput)) {
-        //     errors.push("Round Length must be integer from 20-120");
-        // }
+        if (!checkRoundLength(roundLengthInput)) {
+            errors.push("Round Length must be integer from 20-120");
+        }
         if (!checkAttemptsAllowed(attemptsAllowedInput)) {
             errors.push("Attempts Allowed must be integer from 1-5");
         }
@@ -298,9 +300,9 @@ function Multiplayer ({goToPage}) {
             return;
         }
         setNumbersLength(parseInt(numbersLengthInput));
-        // setRoundLength(parseInt(roundLengthInput));
+        setRoundLength(parseInt(roundLengthInput));
         setAttemptsAllowed(parseInt(attemptsAllowedInput));
-        server.emit("setOptions",{targetLength:parseInt(numbersLengthInput), attempt:parseInt(attemptsAllowedInput), orderofoperations:orderOfOperations});
+        server.emit("setOptions",{targetLength:parseInt(numbersLengthInput), attempt:parseInt(attemptsAllowedInput), orderofoperations:orderOfOperations, roundLength:parseInt(roundLengthInput)});
         setCurrentMultiplayerScreen("roomready");
         // alert(checkNumbersLength(numbersLength));
     }
@@ -457,7 +459,7 @@ function Multiplayer ({goToPage}) {
                                 <option value="lefttoright">Left to Right</option>
                             </select>
                         </div>
-                        {/* <div>
+                        <div>
                             <h3 style={{textAlign:'center', display:'inline'}}>Round Length: </h3>
                             <input 
                                 type="text" 
@@ -466,7 +468,7 @@ function Multiplayer ({goToPage}) {
                                 placeholder="Default = 60" 
                                 className='input'
                             />
-                        </div> */}
+                        </div>
                         <div>
                             <h3 style={{textAlign:'center', display:'inline'}}>Attempts Allowed: </h3>
                             <input 
