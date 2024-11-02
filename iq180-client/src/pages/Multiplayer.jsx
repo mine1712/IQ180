@@ -22,6 +22,7 @@ function Multiplayer ({goToPage}) {
     const [currentRoom, setCurrentRoom] = useState(null);
     const [privateRoomCode,setPrivateRoomCode] = useState("");
     const [isReady, setIsReady] = useState(false);
+    const [waitOptions, setWaitOptions] = useState(false);
     // Game Variables
     const [timeLeft,setTimeLeft] = useState(null);
     const [isTimeUp,setIsTimeUp] = useState(false);
@@ -40,6 +41,13 @@ function Multiplayer ({goToPage}) {
     const [attemptsAllowedInput, setAttemptsAllowedInput] = useState("3");
 
     const [isConnected, setIsConnected] = useState(server.connected);
+    const [dashOffSet, setDashOffSet] = useState(113);
+
+    useEffect(() => {
+        const circumference = 2 * Math.PI * 18; 
+        const offset = circumference - (timeLeft / roundLength) * circumference;
+        setDashOffSet(offset);
+      }, [timeLeft, roundLength]);
 
     useEffect(() => {
         function onNumbers(data) {
@@ -103,7 +111,7 @@ function Multiplayer ({goToPage}) {
         return () => {
             server.off("getReady",onGetReady);
         }
-    })
+    },[]);
 
     useEffect(() => {
         function onStartGame({turn, targetLength, attempt, orderofoperations, roundLength}) {
@@ -199,7 +207,7 @@ function Multiplayer ({goToPage}) {
     }, [timeLeft,isRoundInProgress]);
 
     useEffect(() => {
-        if (isTimeUp && isRoundInProgress) {
+        if (isTimeUp && isRoundInProgress && !timeLeft) {
             setIsRoundInProgress(false);
             server.emit('checkAns', {nums: Array(numbersLength).fill(), operators: Array(numbersLength-1).fill(), timeUsed: roundLength-timeLeft, room:currentRoom, attemptleft:0,isTimeUp: true});
         }
@@ -254,16 +262,18 @@ function Multiplayer ({goToPage}) {
     const handleEnterOptions = () => {
         // alert("test1")
         server.emit("getOption");
+        setWaitOptions(true);
         // alert("test")
-        setCurrentMultiplayerScreen("roomoptions");
     }
 
     useEffect(() => {
         function onOptions({targetLength, attempt, orderofoperations, roundLength}) {
-            setNumbersLengthInput(Integer.toString(targetLength));
-            setAttemptsAllowedInput(Integer.toString(attempt));
+            setNumbersLengthInput(targetLength.toString());
+            setAttemptsAllowedInput(attempt.toString());
             setOrderOfOperations(orderofoperations);
-            setRoundLengthInput(Integer.toString(roundLength));
+            setRoundLengthInput(roundLength.toString());
+            setWaitOptions(false);
+            setCurrentMultiplayerScreen("roomoptions");
         }
         server.on("options",onOptions);
 
@@ -430,6 +440,11 @@ function Multiplayer ({goToPage}) {
                         <button onClick={handleReady}
                             disabled={isReady}>Ready</button>
                         <div>
+                            {waitOptions && (
+                                <p>Waiting for server</p>
+                            )}
+                        </div>
+                        <div>
                             <button onClick={()=>{
                                 server.emit('exitRoom');
                                 goToPage("Menu");
@@ -532,12 +547,13 @@ function Multiplayer ({goToPage}) {
                                     height: '40px',
                                     transform: 'rotateY(-180deg) rotateZ(-90deg)'}}>
                                     <circle r="18" cx="20" cy="20" style={{strokeDasharray: '113px',
-                                        strokeDashoffset: '0px',
+                                        strokeDashoffset: `${dashOffSet}px`,
                                         strokeLinecap: 'round',
                                         strokeWidth: '2px',
                                         stroke: 'black',
                                         fill: 'none',
-                                        animation: timeLeft !== 0 && isRoundInProgress ? `countdown ${roundLength}s linear infinite forwards` : 'none'}}></circle>
+                                        transition: 'stroke-dashoffset 1s linear'
+                                        }}></circle>
                                 </svg>
                             </div>
                         )}
