@@ -22,9 +22,16 @@ function App() {
 
     useEffect(() => {
         function onDisconnect(reason) {
+            alert(reason);
             if (reason === "io server disconnect") {
                 // the disconnection was initiated by the server, you need to reconnect manually
                 server.connect();
+            }
+            if (reason === "transport error") {
+                if (currentPage == "Multiplayer") {
+                    alert("The server has been turned off!\nReturning to Menu")
+                    setCurrentPage("Menu")
+                }
             }
         }
         server.on("disconnect", onDisconnect)
