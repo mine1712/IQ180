@@ -9,58 +9,58 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; 
+    z-index: 1000;
 }
-  
+
 .modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius:15px;
-  position: relative; 
-  width: 80%; 
-  max-width: 600px;
-  
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    position: relative;
+    width: 80%;
+    max-width: 600px;
 }
-  
+
 .close-button {
-  position: absolute;
-  top: 10px; 
-  right: 15px; 
-  font-size: 24px; 
-  font-weight: bold;
-  cursor: pointer;
-  color: #333; 
-  
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;
 }
 
 .close-button:hover {
-  color: red; 
-  font-size: 30px;
+    color: red;
+    font-size: 30px;
 }
 
 
 #howtoplay-line1::before {
-  content: '+'; 
-  color: green; 
-  font-size: 24px; 
-  font-weight: bold; 
+    content: '+';
+    color: green;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 #howtoplay-line2::before {
-    content: '-   '; 
-    color: red; 
-    font-size: 24px; 
-    font-weight: bold; 
+    content: '-   ';
+    color: red;
+    font-size: 24px;
+    font-weight: bold;
 }
+
 #howtoplay-line3::before {
-    content: '×    '; 
-    color: purple; 
-    font-size: 24px; 
-    font-weight: bold; 
+    content: '×    ';
+    color: purple;
+    font-size: 24px;
+    font-weight: bold;
 }
+
 #howtoplay-line4::before {
-    content: '÷   '; 
-    color: blue; 
-    font-size: 24px; 
-    font-weight: bold; 
+    content: '÷   ';
+    color: blue;
+    font-size: 24px;
+    font-weight: bold;
 }

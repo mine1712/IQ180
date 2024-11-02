@@ -1,6 +1,6 @@
-function AttemptsDisplay({attemptsLeft}) {
+function AttemptsDisplay({ attemptsLeft }) {
     return (
-        <div style={{ fontSize: '18px', margin: '10px',minWidth:'67px', textAlign:'right' }}>
+        <div style={{ fontSize: '18px', margin: '10px', minWidth: '67px', textAlign: 'right' }}>
             {Array.from({ length: attemptsLeft }).map((_, index) => (
                 <svg key={index} fill="#000000" height="20px" width="20px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 471.701 471.701">
                     <g>

@@ -1,27 +1,27 @@
 import { useState, useEffect } from 'react';
 import '../css/Singleplayer.css';
-import {GameArea,ScoreBar,TargetDisplay,AttemptsDisplay,Timer,ReturnToMenuButton} from '../components';
+import { GameArea, ScoreBar, TargetDisplay, AttemptsDisplay, Timer, ReturnToMenuButton } from '../components';
 import { generateNumbers } from '../utils/numberGenerator'
 
-const Singleplayer = ({goToPage}) => {
+const Singleplayer = ({ goToPage }) => {
     // Screen Value
     const [currentSingleplayerScreen, setCurrentSingleplayerScreen] = useState("nameentry");
     // Player Info
     const [playerScore, setPlayerScore] = useState(0);
     const [userName, setUserName] = useState("");
     // Game Field Values
-    const [playSlotNumbers,setPlaySlotNumbers] = useState(Array(5).fill());
-    const [playSlotOperators,setPlaySlotOperators] = useState(Array(4).fill());
-    const [bankNumbers,setBankNumbers] = useState([]);
-    const [bankOperators,setBankOperators] = useState(['+','-','x','÷'])
+    const [playSlotNumbers, setPlaySlotNumbers] = useState(Array(5).fill());
+    const [playSlotOperators, setPlaySlotOperators] = useState(Array(4).fill());
+    const [bankNumbers, setBankNumbers] = useState([]);
+    const [bankOperators, setBankOperators] = useState(['+', '-', 'x', '÷'])
     // const [selectedRoom, setSelectedRoom] = useState(null);
     // Game Variables
-    const [timeLeft,setTimeLeft] = useState(null);
-    const [isTimeUp,setIsTimeUp] = useState(false);
+    const [timeLeft, setTimeLeft] = useState(null);
+    const [isTimeUp, setIsTimeUp] = useState(false);
     const [isYourTurn, setIsYourTurn] = useState(false);
-    const [isRoundInProgress,setIsRoundInProgress] = useState(false);
-    const [targetResult,setTargetResult] = useState(null);
-    const [playerLost,setPlayerLost] = useState(false);
+    const [isRoundInProgress, setIsRoundInProgress] = useState(false);
+    const [targetResult, setTargetResult] = useState(null);
+    const [playerLost, setPlayerLost] = useState(false);
     // Configurable values
     const [numbersLengthInput, setNumbersLengthInput] = useState("5");
     const [numbersLength, setNumbersLength] = useState(5);
@@ -37,7 +37,7 @@ const Singleplayer = ({goToPage}) => {
     const initializeSingleplayer = () => {
         setPlayerScore(0);
         setPlaySlotNumbers(Array(numbersLength).fill());
-        setPlaySlotOperators(Array(numbersLength-1).fill());
+        setPlaySlotOperators(Array(numbersLength - 1).fill());
         setBankNumbers([]);
         setTimeLeft(null);
         setAttemptsLeft(null);
@@ -89,32 +89,32 @@ const Singleplayer = ({goToPage}) => {
 
     useEffect(() => {
         setPlaySlotNumbers(Array(numbersLength).fill());
-        setPlaySlotOperators(Array(numbersLength-1).fill());
+        setPlaySlotOperators(Array(numbersLength - 1).fill());
     }, [numbersLength])
 
     function checkNumbersLength(str) {
         var n = Math.floor(Number(str));
-        return n !== Infinity && String(n) === str && n >= 3 && n<=9;
+        return n !== Infinity && String(n) === str && n >= 3 && n <= 9;
     }
-    
+
     function checkRoundLength(str) {
         var n = Math.floor(Number(str));
-        return n !== Infinity && String(n) === str && n >= 20 && n<=120;
+        return n !== Infinity && String(n) === str && n >= 20 && n <= 120;
     }
 
     function checkAttemptsAllowed(str) {
         var n = Math.floor(Number(str));
-        return n !== Infinity && String(n) === str && n >= 1 && n<=5;
+        return n !== Infinity && String(n) === str && n >= 1 && n <= 5;
     }
 
-    const handleSubmission = (numbers,operators) => {
-        if (orderOfOperations=="pemdas") {
+    const handleSubmission = (numbers, operators) => {
+        if (orderOfOperations == "pemdas") {
             let equation = "";
             let playerAnswer;
-            for (let i=0;i<numbers.length;i++) {
-                equation+=numbers[i];
-                if (i!==numbers.length-1) {
-                    equation+=operators[i];
+            for (let i = 0; i < numbers.length; i++) {
+                equation += numbers[i];
+                if (i !== numbers.length - 1) {
+                    equation += operators[i];
                 }
             }
             // alert(equation)
@@ -124,29 +124,29 @@ const Singleplayer = ({goToPage}) => {
                     alert("Correct! The solution is valid.");
                     setIsRoundInProgress(false);
                     setIsYourTurn(false)
-                    setPlayerScore(playerScore+1);
+                    setPlayerScore(playerScore + 1);
                     return true;
                 } else {
                     alert(`Incorrect. The result is ${playerAnswer}, but ${targetResult} was expected.`);
-                    setAttemptsLeft(attemptsLeft-1);
+                    setAttemptsLeft(attemptsLeft - 1);
                     return false;
                 }
             } catch (error) {
                 alert("Error in the expression. Please ensure it is well-formed.");
-                setAttemptsLeft(attemptsLeft-1);
+                setAttemptsLeft(attemptsLeft - 1);
                 return false;
             }
             // const playerAnswer = eval(equation);
             // alert("Player Answer: "+playerAnswer+"\nTarget: "+targetResult);
             // return 
-        } else if (orderOfOperations=="lefttoright") {
+        } else if (orderOfOperations == "lefttoright") {
             let nums_check = numbers.filter((value) => value !== null);
             let operators_check = operators.filter((value) => value !== null);
             // let booleanResult;
-            if (nums_check.length === numbersLength && operators_check.length === (numbersLength-1)) {
+            if (nums_check.length === numbersLength && operators_check.length === (numbersLength - 1)) {
                 let result = numbers[0];
-                for (let i=1;i<numbers.length;i++) {
-                    switch (operators[i-1]) {
+                for (let i = 1; i < numbers.length; i++) {
+                    switch (operators[i - 1]) {
                         case '+':
                             result += numbers[i];
                             break;
@@ -165,23 +165,23 @@ const Singleplayer = ({goToPage}) => {
                     alert("Correct! The solution is valid.");
                     setIsRoundInProgress(false);
                     setIsYourTurn(false)
-                    setPlayerScore(playerScore+1);
+                    setPlayerScore(playerScore + 1);
                     return true;
                 } else {
                     alert(`Incorrect. The result is ${result}, but ${targetResult} was expected.`);
-                    setAttemptsLeft(attemptsLeft-1);
+                    setAttemptsLeft(attemptsLeft - 1);
                     return false;
                 }
             }
             alert("Error in the expression. Please ensure it is well-formed.");
-            setAttemptsLeft(attemptsLeft-1);
+            setAttemptsLeft(attemptsLeft - 1);
             return false;
         }
-        
+
     }
 
     useEffect(() => {
-        if (attemptsLeft===0) {
+        if (attemptsLeft === 0) {
             setTimeLeft(0);
             setPlayerLost(true);
         }
@@ -189,38 +189,38 @@ const Singleplayer = ({goToPage}) => {
 
     return (
         <div>
-            {currentSingleplayerScreen=="nameentry" && (
+            {currentSingleplayerScreen == "nameentry" && (
                 <div className="modal">
-                <div className="modal-content">
-                    <h2>Enter Your Name</h2>
-                    <input 
-                        type="text" 
-                        value={userName} 
-                        onChange={(e) => setUserName(e.target.value)} 
-                        placeholder="Your name" 
-                        className='input'
-                    />
-                    <button onClick={handleNameSubmit}>Submit</button>
-                </div>
+                    <div className="modal-content">
+                        <h2>Enter Your Name</h2>
+                        <input
+                            type="text"
+                            value={userName}
+                            onChange={(e) => setUserName(e.target.value)}
+                            placeholder="Your name"
+                            className='input'
+                        />
+                        <button onClick={handleNameSubmit}>Submit</button>
+                    </div>
                 </div>
             )}
-            {currentSingleplayerScreen=="gameoptions" && (
+            {currentSingleplayerScreen == "gameoptions" && (
                 <div className="modal">
                     <div className="modal-content">
                         <h1>Welcome {userName}!</h1>
                         <h2>Choose your options</h2>
                         <div>
-                            <h3 style={{textAlign:'center', display:'inline'}}>Numbers: </h3>
-                            <input 
-                                type="text" 
-                                value={numbersLengthInput} 
-                                onChange={(e) => setNumbersLengthInput(e.target.value)} 
-                                placeholder="Default = 5" 
+                            <h3 style={{ textAlign: 'center', display: 'inline' }}>Numbers: </h3>
+                            <input
+                                type="text"
+                                value={numbersLengthInput}
+                                onChange={(e) => setNumbersLengthInput(e.target.value)}
+                                placeholder="Default = 5"
                                 className='input'
                             />
                         </div>
                         <div>
-                            <h3 style={{textAlign:'center', display:'inline'}}>Order of Operation: </h3>
+                            <h3 style={{ textAlign: 'center', display: 'inline' }}>Order of Operation: </h3>
                             <select value={orderOfOperations}
                                 onChange={(e) => setOrderOfOperations(e.target.value)}
                             >
@@ -229,22 +229,22 @@ const Singleplayer = ({goToPage}) => {
                             </select>
                         </div>
                         <div>
-                            <h3 style={{textAlign:'center', display:'inline'}}>Round Length: </h3>
-                            <input 
-                                type="text" 
-                                value={roundLengthInput} 
-                                onChange={(e) => setRoundLengthInput(e.target.value)} 
-                                placeholder="Default = 60" 
+                            <h3 style={{ textAlign: 'center', display: 'inline' }}>Round Length: </h3>
+                            <input
+                                type="text"
+                                value={roundLengthInput}
+                                onChange={(e) => setRoundLengthInput(e.target.value)}
+                                placeholder="Default = 60"
                                 className='input'
                             />
                         </div>
                         <div>
-                            <h3 style={{textAlign:'center', display:'inline'}}>Attempts Allowed: </h3>
-                            <input 
-                                type="text" 
-                                value={attemptsAllowedInput} 
-                                onChange={(e) => setAttemptsAllowedInput(e.target.value)} 
-                                placeholder="Default = 3" 
+                            <h3 style={{ textAlign: 'center', display: 'inline' }}>Attempts Allowed: </h3>
+                            <input
+                                type="text"
+                                value={attemptsAllowedInput}
+                                onChange={(e) => setAttemptsAllowedInput(e.target.value)}
+                                placeholder="Default = 3"
                                 className='input'
                             />
                         </div>
@@ -252,38 +252,39 @@ const Singleplayer = ({goToPage}) => {
                     </div>
                 </div>
             )}
-            {currentSingleplayerScreen=="gamescreen" && (
+            {currentSingleplayerScreen == "gamescreen" && (
                 <div>
                     <ScoreBar playerScore={playerScore}
                         userName={userName} />
-                    <div style={{display: 'flex',
+                    <div style={{
+                        display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         padding: '10px',
-                        }}> 
-                        {targetResult!==null && <TargetDisplay isRoundInProgress={isRoundInProgress} targetResult={targetResult}/>}
-                        {timeLeft!=null && <Timer timeLeft={timeLeft} roundLength={roundLength}/>}
-                        {attemptsLeft!== null && <AttemptsDisplay attemptsLeft={attemptsLeft}/>}
+                    }}>
+                        {targetResult !== null && <TargetDisplay isRoundInProgress={isRoundInProgress} targetResult={targetResult} />}
+                        {timeLeft != null && <Timer timeLeft={timeLeft} roundLength={roundLength} />}
+                        {attemptsLeft !== null && <AttemptsDisplay attemptsLeft={attemptsLeft} />}
                     </div>
-                    <div style={{textAlign:'center'}}>
+                    <div style={{ textAlign: 'center' }}>
                         <button onClick={() => {
-                                // setIsYourTurn(true);
-                                setTimeLeft(roundLength);
-                                const generated = generateNumbers(numbersLength);
-                                setBankNumbers(generated[0]);
-                                setTargetResult(generated[1]);
-                                setPlaySlotNumbers(Array(numbersLength).fill());
-                                setPlaySlotOperators(Array(numbersLength-1).fill());
-                                setIsRoundInProgress(!isRoundInProgress);
-                                setAttemptsLeft(attemptsAllowed);
-                                }
-                            }
-                            disabled = {isRoundInProgress}
-                            
+                            // setIsYourTurn(true);
+                            setTimeLeft(roundLength);
+                            const generated = generateNumbers(numbersLength);
+                            setBankNumbers(generated[0]);
+                            setTargetResult(generated[1]);
+                            setPlaySlotNumbers(Array(numbersLength).fill());
+                            setPlaySlotOperators(Array(numbersLength - 1).fill());
+                            setIsRoundInProgress(!isRoundInProgress);
+                            setAttemptsLeft(attemptsAllowed);
+                        }
+                        }
+                            disabled={isRoundInProgress}
+
                         >Start</button>
                     </div>
-                    
-                    
+
+
                     <GameArea playSlotNumbers={playSlotNumbers}
                         playSlotOperators={playSlotOperators}
                         bankNumbers={bankNumbers}
@@ -297,9 +298,9 @@ const Singleplayer = ({goToPage}) => {
                         isRoundInProgress={isRoundInProgress}
                     />
                     {playerLost && (
-                        <h1 style={{textAlign:'center'}}>You lost! Try again?</h1>
+                        <h1 style={{ textAlign: 'center' }}>You lost! Try again?</h1>
                     )}
-                    <div style={{textAlign:'center'}}>
+                    <div style={{ textAlign: 'center' }}>
                         {playerLost && (
                             <button onClick={initializeSingleplayer}>Restart Game</button>
                         )}
@@ -307,11 +308,11 @@ const Singleplayer = ({goToPage}) => {
                             goToPage("Menu");
                         }} />
                     </div>
-                    
+
                 </div>
             )}
-        </div>     
+        </div>
     )
-    }
+}
 
 export default Singleplayer;

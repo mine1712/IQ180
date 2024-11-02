@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import '../css/Multiplayer.css';
 // import '../css/Multiplayer-temp.css';
-import {server} from '../socket'
-import {GameArea,ScoreBar,AttemptsDisplay,TargetDisplay,Timer,ReturnToMenuButton} from '../components';
+import { server } from '../socket'
+import { GameArea, ScoreBar, AttemptsDisplay, TargetDisplay, Timer, ReturnToMenuButton } from '../components';
 
-function Multiplayer ({goToPage}) {
+function Multiplayer({ goToPage }) {
     // Screen Value
     const [currentMultiplayerScreen, setCurrentMultiplayerScreen] = useState("nameentry");
     // Player Info
@@ -13,22 +13,22 @@ function Multiplayer ({goToPage}) {
     const [userName, setUserName] = useState("");
     const [playerID, setPlayerID] = useState(null);
     // Game Field Values
-    const [playSlotNumbers,setPlaySlotNumbers] = useState(Array(5).fill());
-    const [playSlotOperators,setPlaySlotOperators] = useState(Array(4).fill());
-    const [bankNumbers,setBankNumbers] = useState([]);
-    const [bankOperators,setBankOperators] = useState(['+','-','x','÷'])
+    const [playSlotNumbers, setPlaySlotNumbers] = useState(Array(5).fill());
+    const [playSlotOperators, setPlaySlotOperators] = useState(Array(4).fill());
+    const [bankNumbers, setBankNumbers] = useState([]);
+    const [bankOperators, setBankOperators] = useState(['+', '-', 'x', '÷'])
     // Room variables
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [currentRoom, setCurrentRoom] = useState(null);
-    const [privateRoomCode,setPrivateRoomCode] = useState("");
+    const [privateRoomCode, setPrivateRoomCode] = useState("");
     const [isReady, setIsReady] = useState(false);
     const [waitOptions, setWaitOptions] = useState(false);
     // Game Variables
-    const [timeLeft,setTimeLeft] = useState(null);
-    const [isTimeUp,setIsTimeUp] = useState(false);
+    const [timeLeft, setTimeLeft] = useState(null);
+    const [isTimeUp, setIsTimeUp] = useState(false);
     const [isYourTurn, setIsYourTurn] = useState(false);
-    const [isRoundInProgress,setIsRoundInProgress] = useState(false);
-    const [targetResult,setTargetResult] = useState(null);
+    const [isRoundInProgress, setIsRoundInProgress] = useState(false);
+    const [targetResult, setTargetResult] = useState(null);
     const [attemptsLeft, setAttemptsLeft] = useState(null);
     // const [getNumberButtonState,setGetNumberButtonState] = useState(false);
     // TODO: Configurable values
@@ -47,8 +47,8 @@ function Multiplayer ({goToPage}) {
             setBankNumbers(data.numbers);
             setTargetResult(data.targetResult);
         }
-        function onError({message}) {
-            alert("Error: "+message);
+        function onError({ message }) {
+            alert("Error: " + message);
         }
         server.on('numbers', onNumbers);
         server.on("error", onError);
@@ -71,7 +71,7 @@ function Multiplayer ({goToPage}) {
             setPlayerScore(scores[playerID]);
             setOponentScore(Object.keys(scores).filter(key => key !== playerID).map(key => scores[key])[0]);
             setPlaySlotNumbers(Array(numbersLength).fill());
-            setPlaySlotOperators(Array(numbersLength-1).fill());
+            setPlaySlotOperators(Array(numbersLength - 1).fill());
             setTimeLeft(null);
             setTargetResult(null);
             setAttemptsLeft(null);
@@ -80,7 +80,7 @@ function Multiplayer ({goToPage}) {
         function onSwapTurn(nextPlayer) {
             // alert(nextPlayer)
             setIsRoundInProgress(false);
-            if (nextPlayer==playerID) {
+            if (nextPlayer == playerID) {
                 setIsYourTurn(true);
             } else {
                 setIsYourTurn(false);
@@ -93,26 +93,26 @@ function Multiplayer ({goToPage}) {
             server.off('updateScore', onUpdateScore);
             server.off('swapTurn', onSwapTurn);
         }
-    }, [numbersLength,playerID]);
-    
+    }, [numbersLength, playerID]);
+
     useEffect(() => {
         function onGetReady() {
             setCurrentMultiplayerScreen("roomready");
         }
-        server.on("getReady",onGetReady);
+        server.on("getReady", onGetReady);
 
         return () => {
-            server.off("getReady",onGetReady);
+            server.off("getReady", onGetReady);
         }
-    },[]);
+    }, []);
 
     useEffect(() => {
-        function onStartGame({turn, targetLength, attempt, orderofoperations, roundLength}) {
+        function onStartGame({ turn, targetLength, attempt, orderofoperations, roundLength }) {
             setNumbersLength(targetLength);
             setAttemptsAllowed(attempt);
             setOrderOfOperations(orderofoperations);
             setRoundLength(roundLength);
-            if (turn==playerID) {
+            if (turn == playerID) {
                 setIsYourTurn(true);
                 // setTimeLeft(60);
                 setCurrentMultiplayerScreen("gamescreen");
@@ -129,11 +129,11 @@ function Multiplayer ({goToPage}) {
 
     useEffect(() => {
         setPlaySlotNumbers(Array(numbersLength).fill());
-        setPlaySlotOperators(Array(numbersLength-1).fill());
+        setPlaySlotOperators(Array(numbersLength - 1).fill());
     }, [numbersLength])
 
     useEffect(() => {
-        function onRoomFull(){
+        function onRoomFull() {
             setSelectedRoom(null);
             alert("This room is full! Please select anothoer room");
         }
@@ -145,7 +145,7 @@ function Multiplayer ({goToPage}) {
         }
 
         server.on('roomFull', onRoomFull);
-        if (selectedRoom!=null) {
+        if (selectedRoom != null) {
             server.on('joinRoomSuccess', onJoinRoomSuccess);
         }
 
@@ -166,14 +166,14 @@ function Multiplayer ({goToPage}) {
 
     useEffect(() => {
         function onUserDisconnected(name) {
-            if (currentMultiplayerScreen=="gamescreen") {
-                alert("Your opponent \""+name+"\" has left the room.\nPlease return to the menu.");
+            if (currentMultiplayerScreen == "gamescreen") {
+                alert("Your opponent \"" + name + "\" has left the room.\nPlease return to the menu.");
                 setIsRoundInProgress(false);
                 setIsYourTurn(false);
             }
         }
 
-        server.on("userDisconnected",onUserDisconnected);
+        server.on("userDisconnected", onUserDisconnected);
 
         // Check connection status on mount
         // setIsConnected(server.connected);
@@ -183,7 +183,7 @@ function Multiplayer ({goToPage}) {
         // server.on('disconnect', () => setIsConnected(false));
 
         return () => {
-            server.off("userDisconnected",onUserDisconnected);
+            server.off("userDisconnected", onUserDisconnected);
             // server.off('connect');
             // server.off('disconnect');
         }
@@ -194,24 +194,24 @@ function Multiplayer ({goToPage}) {
             setIsTimeUp(false);
             const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
             return () => clearTimeout(timer);
-        } else if (timeLeft===0 && isRoundInProgress){
+        } else if (timeLeft === 0 && isRoundInProgress) {
             setIsTimeUp(true);
         }
-    }, [timeLeft,isRoundInProgress]);
+    }, [timeLeft, isRoundInProgress]);
 
     useEffect(() => {
         if (isTimeUp && isRoundInProgress && !timeLeft) {
             setIsRoundInProgress(false);
-            server.emit('checkAns', {nums: Array(numbersLength).fill(), operators: Array(numbersLength-1).fill(), timeUsed: roundLength-timeLeft, room:currentRoom, attemptleft:0,isTimeUp: true});
+            server.emit('checkAns', { nums: Array(numbersLength).fill(), operators: Array(numbersLength - 1).fill(), timeUsed: roundLength - timeLeft, room: currentRoom, attemptleft: 0, isTimeUp: true });
         }
-    },[isTimeUp,isRoundInProgress]);
+    }, [isTimeUp, isRoundInProgress]);
 
     const handleRoomSelection = (room) => {
         setSelectedRoom(room);
     }
 
     useEffect(() => {
-        if (selectedRoom!=null) {
+        if (selectedRoom != null) {
             server.emit('joinRoom', { room: selectedRoom, name: userName });
             // alert(selectedRoom);
         }
@@ -221,9 +221,9 @@ function Multiplayer ({goToPage}) {
         setCurrentMultiplayerScreen("selectroom");
     }
 
-    const handleSubmission = (numbers,operators) => {
+    const handleSubmission = (numbers, operators) => {
         // alert(timeLeft);
-        server.emit('checkAns', {nums: numbers, operators: operators, timeUsed: roundLength-timeLeft, room:currentRoom, attemptleft:attemptsLeft, isTimeUp: isTimeUp});
+        server.emit('checkAns', { nums: numbers, operators: operators, timeUsed: roundLength - timeLeft, room: currentRoom, attemptleft: attemptsLeft, isTimeUp: isTimeUp });
         // setAttemptsLeft(attemptsLeft-1);
     }
 
@@ -235,10 +235,10 @@ function Multiplayer ({goToPage}) {
             setAttemptsLeft(attemptleft);
             alert("Your answer was incorrect!");
         }
-        server.on("wrongAnswer",onWrongAnswer);
+        server.on("wrongAnswer", onWrongAnswer);
 
         return () => {
-            server.off("wrongAnswer",onWrongAnswer);
+            server.off("wrongAnswer", onWrongAnswer);
         }
     })
 
@@ -248,7 +248,7 @@ function Multiplayer ({goToPage}) {
     }
 
     useEffect(() => {
-        function onOptions({targetLength, attempt, orderofoperations, roundLength}) {
+        function onOptions({ targetLength, attempt, orderofoperations, roundLength }) {
             setNumbersLengthInput(targetLength.toString());
             setAttemptsAllowedInput(attempt.toString());
             setOrderOfOperations(orderofoperations);
@@ -256,26 +256,26 @@ function Multiplayer ({goToPage}) {
             setWaitOptions(false);
             setCurrentMultiplayerScreen("roomoptions");
         }
-        server.on("options",onOptions);
+        server.on("options", onOptions);
 
         return () => {
-            server.off("options",onOptions);
+            server.off("options", onOptions);
         }
     }, [])
 
     function checkNumbersLength(str) {
         var n = Math.floor(Number(str));
-        return n !== Infinity && String(n) === str && n >= 3 && n<=9;
+        return n !== Infinity && String(n) === str && n >= 3 && n <= 9;
     }
-    
+
     function checkRoundLength(str) {
         var n = Math.floor(Number(str));
-        return n !== Infinity && String(n) === str && n >= 20 && n<=120;
+        return n !== Infinity && String(n) === str && n >= 20 && n <= 120;
     }
 
     function checkAttemptsAllowed(str) {
         var n = Math.floor(Number(str));
-        return n !== Infinity && String(n) === str && n >= 1 && n<=5;
+        return n !== Infinity && String(n) === str && n >= 1 && n <= 5;
     }
 
     const handleOptionsSubmit = () => {
@@ -296,7 +296,7 @@ function Multiplayer ({goToPage}) {
         setNumbersLength(parseInt(numbersLengthInput));
         setRoundLength(parseInt(roundLengthInput));
         setAttemptsAllowed(parseInt(attemptsAllowedInput));
-        server.emit("setOptions",{targetLength:parseInt(numbersLengthInput), attempt:parseInt(attemptsAllowedInput), orderofoperations:orderOfOperations, roundLength:parseInt(roundLengthInput)});
+        server.emit("setOptions", { targetLength: parseInt(numbersLengthInput), attempt: parseInt(attemptsAllowedInput), orderofoperations: orderOfOperations, roundLength: parseInt(roundLengthInput) });
         setCurrentMultiplayerScreen("roomready");
     }
 
@@ -306,28 +306,28 @@ function Multiplayer ({goToPage}) {
     }
 
     useEffect(() => {
-        function onResetRoom({turn, targetLength, attempt, orderofoperations}) {
+        function onResetRoom({ turn, targetLength, attempt, orderofoperations }) {
             setNumbersLength(targetLength);
             setAttemptsAllowed(attempt);
             setOrderOfOperations(orderofoperations);
             setIsRoundInProgress(false);
             setPlayerScore(0);
             setPlaySlotNumbers(Array(targetLength).fill());
-            setPlaySlotOperators(Array(targetLength-1).fill());
+            setPlaySlotOperators(Array(targetLength - 1).fill());
             setTimeLeft(null);
             setTargetResult(null);
             setAttemptsLeft(null);
-            if (turn==playerID) {
+            if (turn == playerID) {
                 setIsYourTurn(true);
             } else {
                 setIsYourTurn(false);
             }
         }
 
-        server.on("resetRoom",onResetRoom);
+        server.on("resetRoom", onResetRoom);
 
         return () => {
-            server.off("resetRoom",onResetRoom);
+            server.off("resetRoom", onResetRoom);
         }
     }, [playerID])
 
@@ -359,7 +359,7 @@ function Multiplayer ({goToPage}) {
 
     return (
         <div>
-            {currentMultiplayerScreen=="selectroom" && (
+            {currentMultiplayerScreen == "selectroom" && (
                 <div className="modal">
                     <div className="modal-content">
                         <h1>Welcome {userName}!</h1>
@@ -368,46 +368,46 @@ function Multiplayer ({goToPage}) {
                         <button onClick={() => handleRoomSelection('Room 2')}>Room 2</button>
                         <button onClick={() => handleRoomSelection('Room 3')}>Room 3</button>
                         <h2>or enter a Private Room Code</h2>
-                        <input 
-                            type="text" 
-                            value={privateRoomCode} 
-                            onChange={(e) => setPrivateRoomCode(e.target.value)} 
-                            placeholder="Your Code" 
+                        <input
+                            type="text"
+                            value={privateRoomCode}
+                            onChange={(e) => setPrivateRoomCode(e.target.value)}
+                            placeholder="Your Code"
                             className='input'
                         />
                         <button onClick={() => handleRoomSelection(privateRoomCode)}>Submit</button>
-                        {selectedRoom!=null && (
+                        {selectedRoom != null && (
                             <p>Waiting for server</p>
                         )}
                         <ReturnToMenuButton onClick={() => {
                             goToPage("Menu");
                         }} />
+                    </div>
                 </div>
-            </div>
             )}
-            {currentMultiplayerScreen=="nameentry" && (
+            {currentMultiplayerScreen == "nameentry" && (
                 <div className="modal">
                     <div className="modal-content">
                         <h2>Enter Your Name</h2>
-                        <input 
-                            type="text" 
-                            value={userName} 
-                            onChange={(e) => setUserName(e.target.value)} 
-                            placeholder="Your name" 
+                        <input
+                            type="text"
+                            value={userName}
+                            onChange={(e) => setUserName(e.target.value)}
+                            placeholder="Your name"
                             className='input'
                         />
                         <button onClick={handleNameSubmit}>Submit</button>
                     </div>
-              </div>
+                </div>
             )}
-            {currentMultiplayerScreen=="roomwaiting" && (
+            {currentMultiplayerScreen == "roomwaiting" && (
                 <div className="modal">
                     <div className="modal-content">
                         <h2>Waiting for opponent to join...</h2>
                     </div>
                 </div>
             )}
-            {currentMultiplayerScreen=="roomready" && (
+            {currentMultiplayerScreen == "roomready" && (
                 <div className="modal">
                     <div className="modal-content">
                         <h2>Choose your options or ready up!</h2>
@@ -426,23 +426,23 @@ function Multiplayer ({goToPage}) {
                     </div>
                 </div>
             )}
-            {currentMultiplayerScreen=="roomoptions" && (
+            {currentMultiplayerScreen == "roomoptions" && (
                 <div className="modal">
                     <div className="modal-content">
                         {/* <h1>Welcome {userName}!</h1> */}
                         <h2>Choose your options</h2>
                         <div>
-                            <h3 style={{textAlign:'center', display:'inline'}}>Numbers: </h3>
-                            <input 
-                                type="text" 
-                                value={numbersLengthInput} 
-                                onChange={(e) => setNumbersLengthInput(e.target.value)} 
-                                placeholder="Default = 5" 
+                            <h3 style={{ textAlign: 'center', display: 'inline' }}>Numbers: </h3>
+                            <input
+                                type="text"
+                                value={numbersLengthInput}
+                                onChange={(e) => setNumbersLengthInput(e.target.value)}
+                                placeholder="Default = 5"
                                 className='input'
                             />
                         </div>
                         <div>
-                            <h3 style={{textAlign:'center', display:'inline'}}>Order of Operation: </h3>
+                            <h3 style={{ textAlign: 'center', display: 'inline' }}>Order of Operation: </h3>
                             <select value={orderOfOperations}
                                 onChange={(e) => setOrderOfOperations(e.target.value)}
                             >
@@ -451,22 +451,22 @@ function Multiplayer ({goToPage}) {
                             </select>
                         </div>
                         <div>
-                            <h3 style={{textAlign:'center', display:'inline'}}>Round Length: </h3>
-                            <input 
-                                type="text" 
-                                value={roundLengthInput} 
-                                onChange={(e) => setRoundLengthInput(e.target.value)} 
-                                placeholder="Default = 60" 
+                            <h3 style={{ textAlign: 'center', display: 'inline' }}>Round Length: </h3>
+                            <input
+                                type="text"
+                                value={roundLengthInput}
+                                onChange={(e) => setRoundLengthInput(e.target.value)}
+                                placeholder="Default = 60"
                                 className='input'
                             />
                         </div>
                         <div>
-                            <h3 style={{textAlign:'center', display:'inline'}}>Attempts Allowed: </h3>
-                            <input 
-                                type="text" 
-                                value={attemptsAllowedInput} 
-                                onChange={(e) => setAttemptsAllowedInput(e.target.value)} 
-                                placeholder="Default = 3" 
+                            <h3 style={{ textAlign: 'center', display: 'inline' }}>Attempts Allowed: </h3>
+                            <input
+                                type="text"
+                                value={attemptsAllowedInput}
+                                onChange={(e) => setAttemptsAllowedInput(e.target.value)}
+                                placeholder="Default = 3"
                                 className='input'
                             />
                         </div>
@@ -476,51 +476,52 @@ function Multiplayer ({goToPage}) {
                     </div>
                 </div>
             )}
-            {currentMultiplayerScreen=="gamescreen" && (
+            {currentMultiplayerScreen == "gamescreen" && (
                 <div>
                     <ScoreBar playerScore={playerScore}
-                        userName={userName} 
-                        opponentScore={opponentScore}/>
+                        userName={userName}
+                        opponentScore={opponentScore} />
                     {/* <div id="divider"></div> */}
-                    <div style={{display: 'flex',
+                    <div style={{
+                        display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         padding: '10px',
-                        }}> 
-                        {targetResult!==null && <TargetDisplay isRoundInProgress={isRoundInProgress} targetResult={targetResult}/>}
-                        {timeLeft!=null && <Timer timeLeft={timeLeft} roundLength={roundLength}/>}
-                        {attemptsLeft!== null && <AttemptsDisplay attemptsLeft={attemptsLeft}/>}
+                    }}>
+                        {targetResult !== null && <TargetDisplay isRoundInProgress={isRoundInProgress} targetResult={targetResult} />}
+                        {timeLeft != null && <Timer timeLeft={timeLeft} roundLength={roundLength} />}
+                        {attemptsLeft !== null && <AttemptsDisplay attemptsLeft={attemptsLeft} />}
                     </div>
-                    <div style={{textAlign:'center'}}>
+                    <div style={{ textAlign: 'center' }}>
                         <button onClick={() => {
-                                setTimeLeft(roundLength);
-                                server.emit('requestNumbers');
-                                setPlaySlotNumbers(Array(numbersLength).fill());
-                                setPlaySlotOperators(Array(numbersLength-1).fill());
-                                setIsRoundInProgress(!isRoundInProgress);
-                                setAttemptsLeft(attemptsAllowed);
-                                }
-                            }
-                            disabled = {isRoundInProgress || !isYourTurn}
-                            
+                            setTimeLeft(roundLength);
+                            server.emit('requestNumbers');
+                            setPlaySlotNumbers(Array(numbersLength).fill());
+                            setPlaySlotOperators(Array(numbersLength - 1).fill());
+                            setIsRoundInProgress(!isRoundInProgress);
+                            setAttemptsLeft(attemptsAllowed);
+                        }
+                        }
+                            disabled={isRoundInProgress || !isYourTurn}
+
                         >Start</button>
                     </div>
                     {isYourTurn && (
                         <GameArea playSlotNumbers={playSlotNumbers}
-                        playSlotOperators={playSlotOperators}
-                        bankNumbers={bankNumbers}
-                        bankOperators={bankOperators}
-                        setPlaySlotNumbers={setPlaySlotNumbers}
-                        setPlaySlotOperators={setPlaySlotOperators}
-                        setBankNumbers={setBankNumbers}
-                        isTimeUp={isTimeUp}
-                        handleSubmission={handleSubmission}
-                        isYourTurn={isYourTurn}
-                        isRoundInProgress={isRoundInProgress}
+                            playSlotOperators={playSlotOperators}
+                            bankNumbers={bankNumbers}
+                            bankOperators={bankOperators}
+                            setPlaySlotNumbers={setPlaySlotNumbers}
+                            setPlaySlotOperators={setPlaySlotOperators}
+                            setBankNumbers={setBankNumbers}
+                            isTimeUp={isTimeUp}
+                            handleSubmission={handleSubmission}
+                            isYourTurn={isYourTurn}
+                            isRoundInProgress={isRoundInProgress}
                         />
                     )}
                     {!isYourTurn && (
-                        <h1 style={{textAlign:'center'}}>Please wait until it's your turn!</h1>
+                        <h1 style={{ textAlign: 'center' }}>Please wait until it's your turn!</h1>
                     )}
                     <ReturnToMenuButton onClick={() => {
                         server.emit('exitRoom');
@@ -528,7 +529,7 @@ function Multiplayer ({goToPage}) {
                     }} />
                 </div>
             )}
-        </div>     
+        </div>
     )
 }
 

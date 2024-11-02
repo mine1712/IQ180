@@ -1,138 +1,166 @@
 @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap');
 
 * {
-  font-family: 'Oxanium', sans-serif; /* Apply the Oxanium font to all elements */
+    font-family: 'Oxanium', sans-serif;
+    /* Apply the Oxanium font to all elements */
 }
 
 #numberPlaySlotBox {
-  display: inline-block; /* Makes it a box */
-  padding: 10px; /* Adjust padding as needed */
-  margin: 10px; /* Adds margin around the box */
-  border-radius: 5px; /* Adjust border-radius as needed */
-  background-color: #f9f9f9;
-  min-width: 50px;
-  min-height: 50px;
-  font-size: 40px;
-  vertical-align: middle;
+    display: inline-block;
+    /* Makes it a box */
+    padding: 10px;
+    /* Adjust padding as needed */
+    margin: 10px;
+    /* Adds margin around the box */
+    border-radius: 5px;
+    /* Adjust border-radius as needed */
+    background-color: #f9f9f9;
+    min-width: 50px;
+    min-height: 50px;
+    font-size: 40px;
+    vertical-align: middle;
 }
 
 #operatorPlaySlotBox {
-  display: inline-block; /* Makes it a box */
-  padding: 5px; /* Adjust padding as needed */
-  margin: 5px; /* Adds margin around the box */
-  border-radius: 5px; /* Adjust border-radius as needed */
-  background-color: #f9f9f9;
-  min-width: 25px;
-  min-height: 25px;
-  font-size: 25px;
-  vertical-align: middle;
+    display: inline-block;
+    /* Makes it a box */
+    padding: 5px;
+    /* Adjust padding as needed */
+    margin: 5px;
+    /* Adds margin around the box */
+    border-radius: 5px;
+    /* Adjust border-radius as needed */
+    background-color: #f9f9f9;
+    min-width: 25px;
+    min-height: 25px;
+    font-size: 25px;
+    vertical-align: middle;
 }
 
 #numberBankBox {
-  display: inline-block; /* Makes it a box */
-  padding: 10px; /* Adjust padding as needed */
-  margin: 10px; /* Adds margin around the box */
-  border-radius: 5px; /* Adjust border-radius as needed */
-  background-color: #f9f9f9;
-  min-width: 10px;
-  min-height: 20px;
+    display: inline-block;
+    /* Makes it a box */
+    padding: 10px;
+    /* Adjust padding as needed */
+    margin: 10px;
+    /* Adds margin around the box */
+    border-radius: 5px;
+    /* Adjust border-radius as needed */
+    background-color: #f9f9f9;
+    min-width: 10px;
+    min-height: 20px;
 }
 
 #operatorBankBox {
-  display: inline-block; /* Makes it a box */
-  padding: 10px; /* Adjust padding as needed */
-  margin: 10px; /* Adds margin around the box */
-  border-radius: 5px; /* Adjust border-radius as needed */
-  background-color: #f9f9f9;
+    display: inline-block;
+    /* Makes it a box */
+    padding: 10px;
+    /* Adjust padding as needed */
+    margin: 10px;
+    /* Adds margin around the box */
+    border-radius: 5px;
+    /* Adjust border-radius as needed */
+    background-color: #f9f9f9;
 }
 
 :disabled {
-  background-color: #f9f9f9;
+    background-color: #f9f9f9;
 }
 
 :disabled:hover {
-  background-color: #f9f9f9;
+    background-color: #f9f9f9;
 }
+
 /* #playSlotBoxArea {
   display:inline-block;
 } */
 
 .modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
 .modal-content {
-  background-color: white;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
 .modal button {
-  margin: 5px;
+    margin: 5px;
 }
 
 .input {
-  position: relative;
-  padding: 10px;
-  border-radius: 5px;
-  border-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0;
-  background-color: #ffffff;
+    position: relative;
+    padding: 10px;
+    border-radius: 5px;
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0;
+    background-color: #ffffff;
 }
 
 .score-container {
-  margin: 0;
-  padding: 0;
-  font-weight: 600;
-  font-size:18px;
+    margin: 0;
+    padding: 0;
+    font-weight: 600;
+    font-size: 18px;
 }
 
 .score-bar {
-  display: flex;
-  justify-content: space-between; /* Adjusts spacing between scores */
-  padding: 10px; /* Optional: Add padding for better spacing */
-  list-style-type: none; /* Remove bullet points from list items */
+    display: flex;
+    justify-content: space-between;
+    /* Adjusts spacing between scores */
+    padding: 10px;
+    /* Optional: Add padding for better spacing */
+    list-style-type: none;
+    /* Remove bullet points from list items */
 }
 
 .score-label {
-  margin: 0 10px; /* Optional: Add margin between scores */
-  text-transform: capitalize;
+    margin: 0 10px;
+    /* Optional: Add margin between scores */
+    text-transform: capitalize;
 }
 
-#divider{
-  border:1px solid black;
+#divider {
+    border: 1px solid black;
 }
 
 .center-button-container {
-  display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  margin-top: 20px; /* Optional: Add margin for spacing */
+    display: flex;
+    justify-content: center;
+    /* Center horizontally */
+    align-items: center;
+    /* Center vertically */
+    margin-top: 20px;
+    /* Optional: Add margin for spacing */
 }
 
 button.return {
-  transition: border 0.25s ease-in-out; /* Add transition for smooth animation */
+    transition: border 0.25s ease-in-out;
+    /* Add transition for smooth animation */
 }
 
-button.return:hover{
-  border: 1px solid #646cff; /* Add 1px blue border on hover */
+button.return:hover {
+    border: 1px solid #646cff;
+    /* Add 1px blue border on hover */
 }
 
 @keyframes countdown {
-  from {
-    stroke-dashoffset: 0px;
-  }
-  to {
-    stroke-dashoffset: 113px;
-  }
+    from {
+        stroke-dashoffset: 0px;
+    }
+
+    to {
+        stroke-dashoffset: 113px;
+    }
 }

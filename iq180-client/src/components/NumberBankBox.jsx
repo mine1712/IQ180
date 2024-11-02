@@ -1,17 +1,17 @@
-function NumberBankBox({number,index,dragStartHandler,dropHandler}) {
+function NumberBankBox({ number, index, dragStartHandler, dropHandler }) {
 
     const numberBankBoxDragStart = (index) => {
-        dragStartHandler("numbank",index);
+        dragStartHandler("numbank", index);
     }
 
     const numberBankBoxDrop = (index) => {
-        dropHandler("numbank",index);
+        dropHandler("numbank", index);
     }
 
     return (
         <span
-            key={'numberBank'+(index+1)}
-            id = 'numberBankBox'
+            key={'numberBank' + (index + 1)}
+            id='numberBankBox'
             // disabled={isTimeUp}
             draggable={true}
             onDragStart={() => numberBankBoxDragStart(index)}

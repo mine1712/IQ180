@@ -11,9 +11,10 @@ import TargetDisplay from './TargetDisplay';
 import Timer from './Timer';
 import ReturnToMenuButton from './ReturnToMenuButton';
 
-export {Effects, 
-    Howtoplay, 
-    NumberPlaySlotBox, 
+export {
+    Effects,
+    Howtoplay,
+    NumberPlaySlotBox,
     OperatorPlaySlotBox,
     GameArea,
     NumberBankBox,
@@ -22,4 +23,5 @@ export {Effects,
     AttemptsDisplay,
     TargetDisplay,
     Timer,
-    ReturnToMenuButton};
+    ReturnToMenuButton
+};

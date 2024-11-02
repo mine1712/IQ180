@@ -1,20 +1,16 @@
-// import '../css/Multiplayer.css'
-
-
-
-function NumberPlaySlotBox({number,index,dropHandler,dragStartHandler}) {
+function NumberPlaySlotBox({ number, index, dropHandler, dragStartHandler }) {
 
     const numberPlaySlotDrop = (index) => {
-        dropHandler("numslot",index);
+        dropHandler("numslot", index);
     }
 
     const numberPlaySlotDragStart = (index) => {
-        dragStartHandler("numslot",index);
+        dragStartHandler("numslot", index);
     }
 
-    return(
+    return (
         <span
-            key={'numberPlaySlot'+(index+1)}
+            key={'numberPlaySlot' + (index + 1)}
             id='numberPlaySlotBox'
             // disabled={isTimeUp}
             draggable={true}
@@ -25,7 +21,7 @@ function NumberPlaySlotBox({number,index,dropHandler,dragStartHandler}) {
         >
             {number}
         </span>
-        
+
     );
 }
 
