@@ -217,22 +217,12 @@ function Multiplayer ({goToPage}) {
         }
     }, [selectedRoom])
 
-    // useEffect(() => {
-    //     // alert(currentRoom);
-        // if (currentRoom!=null) {
-        //     setIsYourTurn(true);
-        //     setTimeLeft(60);
-        //     setCurrentMultiplayerScreen("gamescreen");
-        // }
-    // }, [currentRoom])
-
     const handleNameSubmit = () => {
         setCurrentMultiplayerScreen("selectroom");
     }
 
     const handleSubmission = (numbers,operators) => {
         // alert(timeLeft);
-        // alert("Multiplayer submission has not been implemented yet.\nNumbers: " + playSlotNumbers + "\nOperators: "+ playSlotOperators)
         server.emit('checkAns', {nums: numbers, operators: operators, timeUsed: roundLength-timeLeft, room:currentRoom, attemptleft:attemptsLeft, isTimeUp: isTimeUp});
         // setAttemptsLeft(attemptsLeft-1);
     }
@@ -253,10 +243,8 @@ function Multiplayer ({goToPage}) {
     })
 
     const handleEnterOptions = () => {
-        // alert("test1")
         server.emit("getOption");
         setWaitOptions(true);
-        // alert("test")
     }
 
     useEffect(() => {
@@ -310,7 +298,6 @@ function Multiplayer ({goToPage}) {
         setAttemptsAllowed(parseInt(attemptsAllowedInput));
         server.emit("setOptions",{targetLength:parseInt(numbersLengthInput), attempt:parseInt(attemptsAllowedInput), orderofoperations:orderOfOperations, roundLength:parseInt(roundLengthInput)});
         setCurrentMultiplayerScreen("roomready");
-        // alert(checkNumbersLength(numbersLength));
     }
 
     const handleReady = () => {
@@ -332,12 +319,9 @@ function Multiplayer ({goToPage}) {
             setAttemptsLeft(null);
             if (turn==playerID) {
                 setIsYourTurn(true);
-                // setTimeLeft(60);
-                // setCurrentMultiplayerScreen("gamescreen");
             } else {
                 setIsYourTurn(false);
             }
-            // setCurrentMultiplayerScreen("gamescreen");
         }
 
         server.on("resetRoom",onResetRoom);
@@ -490,16 +474,6 @@ function Multiplayer ({goToPage}) {
                                 className='input'
                             />
                         </div>
-                        {/* <div>
-                            <h3 style={{textAlign:'center', display:'inline'}}>CSS Test: </h3>
-                            <input 
-                                type="text" 
-                                value={numbersLengthInput} 
-                                onChange={(e) => setNumbersLengthInput(e.target.value)} 
-                                placeholder="Default = 5" 
-                                className='input'
-                            />
-                        </div> */}
                         <div>
                             <button onClick={handleOptionsSubmit}>Submit</button>
                         </div>
@@ -521,24 +495,6 @@ function Multiplayer ({goToPage}) {
                         {timeLeft!=null && <Timer timeLeft={timeLeft} roundLength={roundLength}/>}
                         {attemptsLeft!== null && <AttemptsDisplay attemptsLeft={attemptsLeft}/>}
                     </div>
-                    {/* <button onClick={() => {
-                        setTimeLeft(roundLength);
-                    }}>Reset Timer</button>
-                    <button onClick={() => {
-                        setTimeLeft(5);
-                    }}>Test button disable</button>
-                    <button onClick={() => {
-                        server.emit('requestNumbers');
-                        setGetNumberButtonState(true);
-                    }} disabled={getNumberButtonState}>Get numbers</button>
-                    <button onClick={() => {
-                        setTimeLeft(roundLength);
-                        setBankNumbers([]);
-                        setPlaySlotNumbers(Array(numbersLength).fill());
-                        setPlaySlotOperators(Array(numbersLength).fill());
-                        setGetNumberButtonState(false);
-                    }}>Reset Room</button> */}
-                    {/* <p>It is {isYourTurn ? "" : "not "}your turn</p> */}
                     <div style={{textAlign:'center'}}>
                         <button onClick={() => {
                                 setTimeLeft(roundLength);

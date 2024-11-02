@@ -48,13 +48,6 @@ const Singleplayer = ({goToPage}) => {
         setPlayerLost(false);
     }
 
-    // useEffect(() => {
-    //     server.on('numbers', (data) => {
-    //         setBankNumbers(data.numbers);
-    //         setTargetResult(data.targetResult);
-    //         });
-    // }, []);
-
     useEffect(() => {
         if (timeLeft > 0 && isRoundInProgress) {
             setIsTimeUp(false);
@@ -67,19 +60,6 @@ const Singleplayer = ({goToPage}) => {
             }
         }
     }, [timeLeft]);
-
-    // const handleRoomSelection = (room) => {
-    //     setSelectedRoom(room);
-    // }
-
-    // useEffect(() => {
-    //     if (selectedRoom!=null) {
-    //         server.emit('joinRoom', { room: selectedRoom, name: userName });
-    //         setIsYourTurn(true);
-    //         setTimeLeft(60);
-    //         setCurrentMultiplayerScreen("gamescreen");
-    //     }
-    // }, [selectedRoom])
 
     const handleNameSubmit = () => {
         setCurrentSingleplayerScreen("gameoptions");
@@ -209,26 +189,6 @@ const Singleplayer = ({goToPage}) => {
 
     return (
         <div>
-            {/* {currentSingleplayerScreen=="selectroom" && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h1>Welcome {userName}!</h1>
-                        <h2>Select a Room</h2>
-                        <button onClick={() => handleRoomSelection('Room 1')}>Room 1</button>
-                        <button onClick={() => handleRoomSelection('Room 2')}>Room 2</button>
-                        <button onClick={() => handleRoomSelection('Room 3')}>Room 3</button>
-                        <h2>or enter a Private Room Code</h2>
-                        <input 
-                            type="text" 
-                            value={privateRoomCode} 
-                            onChange={(e) => setPrivateRoomCode(e.target.value)} 
-                            placeholder="Your Code" 
-                            className='input'
-                        />
-                        <button onClick={() => handleRoomSelection(privateRoomCode)}>Submit</button>
-                </div>
-            </div>
-            )} */}
             {currentSingleplayerScreen=="nameentry" && (
                 <div className="modal">
                 <div className="modal-content">
@@ -288,16 +248,6 @@ const Singleplayer = ({goToPage}) => {
                                 className='input'
                             />
                         </div>
-                        {/* <div>
-                            <h3 style={{textAlign:'center', display:'inline'}}>CSS Test: </h3>
-                            <input 
-                                type="text" 
-                                value={numbersLengthInput} 
-                                onChange={(e) => setNumbersLengthInput(e.target.value)} 
-                                placeholder="Default = 5" 
-                                className='input'
-                            />
-                        </div> */}
                         <button onClick={handleOptionsSubmit}>Submit</button>
                     </div>
                 </div>
@@ -306,9 +256,6 @@ const Singleplayer = ({goToPage}) => {
                 <div>
                     <ScoreBar playerScore={playerScore}
                         userName={userName} />
-                    {/* <div id="divider"></div> */}
-                    {/* <h1 style={{textAlign:'center'}}>Welcome {userName}</h1> */}
-                    {/* <h1>Your score = {playerScore}</h1> */}
                     <div style={{display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
@@ -318,25 +265,6 @@ const Singleplayer = ({goToPage}) => {
                         {timeLeft!=null && <Timer timeLeft={timeLeft} roundLength={roundLength}/>}
                         {attemptsLeft!== null && <AttemptsDisplay attemptsLeft={attemptsLeft}/>}
                     </div>
-                    {/* <p>Test = {isRoundInProgress?"yes":"no"}</p> */}
-                    {/* <button onClick={() => {
-                        setTimeLeft(60);
-                    }}>Reset Timer</button>
-                    <button onClick={() => {
-                        setTimeLeft(5);
-                    }}>Test button disable</button> */}
-                    {/* <button onClick={() => {
-                        server.emit('requestNumbers');
-                        setGetNumberButtonState(true);
-                    }} disabled={getNumberButtonState}>Get numbers</button> */}
-                    {/* <button onClick={() => {
-                        setTimeLeft(60);
-                        setBankNumbers([]);
-                        setPlaySlotNumbers(Array(5).fill());
-                        setPlaySlotOperators(Array(4).fill());
-                        // setGetNumberButtonState(false);
-                    }}>Reset Room</button> */}
-                    {/* <p>It is {isYourTurn ? "" : "not "}your turn</p> */}
                     <div style={{textAlign:'center'}}>
                         <button onClick={() => {
                                 // setIsYourTurn(true);
