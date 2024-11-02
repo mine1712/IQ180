@@ -6,5 +6,14 @@ import GameArea from './GameArea';
 import NumberBankBox from './NumberBankBox';
 import Leaderboard from './Leaderboard';
 import ScoreBar from './ScoreBar';
+import AttemptsDisplay from './AttemptsDisplay';
 
-export {Effects, Howtoplay, NumberPlaySlotBox, OperatorPlaySlotBox,GameArea,NumberBankBox,Leaderboard,ScoreBar};
+export {Effects, 
+    Howtoplay, 
+    NumberPlaySlotBox, 
+    OperatorPlaySlotBox,
+    GameArea,
+    NumberBankBox,
+    Leaderboard,
+    ScoreBar,
+    AttemptsDisplay};
