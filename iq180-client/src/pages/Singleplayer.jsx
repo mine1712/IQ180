@@ -10,6 +10,8 @@ import {
     GameStatusDisplay
 } from '../components';
 import { generateNumbers } from '../utils/numberGenerator'
+import { checkNumbersLength, checkRoundLength, checkAttemptsAllowed } from '../utils/checkOptionsInput';
+
 
 const Singleplayer = ({ goToPage }) => {
     // Screen Value
@@ -99,21 +101,6 @@ const Singleplayer = ({ goToPage }) => {
         setPlaySlotNumbers(Array(numbersLength).fill());
         setPlaySlotOperators(Array(numbersLength - 1).fill());
     }, [numbersLength])
-
-    function checkNumbersLength(str) {
-        var n = Math.floor(Number(str));
-        return n !== Infinity && String(n) === str && n >= 3 && n <= 9;
-    }
-
-    function checkRoundLength(str) {
-        var n = Math.floor(Number(str));
-        return n !== Infinity && String(n) === str && n >= 20 && n <= 120;
-    }
-
-    function checkAttemptsAllowed(str) {
-        var n = Math.floor(Number(str));
-        return n !== Infinity && String(n) === str && n >= 1 && n <= 5;
-    }
 
     const handleSubmission = (numbers, operators) => {
         if (orderOfOperations == "pemdas") {

@@ -12,6 +12,7 @@ import {
     StartButton,
     GameStatusDisplay
 } from '../components';
+import { checkNumbersLength, checkRoundLength, checkAttemptsAllowed } from '../utils/checkOptionsInput';
 
 function Multiplayer({ goToPage }) {
     // Screen Value
@@ -270,21 +271,6 @@ function Multiplayer({ goToPage }) {
     const handleEnterOptions = () => {
         server.emit("getOption");
         setWaitOptions(true);
-    }
-
-    function checkNumbersLength(str) {
-        var n = Math.floor(Number(str));
-        return n !== Infinity && String(n) === str && n >= 3 && n <= 9;
-    }
-
-    function checkRoundLength(str) {
-        var n = Math.floor(Number(str));
-        return n !== Infinity && String(n) === str && n >= 20 && n <= 120;
-    }
-
-    function checkAttemptsAllowed(str) {
-        var n = Math.floor(Number(str));
-        return n !== Infinity && String(n) === str && n >= 1 && n <= 5;
     }
 
     const handleOptionsSubmit = () => {
