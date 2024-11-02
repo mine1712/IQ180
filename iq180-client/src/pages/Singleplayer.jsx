@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 import '../css/Singleplayer.css';
-import { GameArea, ScoreBar, TargetDisplay, AttemptsDisplay, Timer, ReturnToMenuButton, NameEntry, OptionsMenu, StartButton } from '../components';
+import {
+    GameArea,
+    ScoreBar,
+    ReturnToMenuButton,
+    NameEntry,
+    OptionsMenu,
+    StartButton,
+    GameStatusDisplay
+} from '../components';
 import { generateNumbers } from '../utils/numberGenerator'
 
 const Singleplayer = ({ goToPage }) => {
@@ -212,16 +220,12 @@ const Singleplayer = ({ goToPage }) => {
                 <div>
                     <ScoreBar playerScore={playerScore}
                         userName={userName} />
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: '10px',
-                    }}>
-                        {targetResult !== null && <TargetDisplay isRoundInProgress={isRoundInProgress} targetResult={targetResult} />}
-                        {timeLeft != null && <Timer timeLeft={timeLeft} roundLength={roundLength} />}
-                        {attemptsLeft !== null && <AttemptsDisplay attemptsLeft={attemptsLeft} />}
-                    </div>
+                    <GameStatusDisplay targetResult={targetResult}
+                        isRoundInProgress={isRoundInProgress}
+                        timeLeft={timeLeft}
+                        roundLength={roundLength}
+                        attemptsLeft={attemptsLeft}
+                    />
                     <StartButton setTimeLeft={setTimeLeft}
                         roundLength={roundLength}
                         setPlaySlotNumbers={setPlaySlotNumbers}

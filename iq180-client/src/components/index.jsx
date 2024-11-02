@@ -15,6 +15,7 @@ import OptionsMenu from './OptionsMenu';
 import SelectRoom from './SelectRoom';
 import RoomReady from './RoomReady';
 import StartButton from './StartButton';
+import GameStatusDisplay from './GameStatusDisplay';
 
 export {
     Effects,
@@ -33,5 +34,6 @@ export {
     OptionsMenu,
     SelectRoom,
     RoomReady,
-    StartButton
+    StartButton,
+    GameStatusDisplay
 };

@@ -2,7 +2,17 @@ import { useState, useEffect } from 'react';
 import '../css/Multiplayer.css';
 // import '../css/Multiplayer-temp.css';
 import { server } from '../socket'
-import { GameArea, ScoreBar, AttemptsDisplay, TargetDisplay, Timer, ReturnToMenuButton, NameEntry, OptionsMenu, SelectRoom, RoomReady, StartButton } from '../components';
+import {
+    GameArea,
+    ScoreBar,
+    ReturnToMenuButton,
+    NameEntry,
+    OptionsMenu,
+    SelectRoom,
+    RoomReady,
+    StartButton,
+    GameStatusDisplay
+} from '../components';
 
 function Multiplayer({ goToPage }) {
     // Screen Value
@@ -408,17 +418,12 @@ function Multiplayer({ goToPage }) {
                     <ScoreBar playerScore={playerScore}
                         userName={userName}
                         opponentScore={opponentScore} />
-                    {/* <div id="divider"></div> */}
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: '10px',
-                    }}>
-                        {targetResult !== null && <TargetDisplay isRoundInProgress={isRoundInProgress} targetResult={targetResult} />}
-                        {timeLeft != null && <Timer timeLeft={timeLeft} roundLength={roundLength} />}
-                        {attemptsLeft !== null && <AttemptsDisplay attemptsLeft={attemptsLeft} />}
-                    </div>
+                    <GameStatusDisplay targetResult={targetResult}
+                        isRoundInProgress={isRoundInProgress}
+                        timeLeft={timeLeft}
+                        roundLength={roundLength}
+                        attemptsLeft={attemptsLeft}
+                    />
                     <StartButton setTimeLeft={setTimeLeft}
                         roundLength={roundLength}
                         server={server}
