@@ -155,19 +155,19 @@ io.on('connection', (socket) => {
       // Check whether if the numbers are already generated or not.
       if (keys[room].timeCalled === 0) {
         // generate numbers according to pemdas or left to right
-        let returnVaules;
+        let returnValues;
         if( keys[room].orderofoperations==="pemdas"){
-          returnVaules = genNumbers(keys[room].targetLength);
+          returnValues = genNumbers(keys[room].targetLength);
         }
         else{
-          returnVaules = getNumbersLeftToRight(keys[room].targetLength);
+          returnValues = getNumbersLeftToRight(keys[room].targetLength);
         }
-        numbers = returnVaules.numbers;
-        targetResult = returnVaules.result;
+        numbers = returnValues.numbers;
+        targetResult = returnValues.result;
         keys[room].timeCalled = 1;
         keys[room].numbers = numbers;
         keys[room].ans = targetResult;
-        answers[room] = returnVaules.ans;
+        answers[room] = returnValues.ans;
       }
       else if(keys[room].timeCalled === 1){
         keys[room].timeCalled += 1;
@@ -176,19 +176,19 @@ io.on('connection', (socket) => {
       }
       else{
         // generate numbers according to pemdas or left to right
-        let returnVaules;
+        let returnValues;
         if( keys[room].orderofoperations==="pemdas"){
-          returnVaules = genNumbers(keys[room].targetLength);
+          returnValues = genNumbers(keys[room].targetLength);
         }
         else{
-          returnVaules = getNumbersLeftToRight(keys[room].targetLength);
+          returnValues = getNumbersLeftToRight(keys[room].targetLength);
         }
-        numbers = returnVaules.numbers;
-        targetResult = returnVaules.result;
+        numbers = returnValues.numbers;
+        targetResult = returnValues.result;
         keys[room].timeCalled = 1;
         keys[room].numbers = numbers;
         keys[room].ans = targetResult;
-        answers[room] = returnVaules.ans;
+        answers[room] = returnValues.ans;
       }
       // Only emit the numbers to the requested client ensuring that the numbers are not leaked to other clients!
       socket.emit('numbers', { numbers, targetResult });
