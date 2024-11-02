@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../css/Singleplayer.css';
-import {GameArea} from '../components';
+import {GameArea,ScoreBar} from '../components';
 import { generateNumbers } from '../utils/numberGenerator'
 
 const Singleplayer = ({goToPage}) => {
@@ -304,8 +304,11 @@ const Singleplayer = ({goToPage}) => {
             )}
             {currentSingleplayerScreen=="gamescreen" && (
                 <div>
+                    <ScoreBar playerScore={playerScore}
+                        userName={userName} />
+                    {/* <div id="divider"></div> */}
                     {/* <h1 style={{textAlign:'center'}}>Welcome {userName}</h1> */}
-                    <h1>Your score = {playerScore}</h1>
+                    {/* <h1>Your score = {playerScore}</h1> */}
                     {targetResult!==null && (
                         <h1>Target = {targetResult}</h1>
                     )}
