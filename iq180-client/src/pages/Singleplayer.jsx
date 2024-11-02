@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../css/Singleplayer.css';
-import {GameArea,ScoreBar} from '../components';
+import {GameArea,ScoreBar,TargetDisplay,AttemptsDisplay,Timer} from '../components';
 import { generateNumbers } from '../utils/numberGenerator'
 
 const Singleplayer = ({goToPage}) => {
@@ -33,6 +33,13 @@ const Singleplayer = ({goToPage}) => {
     const [attemptsLeft, setAttemptsLeft] = useState(null);
     // const [getNumberButtonState,setGetNumberButtonState] = useState(false);
     // const [privateRoomCode,setPrivateRoomCode] = useState(null);
+    const [dashOffSet, setDashOffSet] = useState(113);
+
+    useEffect(() => {
+        const circumference = 2 * Math.PI * 18; 
+        const offset = circumference - (timeLeft / roundLength) * circumference;
+        setDashOffSet(offset);
+    }, [timeLeft, roundLength]);
 
     const initializeSingleplayer = () => {
         setPlayerScore(0);
@@ -309,15 +316,15 @@ const Singleplayer = ({goToPage}) => {
                     {/* <div id="divider"></div> */}
                     {/* <h1 style={{textAlign:'center'}}>Welcome {userName}</h1> */}
                     {/* <h1>Your score = {playerScore}</h1> */}
-                    {targetResult!==null && (
-                        <h1>Target = {targetResult}</h1>
-                    )}
-                    {timeLeft!==null && (
-                        <p>Time remaining = {timeLeft}</p>
-                    )}
-                    {attemptsLeft!== null && (
-                        <p>Attempts left = {attemptsLeft}</p>
-                    )}
+                    <div style={{display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '10px',
+                        }}> 
+                        {targetResult!==null && <TargetDisplay isRoundInProgress={isRoundInProgress} targetResult={targetResult}/>}
+                        {timeLeft!=null && <Timer timeLeft={timeLeft} dashOffSet={dashOffSet}/>}
+                        {attemptsLeft!== null && <AttemptsDisplay attemptsLeft={attemptsLeft}/>}
+                    </div>
                     {/* <p>Test = {isRoundInProgress?"yes":"no"}</p> */}
                     {/* <button onClick={() => {
                         setTimeLeft(60);
