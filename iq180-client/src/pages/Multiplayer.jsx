@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import '../css/Multiplayer.css';
 // import '../css/Multiplayer-temp.css';
 import {server} from '../socket'
-import {GameArea,ScoreBar,AttemptsDisplay,TargetDisplay} from '../components';
+import {GameArea,ScoreBar,AttemptsDisplay,TargetDisplay,Timer} from '../components';
 
 function Multiplayer ({goToPage}) {
     // Screen Value
@@ -525,31 +525,7 @@ function Multiplayer ({goToPage}) {
                         padding: '10px',
                         }}> 
                         {targetResult!==null && <TargetDisplay isRoundInProgress={isRoundInProgress} targetResult={targetResult}/>}
-                        {timeLeft!=null && (
-                            <div id ="countdown"style ={{position: 'relative',
-                                height: '40px',
-                                width: '40px',
-                                textAlign: 'center'}}>
-                                <div style={{color: 'black',
-                                    display: 'inline-block',
-                                    lineHeight: '40px',}} >{timeLeft}</div>
-                                <svg style={{position: 'absolute',
-                                    top: '0',
-                                    right: '0',
-                                    width: '40px',
-                                    height: '40px',
-                                    transform: 'rotateY(-180deg) rotateZ(-90deg)'}}>
-                                    <circle r="18" cx="20" cy="20" style={{strokeDasharray: '113px',
-                                        strokeDashoffset: `${dashOffSet}px`,
-                                        strokeLinecap: 'round',
-                                        strokeWidth: '2px',
-                                        stroke: 'black',
-                                        fill: 'none',
-                                        transition: 'stroke-dashoffset 1s linear'
-                                        }}></circle>
-                                </svg>
-                            </div>
-                        )}
+                        {timeLeft!=null && <Timer timeLeft={timeLeft} dashOffSet={dashOffSet}/>}
                         {attemptsLeft!== null && <AttemptsDisplay attemptsLeft={attemptsLeft}/>}
                     </div>
                     {/* <button onClick={() => {

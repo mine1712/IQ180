@@ -8,6 +8,7 @@ import Leaderboard from './Leaderboard';
 import ScoreBar from './ScoreBar';
 import AttemptsDisplay from './AttemptsDisplay';
 import TargetDisplay from './TargetDisplay';
+import Timer from './Timer';
 
 export {Effects, 
     Howtoplay, 
@@ -18,4 +19,5 @@ export {Effects,
     Leaderboard,
     ScoreBar,
     AttemptsDisplay,
-    TargetDisplay};
+    TargetDisplay,
+    Timer};
