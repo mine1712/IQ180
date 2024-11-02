@@ -12,6 +12,8 @@ import Timer from './Timer';
 import ReturnToMenuButton from './ReturnToMenuButton';
 import NameEntry from './NameEntry';
 import OptionsMenu from './OptionsMenu';
+import SelectRoom from './SelectRoom';
+import RoomReady from './RoomReady';
 
 export {
     Effects,
@@ -27,5 +29,7 @@ export {
     Timer,
     ReturnToMenuButton,
     NameEntry,
-    OptionsMenu
+    OptionsMenu,
+    SelectRoom,
+    RoomReady
 };

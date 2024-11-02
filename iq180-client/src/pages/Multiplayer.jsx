@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import '../css/Multiplayer.css';
 // import '../css/Multiplayer-temp.css';
 import { server } from '../socket'
-import { GameArea, ScoreBar, AttemptsDisplay, TargetDisplay, Timer, ReturnToMenuButton, NameEntry, OptionsMenu } from '../components';
+import { GameArea, ScoreBar, AttemptsDisplay, TargetDisplay, Timer, ReturnToMenuButton, NameEntry, OptionsMenu, SelectRoom, RoomReady } from '../components';
 
 function Multiplayer({ goToPage }) {
     // Screen Value
@@ -359,36 +359,19 @@ function Multiplayer({ goToPage }) {
 
     return (
         <div>
-            {currentMultiplayerScreen == "selectroom" && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h1>Welcome {userName}!</h1>
-                        <h2>Select a Room</h2>
-                        <button onClick={() => handleRoomSelection('Room 1')}>Room 1</button>
-                        <button onClick={() => handleRoomSelection('Room 2')}>Room 2</button>
-                        <button onClick={() => handleRoomSelection('Room 3')}>Room 3</button>
-                        <h2>or enter a Private Room Code</h2>
-                        <input
-                            type="text"
-                            value={privateRoomCode}
-                            onChange={(e) => setPrivateRoomCode(e.target.value)}
-                            placeholder="Your Code"
-                            className='input'
-                        />
-                        <button onClick={() => handleRoomSelection(privateRoomCode)}>Submit</button>
-                        {selectedRoom != null && (
-                            <p>Waiting for server</p>
-                        )}
-                        <ReturnToMenuButton onClick={() => {
-                            goToPage("Menu");
-                        }} />
-                    </div>
-                </div>
-            )}
             {currentMultiplayerScreen == "nameentry" && 
                 <NameEntry userName={userName}
                     setUserName={setUserName}
                     handleNameSubmit={handleNameSubmit}
+                />
+            }
+            {currentMultiplayerScreen == "selectroom" && 
+                <SelectRoom userName={userName}
+                    handleRoomSelection={handleRoomSelection}
+                    privateRoomCode={privateRoomCode}
+                    setPrivateRoomCode={setPrivateRoomCode}
+                    selectedRoom={selectedRoom}
+                    goToPage={goToPage}
                 />
             }
             {currentMultiplayerScreen == "roomwaiting" && (
@@ -398,25 +381,15 @@ function Multiplayer({ goToPage }) {
                     </div>
                 </div>
             )}
-            {currentMultiplayerScreen == "roomready" && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h2>Choose your options or ready up!</h2>
-                        <button onClick={handleEnterOptions}>Option</button>
-                        <button onClick={handleReady}
-                            disabled={isReady}>Ready</button>
-                        <div>
-                            {waitOptions && (
-                                <p>Waiting for server</p>
-                            )}
-                        </div>
-                        <ReturnToMenuButton onClick={() => {
-                            server.emit('exitRoom');
-                            goToPage("Menu");
-                        }} />
-                    </div>
-                </div>
-            )}
+            {currentMultiplayerScreen == "roomready" && 
+                <RoomReady handleEnterOptions={handleEnterOptions}
+                    handleReady={handleReady}
+                    isReady={isReady}
+                    waitOptions={waitOptions}
+                    server={server}
+                    goToPage={goToPage}
+                />
+            }
             {currentMultiplayerScreen == "roomoptions" && 
                 <OptionsMenu userName={userName}
                     numbersLengthInput={numbersLengthInput}
