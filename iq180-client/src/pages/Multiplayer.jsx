@@ -227,10 +227,18 @@ function Multiplayer({ goToPage }) {
     }, [timeLeft, isRoundInProgress, isTimeUp]);
 
     const handleRoomSelection = (room) => {
+        if (room==="") {
+            alert("Room cannot be an empty string!");
+            return;
+        }
         setSelectedRoom(room);
     }
 
     const handleNameSubmit = () => {
+        if (userName==="") {
+            alert("Username cannot be an empty string!");
+            return;
+        }
         setCurrentMultiplayerScreen("selectroom");
     }
 

@@ -67,6 +67,10 @@ const Singleplayer = ({ goToPage }) => {
     }, [timeLeft]);
 
     const handleNameSubmit = () => {
+        if (userName==="") {
+            alert("Username cannot be an empty string!");
+            return;
+        }
         setCurrentSingleplayerScreen("gameoptions");
     }
 
