@@ -96,13 +96,15 @@ function getNumbersLeftToRight(targetLength){
   let result = 0;
   let count =0;
   let ops = [];
+  let invalidCalc = true;
   for (let i = 0; i < targetLength; i++) {
     numbers.push(Math.floor(Math.random() * 9)+1);
   }
-  while(!Number.isInteger(result) || result<1 || result>500){
+  while(!Number.isInteger(result) || result<1 || result>500 || invalidCalc){
     //reset result
     result = 0;
     ops = [];
+    invalidCalc = false;
     // if the loop runs more than 200 times, reset the numbers
     if(count++>200){
       numbers =[];
@@ -150,6 +152,9 @@ function getNumbersLeftToRight(targetLength){
           break;
         default:
           throw new Error('Invalid operator');
+      }
+      if (result<0 || !Number.isInteger(result)) {
+        invalidCalc=true;
       }
     }
   }
