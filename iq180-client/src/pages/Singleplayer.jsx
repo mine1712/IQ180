@@ -196,7 +196,7 @@ const Singleplayer = ({ goToPage }) => {
     }, [attemptsLeft])
 
     return (
-        <div>
+        <div style={{height: '100vh', overflowY:'auto'}}>
             {currentSingleplayerScreen == "nameentry" && 
                 <NameEntry userName={userName}
                     setUserName={setUserName}

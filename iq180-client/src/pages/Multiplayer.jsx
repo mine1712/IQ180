@@ -342,7 +342,7 @@ function Multiplayer({ goToPage }) {
     // }, [goToPage]);
 
     return (
-        <div>
+        <div style={{height: '100vh', overflowY:'auto'}}>
             {currentMultiplayerScreen == "nameentry" && 
                 <NameEntry userName={userName}
                     setUserName={setUserName}
