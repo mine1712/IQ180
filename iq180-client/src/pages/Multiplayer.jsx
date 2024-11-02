@@ -57,15 +57,44 @@ function Multiplayer({ goToPage }) {
             setBankNumbers(data.numbers);
             setTargetResult(data.targetResult);
         }
+
         function onError({ message }) {
             alert("Error: " + message);
         }
+
+        function onGetReady() {
+            setCurrentMultiplayerScreen("roomready");
+        }
+
+        function onWrongAnswer(attemptleft) {
+            // if (attemptleft===0) {
+            //     setIsRoundInProgress(false);
+            // }
+            setAttemptsLeft(attemptleft);
+            alert("Your answer was incorrect!");
+        }
+
+        function onOptions({ targetLength, attempt, orderofoperations, roundLength }) {
+            setNumbersLengthInput(targetLength.toString());
+            setAttemptsAllowedInput(attempt.toString());
+            setOrderOfOperations(orderofoperations);
+            setRoundLengthInput(roundLength.toString());
+            setWaitOptions(false);
+            setCurrentMultiplayerScreen("roomoptions");
+        }
+        
         server.on('numbers', onNumbers);
         server.on("error", onError);
+        server.on("getReady", onGetReady);
+        server.on("wrongAnswer", onWrongAnswer);
+        server.on("options", onOptions);
 
         return () => {
             server.off('numbers', onNumbers);
             server.off("error", onError);
+            server.off("getReady", onGetReady);
+            server.off("wrongAnswer", onWrongAnswer);
+            server.off("options", onOptions);
         }
     }, []);
 
@@ -106,17 +135,6 @@ function Multiplayer({ goToPage }) {
     }, [numbersLength, playerID]);
 
     useEffect(() => {
-        function onGetReady() {
-            setCurrentMultiplayerScreen("roomready");
-        }
-        server.on("getReady", onGetReady);
-
-        return () => {
-            server.off("getReady", onGetReady);
-        }
-    }, []);
-
-    useEffect(() => {
         function onStartGame({ turn, targetLength, attempt, orderofoperations, roundLength }) {
             setNumbersLength(targetLength);
             setAttemptsAllowed(attempt);
@@ -130,10 +148,30 @@ function Multiplayer({ goToPage }) {
             setCurrentMultiplayerScreen("gamescreen");
         }
 
+        function onResetRoom({ turn, targetLength, attempt, orderofoperations }) {
+            setNumbersLength(targetLength);
+            setAttemptsAllowed(attempt);
+            setOrderOfOperations(orderofoperations);
+            setIsRoundInProgress(false);
+            setPlayerScore(0);
+            setPlaySlotNumbers(Array(targetLength).fill());
+            setPlaySlotOperators(Array(targetLength - 1).fill());
+            setTimeLeft(null);
+            setTargetResult(null);
+            setAttemptsLeft(null);
+            if (turn == playerID) {
+                setIsYourTurn(true);
+            } else {
+                setIsYourTurn(false);
+            }
+        }
+
         server.on("startGame", onStartGame);
+        server.on("resetRoom", onResetRoom)
 
         return () => {
             server.off("startGame", onStartGame);
+            server.off("resetRoom", onResetRoom);
         }
     }, [playerID])
 
@@ -156,6 +194,7 @@ function Multiplayer({ goToPage }) {
 
         server.on('roomFull', onRoomFull);
         if (selectedRoom != null) {
+            server.emit('joinRoom', { room: selectedRoom, name: userName });
             server.on('joinRoomSuccess', onJoinRoomSuccess);
         }
 
@@ -200,6 +239,10 @@ function Multiplayer({ goToPage }) {
     }, [currentMultiplayerScreen])
 
     useEffect(() => {
+        if (isTimeUp && isRoundInProgress && !timeLeft) {
+            setIsRoundInProgress(false);
+            server.emit('checkAns', { nums: Array(numbersLength).fill(), operators: Array(numbersLength - 1).fill(), timeUsed: roundLength - timeLeft, room: currentRoom, attemptleft: 0, isTimeUp: true });
+        }
         if (timeLeft > 0 && isRoundInProgress) {
             setIsTimeUp(false);
             const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
@@ -209,23 +252,11 @@ function Multiplayer({ goToPage }) {
         }
     }, [timeLeft, isRoundInProgress]);
 
-    useEffect(() => {
-        if (isTimeUp && isRoundInProgress && !timeLeft) {
-            setIsRoundInProgress(false);
-            server.emit('checkAns', { nums: Array(numbersLength).fill(), operators: Array(numbersLength - 1).fill(), timeUsed: roundLength - timeLeft, room: currentRoom, attemptleft: 0, isTimeUp: true });
-        }
-    }, [isTimeUp, isRoundInProgress]);
-
     const handleRoomSelection = (room) => {
         setSelectedRoom(room);
     }
 
-    useEffect(() => {
-        if (selectedRoom != null) {
-            server.emit('joinRoom', { room: selectedRoom, name: userName });
-            // alert(selectedRoom);
-        }
-    }, [selectedRoom])
+    
 
     const handleNameSubmit = () => {
         setCurrentMultiplayerScreen("selectroom");
@@ -237,41 +268,10 @@ function Multiplayer({ goToPage }) {
         // setAttemptsLeft(attemptsLeft-1);
     }
 
-    useEffect(() => {
-        function onWrongAnswer(attemptleft) {
-            // if (attemptleft===0) {
-            //     setIsRoundInProgress(false);
-            // }
-            setAttemptsLeft(attemptleft);
-            alert("Your answer was incorrect!");
-        }
-        server.on("wrongAnswer", onWrongAnswer);
-
-        return () => {
-            server.off("wrongAnswer", onWrongAnswer);
-        }
-    })
-
     const handleEnterOptions = () => {
         server.emit("getOption");
         setWaitOptions(true);
     }
-
-    useEffect(() => {
-        function onOptions({ targetLength, attempt, orderofoperations, roundLength }) {
-            setNumbersLengthInput(targetLength.toString());
-            setAttemptsAllowedInput(attempt.toString());
-            setOrderOfOperations(orderofoperations);
-            setRoundLengthInput(roundLength.toString());
-            setWaitOptions(false);
-            setCurrentMultiplayerScreen("roomoptions");
-        }
-        server.on("options", onOptions);
-
-        return () => {
-            server.off("options", onOptions);
-        }
-    }, [])
 
     function checkNumbersLength(str) {
         var n = Math.floor(Number(str));
@@ -314,32 +314,6 @@ function Multiplayer({ goToPage }) {
         server.emit("playerReady");
         setIsReady(true);
     }
-
-    useEffect(() => {
-        function onResetRoom({ turn, targetLength, attempt, orderofoperations }) {
-            setNumbersLength(targetLength);
-            setAttemptsAllowed(attempt);
-            setOrderOfOperations(orderofoperations);
-            setIsRoundInProgress(false);
-            setPlayerScore(0);
-            setPlaySlotNumbers(Array(targetLength).fill());
-            setPlaySlotOperators(Array(targetLength - 1).fill());
-            setTimeLeft(null);
-            setTargetResult(null);
-            setAttemptsLeft(null);
-            if (turn == playerID) {
-                setIsYourTurn(true);
-            } else {
-                setIsYourTurn(false);
-            }
-        }
-
-        server.on("resetRoom", onResetRoom);
-
-        return () => {
-            server.off("resetRoom", onResetRoom);
-        }
-    }, [playerID])
 
     // useEffect(() => {
     //     function onAnswerChecked({booleanResult}) {
