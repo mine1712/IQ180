@@ -181,7 +181,7 @@ io.on('connection', (socket) => {
   console.log(`A user with id: ${socket.id} connected`);
 
   socket.on('requestNumbers', () => {
-    const temp = Array.from(socket.rooms);
+    try{const temp = Array.from(socket.rooms);
     let room = temp[1];
     if (keys[room].turn === socket.id) {
       let numbers;
@@ -231,11 +231,14 @@ io.on('connection', (socket) => {
     else{
       socket.emit('message', 'It is not your turn!');
       console.log('\x1b[31m',`WARNING: ${socket.nickname} tried to call for numbers but it is not ${socket.nickname}'s turn!! `,'\x1b[0m');
+    }}
+    catch(error){
+      console.log('\x1b[31m',`ERROR: ${error}`,'\x1b[0m');
     }
   });
 
   socket.on('joinRoom', ({ room, name }) => {
-    // Check if room exists
+   try{ // Check if room exists
     if(keys[room] === undefined){
       keys[room] = { timeCalled:0,numbers:[],ans:null,turn:null, users:[], id:[],response:{correctness:null,timeUsed:null},targetLength:5,orderofoperations:"pemdas",roundLength:60, users_ready:0, attempt:3 };
     }
@@ -255,26 +258,14 @@ io.on('connection', (socket) => {
     keys[room].id.push(socket.id);
     console.log('\x1b[32m',`${name} joined ${room}`,'\x1b[0m');
     io.to(room).emit('message', `${name} has joined the room`);
-    // if(io.sockets.adapter.rooms.get(room)?.size === 2) {
-    //   const roomSocket = io.sockets.adapter.rooms.get(room);
-    //   const nicknames = [];
-    //   roomSocket.forEach(socketId => {
-    //     const socket = io.sockets.sockets.get(socketId);
-    //     if (socket && socket.nickname) {
-    //       nicknames.push(socket.nickname);
-    //     }
-    //   });
-    //   const firstPlayer = (Math.random()>0.5)? nicknames[1]:nicknames[0];
-    //   keys[room].turn = firstPlayer;
-    //   console.log(`${firstPlayer} will start the game`);
-    //   io.to(room).emit('startGame',firstPlayer);
-    // }
-    // the player will be the one who set options. Preventing confilct.
-    socket.emit('getReady');
+    socket.emit('getReady');}
+    catch(error){
+      console.log('\x1b[31m',`ERROR: ${error}`,'\x1b[0m');
+    }
   });
 
   socket.on('playerReady', () => {
-    const temp = Array.from(socket.rooms);
+    try{const temp = Array.from(socket.rooms);
     let room = temp[1];
     keys[room].users_ready += 1;
     if(keys[room].users_ready === 2 && io.sockets.adapter.rooms.get(room)?.size === 2){
@@ -285,19 +276,25 @@ io.on('connection', (socket) => {
       console.log(`${keys[room].turn} will start the game`);
       //io.to(room).emit('startGame', {firstPlayer:keys[room].turn, attempt:keys[room].attempt});
       io.to(room).emit('startGame', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations,roundLength:keys[room].roundLength});
+    }}
+    catch(error){
+      console.log('\x1b[31m',`ERROR: ${error}`,'\x1b[0m');
     }
   });
 
   // Sending current options to the client
   socket.on('getOption',()=>{
-    const temp = Array.from(socket.rooms);
+    try{const temp = Array.from(socket.rooms);
     let room = temp[1];
-    socket.emit('options',{targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations,roundLength:keys[room].roundLength});
+    socket.emit('options',{targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations,roundLength:keys[room].roundLength});}
+    catch(error){
+      console.log('\x1b[31m',`ERROR: ${error}`,'\x1b[0m');
+    }
   });
 
   // Set options (targetLength, attempt, check_leftToRight)
   socket.on('setOptions', ({targetLength, attempt , orderofoperations, roundLength}) => {
-    const temp = Array.from(socket.rooms);
+    try{const temp = Array.from(socket.rooms);
     let room = temp[1];
     keys[room].targetLength = targetLength;
     keys[room].orderofoperations = orderofoperations;
@@ -306,7 +303,10 @@ io.on('connection', (socket) => {
     console.log(attempt);
     if(attempt !== null){attempt = parseInt(attempt);} else{attempt = 1;}
     keys[room].attempt = attempt;
-    io.to(room).emit('optionsSet', `Options set successfully`);
+    io.to(room).emit('optionsSet', `Options set successfully`);}
+    catch(error){
+      console.log('\x1b[31m',`ERROR: ${error}`,'\x1b[0m');
+    }
   });
 
   // Checking the answer Pemdas
@@ -501,20 +501,15 @@ io.on('connection', (socket) => {
           keys[room].response.timeUsed = timeUsed;
           keys[room].turn = keys[room].id.filter(user => user !== socket.id)[0];
           // Emit the result back to the room => show a page 
+          io.to(room).emit('updateScore',{
+            [socket.id]: stats[socket.id].score,
+            [keys[room].id.filter(user => user !== socket.id)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score});
           io.to(room).emit('swapTurn',keys[room].turn);
         }
         // Update score on the client side
         // Show updated stats  TO BE REMOVED IN THE PRODUCTION
         console.dir(stats);
       
-  // Timeup!! or submitted incorrect numbers (nulls) or incorrect operators (nulls)
-  // else{
-  //   booleanResult = false
-  //   keys[room].response.correctness = booleanResult;
-  //   keys[room].response.timeUsed = timeUsed;
-  //   socket.emit('turnEnd');
-  //   io.to(room).emit('swapTurn',keys[room].turn);
-  // }
   console.log('\x1b[32m',`Player "${socket.nickname}" submitted the "${booleanResult ? `correct within ${timeUsed}`: "wrong"}" answer`,'\x1b[0m');
   }
   catch(error){
@@ -532,7 +527,11 @@ io.on('connection', (socket) => {
   }
 
   function exitRoom(){
-    let room = connections[socket.id].room;
+    let room;
+    try{room = connections[socket.id].room;}
+    catch(error){
+      console.log('\x1b[31m',`ERROR: ${error}`,'\x1b[0m');
+    }
     try {
       let users = keys[room].users;
       const userIndex = users.indexOf(socket.nickname);
@@ -614,35 +613,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // // These are the functions that will be called from the backend
-  
-  // // Getting stats //TODO
-  // socket.on('getStats', () => {
-  //   socket.emit('stats', stats);
-  // });
-
-  // // Resetting stats //TODO
-  // socket.on('resetStats', () => {
-  //   stats = {};
-  //   socket.emit('stats', stats);
-  // });
-
-  // // Reset Room //TODO
-  // socket.on('resetRoom', (room) => {
-  //   keys[room] = {timeCalled:0,numbers:[],ans:null,turn:null, users:keys[room].users, id:keys[room].id,response:{correctness:null,timeUsed:null},targetLength:5};
-  //   io.to(room).emit('roomReset', `Room ${room} has been reset`);
-  // });
-
-  // // Getting keys //TODO
-  // socket.on('getKeys', () => {
-  //   socket.emit('keys', keys);
-  // });
-
-  // socket.on('setNumbersLength', (length, room) => {
-  //   keys[room].targetLength = length;
-  //   socket.emit('setLengthSucess', `The target length has been set to ${length}`);
-  // });
-
   socket.on('fetchLeaderBoard',() => {
     temp = stats;
     const statsArray = Object.entries(stats);
@@ -718,6 +688,14 @@ app.post('/resetRoom', (req, res) => {
     return;
   }
   res.send(`Room ${room} has been reset`);
+});
+
+app.get('/resetScores', (req, res) => {
+  Object.keys(stats).forEach((key) => {
+    stats[key].score = 0;
+  });
+  io.emit('resetScores');
+  res.send('Scores have been reset');
 });
 
 // Setting up the port
