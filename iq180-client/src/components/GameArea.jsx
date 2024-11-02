@@ -97,8 +97,6 @@ function GameArea({
     
         if (firstAvailableSlot !== -1) {
             newPlaySlotNumbers[firstAvailableSlot] = num;
-        } else {
-            newPlaySlotNumbers.push(num);
         }
     
         const newBankNumbers = [...bankNumbers];
@@ -113,8 +111,6 @@ function GameArea({
     
         if (firstAvailableSlot !== -1) {
             newPlaySlotOperators[firstAvailableSlot] = op;
-        } else {
-            newPlaySlotOperators.push(op);
         }
 
         setPlaySlotOperators(newPlaySlotOperators);

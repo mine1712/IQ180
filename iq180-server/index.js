@@ -20,7 +20,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   // cors set up for react
   cors: {
-    origin: ['https://iq-180.vercel.app', 'http://localhost:5173', 'http://localhost:5174'],
+    origin: ['https://iq-180.vercel.app', 'http://localhost:5173', 'http://localhost:4173'],
     methods: ['GET', 'POST'],
   },
 });
