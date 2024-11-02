@@ -14,7 +14,6 @@ function GameArea({
     setBankNumbers,
     isTimeUp,
     handleSubmission,
-    isYourTurn,
     isRoundInProgress
 }) {
 

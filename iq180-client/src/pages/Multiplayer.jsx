@@ -443,7 +443,6 @@ function Multiplayer({ goToPage }) {
                             setBankNumbers={setBankNumbers}
                             isTimeUp={isTimeUp}
                             handleSubmission={handleSubmission}
-                            isYourTurn={isYourTurn}
                             isRoundInProgress={isRoundInProgress}
                         />
                     )}
