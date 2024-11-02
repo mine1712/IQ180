@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import '../css/Singleplayer.css';
-import { GameArea, ScoreBar, TargetDisplay, AttemptsDisplay, Timer, ReturnToMenuButton, NameEntry } from '../components';
+import { GameArea, ScoreBar, TargetDisplay, AttemptsDisplay, Timer, ReturnToMenuButton, NameEntry, OptionsMenu } from '../components';
 import { generateNumbers } from '../utils/numberGenerator'
 
 const Singleplayer = ({ goToPage }) => {
@@ -195,54 +195,19 @@ const Singleplayer = ({ goToPage }) => {
                     handleNameSubmit={handleNameSubmit}
                 />
             }
-            {currentSingleplayerScreen == "gameoptions" && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h1>Welcome {userName}!</h1>
-                        <h2>Choose your options</h2>
-                        <div>
-                            <h3 style={{ textAlign: 'center', display: 'inline' }}>Numbers: </h3>
-                            <input
-                                type="text"
-                                value={numbersLengthInput}
-                                onChange={(e) => setNumbersLengthInput(e.target.value)}
-                                placeholder="Default = 5"
-                                className='input'
-                            />
-                        </div>
-                        <div>
-                            <h3 style={{ textAlign: 'center', display: 'inline' }}>Order of Operation: </h3>
-                            <select value={orderOfOperations}
-                                onChange={(e) => setOrderOfOperations(e.target.value)}
-                            >
-                                <option value="pemdas">PEMDAS</option>
-                                <option value="lefttoright">Left to Right</option>
-                            </select>
-                        </div>
-                        <div>
-                            <h3 style={{ textAlign: 'center', display: 'inline' }}>Round Length: </h3>
-                            <input
-                                type="text"
-                                value={roundLengthInput}
-                                onChange={(e) => setRoundLengthInput(e.target.value)}
-                                placeholder="Default = 60"
-                                className='input'
-                            />
-                        </div>
-                        <div>
-                            <h3 style={{ textAlign: 'center', display: 'inline' }}>Attempts Allowed: </h3>
-                            <input
-                                type="text"
-                                value={attemptsAllowedInput}
-                                onChange={(e) => setAttemptsAllowedInput(e.target.value)}
-                                placeholder="Default = 3"
-                                className='input'
-                            />
-                        </div>
-                        <button onClick={handleOptionsSubmit}>Submit</button>
-                    </div>
-                </div>
-            )}
+            {currentSingleplayerScreen == "gameoptions" && 
+                <OptionsMenu userName={userName}
+                numbersLengthInput={numbersLengthInput}
+                setNumbersLengthInput={setNumbersLengthInput}
+                orderOfOperations={orderOfOperations}
+                setOrderOfOperations={setOrderOfOperations}
+                roundLengthInput={roundLengthInput}
+                setRoundLengthInput={setRoundLengthInput}
+                attemptsAllowedInput={attemptsAllowedInput}
+                setAttemptsAllowedInput={setAttemptsAllowedInput}
+                handleOptionsSubmit={handleOptionsSubmit}
+            />
+            }
             {currentSingleplayerScreen == "gamescreen" && (
                 <div>
                     <ScoreBar playerScore={playerScore}

@@ -11,6 +11,7 @@ import TargetDisplay from './TargetDisplay';
 import Timer from './Timer';
 import ReturnToMenuButton from './ReturnToMenuButton';
 import NameEntry from './NameEntry';
+import OptionsMenu from './OptionsMenu';
 
 export {
     Effects,
@@ -25,5 +26,6 @@ export {
     TargetDisplay,
     Timer,
     ReturnToMenuButton,
-    NameEntry
+    NameEntry,
+    OptionsMenu
 };
