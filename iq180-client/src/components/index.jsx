@@ -7,6 +7,7 @@ import NumberBankBox from './NumberBankBox';
 import Leaderboard from './Leaderboard';
 import ScoreBar from './ScoreBar';
 import AttemptsDisplay from './AttemptsDisplay';
+import TargetDisplay from './TargetDisplay';
 
 export {Effects, 
     Howtoplay, 
@@ -16,4 +17,5 @@ export {Effects,
     NumberBankBox,
     Leaderboard,
     ScoreBar,
-    AttemptsDisplay};
+    AttemptsDisplay,
+    TargetDisplay};

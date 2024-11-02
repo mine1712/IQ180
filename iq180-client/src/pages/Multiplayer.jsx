@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import '../css/Multiplayer.css';
 // import '../css/Multiplayer-temp.css';
 import {server} from '../socket'
-import {GameArea,ScoreBar,AttemptsDisplay} from '../components';
+import {GameArea,ScoreBar,AttemptsDisplay,TargetDisplay} from '../components';
 
 function Multiplayer ({goToPage}) {
     // Screen Value
@@ -524,10 +524,7 @@ function Multiplayer ({goToPage}) {
                         alignItems: 'center',
                         padding: '10px',
                         }}> 
-                        {targetResult!==null && (
-                            <div style={{fontSize: '18px',
-                                fontWeight: '600', margin:'10px', minWidth:'67px'}}><>{isRoundInProgress ?targetResult:null}</></div>
-                        )}
+                        {targetResult!==null && <TargetDisplay isRoundInProgress={isRoundInProgress} targetResult={targetResult}/>}
                         {timeLeft!=null && (
                             <div id ="countdown"style ={{position: 'relative',
                                 height: '40px',
