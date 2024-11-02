@@ -59,4 +59,4 @@ Extra features (1.0 per feature)
 - [X] Feature 7: Singleplayer
 - [X] Feature 8: Change the order of operations used in the game..
 - [X] Feature 9: Change the amount of attempts allowed on each equation.
-- [ ] Feature 10: Leaderboard
+- [X] Feature 10: Leaderboard
