@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import '../css/Multiplayer.css';
 // import '../css/Multiplayer-temp.css';
 import { server } from '../socket'
-import { GameArea, ScoreBar, AttemptsDisplay, TargetDisplay, Timer, ReturnToMenuButton, NameEntry, OptionsMenu, SelectRoom, RoomReady } from '../components';
+import { GameArea, ScoreBar, AttemptsDisplay, TargetDisplay, Timer, ReturnToMenuButton, NameEntry, OptionsMenu, SelectRoom, RoomReady, StartButton } from '../components';
 
 function Multiplayer({ goToPage }) {
     // Screen Value
@@ -419,20 +419,18 @@ function Multiplayer({ goToPage }) {
                         {timeLeft != null && <Timer timeLeft={timeLeft} roundLength={roundLength} />}
                         {attemptsLeft !== null && <AttemptsDisplay attemptsLeft={attemptsLeft} />}
                     </div>
-                    <div style={{ textAlign: 'center' }}>
-                        <button onClick={() => {
-                            setTimeLeft(roundLength);
-                            server.emit('requestNumbers');
-                            setPlaySlotNumbers(Array(numbersLength).fill());
-                            setPlaySlotOperators(Array(numbersLength - 1).fill());
-                            setIsRoundInProgress(!isRoundInProgress);
-                            setAttemptsLeft(attemptsAllowed);
-                        }
-                        }
-                            disabled={isRoundInProgress || !isYourTurn}
-
-                        >Start</button>
-                    </div>
+                    <StartButton setTimeLeft={setTimeLeft}
+                        roundLength={roundLength}
+                        server={server}
+                        setPlaySlotNumbers={setPlaySlotNumbers}
+                        numbersLength={numbersLength}
+                        setPlaySlotOperators={setPlaySlotOperators}
+                        setIsRoundInProgress={setIsRoundInProgress}
+                        isRoundInProgress={isRoundInProgress}
+                        setAttemptsLeft={setAttemptsLeft}
+                        attemptsAllowed={attemptsAllowed}
+                        isYourTurn={isYourTurn}
+                    />
                     {isYourTurn && (
                         <GameArea playSlotNumbers={playSlotNumbers}
                             playSlotOperators={playSlotOperators}

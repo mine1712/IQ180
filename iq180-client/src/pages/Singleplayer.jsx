@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import '../css/Singleplayer.css';
-import { GameArea, ScoreBar, TargetDisplay, AttemptsDisplay, Timer, ReturnToMenuButton, NameEntry, OptionsMenu } from '../components';
+import { GameArea, ScoreBar, TargetDisplay, AttemptsDisplay, Timer, ReturnToMenuButton, NameEntry, OptionsMenu, StartButton } from '../components';
 import { generateNumbers } from '../utils/numberGenerator'
 
 const Singleplayer = ({ goToPage }) => {
@@ -222,25 +222,20 @@ const Singleplayer = ({ goToPage }) => {
                         {timeLeft != null && <Timer timeLeft={timeLeft} roundLength={roundLength} />}
                         {attemptsLeft !== null && <AttemptsDisplay attemptsLeft={attemptsLeft} />}
                     </div>
-                    <div style={{ textAlign: 'center' }}>
-                        <button onClick={() => {
-                            // setIsYourTurn(true);
-                            setTimeLeft(roundLength);
-                            const generated = generateNumbers(numbersLength);
-                            setBankNumbers(generated[0]);
-                            setTargetResult(generated[1]);
-                            setPlaySlotNumbers(Array(numbersLength).fill());
-                            setPlaySlotOperators(Array(numbersLength - 1).fill());
-                            setIsRoundInProgress(!isRoundInProgress);
-                            setAttemptsLeft(attemptsAllowed);
-                        }
-                        }
-                            disabled={isRoundInProgress}
-
-                        >Start</button>
-                    </div>
-
-
+                    <StartButton setTimeLeft={setTimeLeft}
+                        roundLength={roundLength}
+                        setPlaySlotNumbers={setPlaySlotNumbers}
+                        generateNumbers={generateNumbers}
+                        numbersLength={numbersLength}
+                        setPlaySlotOperators={setPlaySlotOperators}
+                        setIsRoundInProgress={setIsRoundInProgress}
+                        isRoundInProgress={isRoundInProgress}
+                        setAttemptsLeft={setAttemptsLeft}
+                        attemptsAllowed={attemptsAllowed}
+                        isYourTurn={true}
+                        setBankNumbers={setBankNumbers}
+                        setTargetResult={setTargetResult}
+                    />
                     <GameArea playSlotNumbers={playSlotNumbers}
                         playSlotOperators={playSlotOperators}
                         bankNumbers={bankNumbers}
@@ -263,7 +258,6 @@ const Singleplayer = ({ goToPage }) => {
                             goToPage("Menu");
                         }} />
                     </div>
-
                 </div>
             )}
         </div>

@@ -14,6 +14,7 @@ import NameEntry from './NameEntry';
 import OptionsMenu from './OptionsMenu';
 import SelectRoom from './SelectRoom';
 import RoomReady from './RoomReady';
+import StartButton from './StartButton';
 
 export {
     Effects,
@@ -31,5 +32,6 @@ export {
     NameEntry,
     OptionsMenu,
     SelectRoom,
-    RoomReady
+    RoomReady,
+    StartButton
 };
