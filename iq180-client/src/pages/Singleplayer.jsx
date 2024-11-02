@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import '../css/Singleplayer.css';
-import { GameArea, ScoreBar, TargetDisplay, AttemptsDisplay, Timer, ReturnToMenuButton } from '../components';
+import { GameArea, ScoreBar, TargetDisplay, AttemptsDisplay, Timer, ReturnToMenuButton, NameEntry } from '../components';
 import { generateNumbers } from '../utils/numberGenerator'
 
 const Singleplayer = ({ goToPage }) => {
@@ -189,21 +189,12 @@ const Singleplayer = ({ goToPage }) => {
 
     return (
         <div>
-            {currentSingleplayerScreen == "nameentry" && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h2>Enter Your Name</h2>
-                        <input
-                            type="text"
-                            value={userName}
-                            onChange={(e) => setUserName(e.target.value)}
-                            placeholder="Your name"
-                            className='input'
-                        />
-                        <button onClick={handleNameSubmit}>Submit</button>
-                    </div>
-                </div>
-            )}
+            {currentSingleplayerScreen == "nameentry" && 
+                <NameEntry userName={userName}
+                    setUserName={setUserName}
+                    handleNameSubmit={handleNameSubmit}
+                />
+            }
             {currentSingleplayerScreen == "gameoptions" && (
                 <div className="modal">
                     <div className="modal-content">

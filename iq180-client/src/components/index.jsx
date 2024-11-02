@@ -10,6 +10,7 @@ import AttemptsDisplay from './AttemptsDisplay';
 import TargetDisplay from './TargetDisplay';
 import Timer from './Timer';
 import ReturnToMenuButton from './ReturnToMenuButton';
+import NameEntry from './NameEntry';
 
 export {
     Effects,
@@ -23,5 +24,6 @@ export {
     AttemptsDisplay,
     TargetDisplay,
     Timer,
-    ReturnToMenuButton
+    ReturnToMenuButton,
+    NameEntry
 };

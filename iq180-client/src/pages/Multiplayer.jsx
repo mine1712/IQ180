@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import '../css/Multiplayer.css';
 // import '../css/Multiplayer-temp.css';
 import { server } from '../socket'
-import { GameArea, ScoreBar, AttemptsDisplay, TargetDisplay, Timer, ReturnToMenuButton } from '../components';
+import { GameArea, ScoreBar, AttemptsDisplay, TargetDisplay, Timer, ReturnToMenuButton, NameEntry } from '../components';
 
 function Multiplayer({ goToPage }) {
     // Screen Value
@@ -385,21 +385,12 @@ function Multiplayer({ goToPage }) {
                     </div>
                 </div>
             )}
-            {currentMultiplayerScreen == "nameentry" && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h2>Enter Your Name</h2>
-                        <input
-                            type="text"
-                            value={userName}
-                            onChange={(e) => setUserName(e.target.value)}
-                            placeholder="Your name"
-                            className='input'
-                        />
-                        <button onClick={handleNameSubmit}>Submit</button>
-                    </div>
-                </div>
-            )}
+            {currentMultiplayerScreen == "nameentry" && 
+                <NameEntry userName={userName}
+                    setUserName={setUserName}
+                    handleNameSubmit={handleNameSubmit}
+                />
+            }
             {currentMultiplayerScreen == "roomwaiting" && (
                 <div className="modal">
                     <div className="modal-content">
