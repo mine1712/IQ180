@@ -90,6 +90,61 @@ function GameArea({
         setCurrentDragItem(null);
     }
 
+    const handleNumberClick = ( num,index ) => {
+        console.log(playSlotNumbers);
+        const newPlaySlotNumbers = [...playSlotNumbers];
+        const firstAvailableSlot = newPlaySlotNumbers.findIndex(slot => slot === undefined);
+    
+        if (firstAvailableSlot !== -1) {
+            newPlaySlotNumbers[firstAvailableSlot] = num;
+        } else {
+            newPlaySlotNumbers.push(num);
+        }
+    
+        const newBankNumbers = [...bankNumbers];
+        newBankNumbers[index] = undefined;
+        setPlaySlotNumbers(newPlaySlotNumbers);
+        setBankNumbers(newBankNumbers);
+    }
+
+    const handleOperatorClick = ( op ) => {
+        const newPlaySlotOperators = [...playSlotOperators];
+        const firstAvailableSlot = newPlaySlotOperators.findIndex(slot => slot === undefined);
+    
+        if (firstAvailableSlot !== -1) {
+            newPlaySlotOperators[firstAvailableSlot] = op;
+        } else {
+            newPlaySlotOperators.push(op);
+        }
+
+        setPlaySlotOperators(newPlaySlotOperators);
+    }
+
+    const handleRemoveNumber = (num, index) => {
+        const newPlaySlotNumbers = [...playSlotNumbers];
+        newPlaySlotNumbers[index] = undefined;
+        const newBankNumbers = [...bankNumbers];
+        const firstAvailableSlot = newBankNumbers.findIndex(slot => slot === undefined);
+    
+        if (firstAvailableSlot !== -1) {
+            newBankNumbers[firstAvailableSlot] = num;
+        } else {
+            newBankNumbers.push(num);
+        }
+        setPlaySlotNumbers(newPlaySlotNumbers);
+        setBankNumbers(newBankNumbers);
+        console.log('Updated playSlotNumbers:', newPlaySlotNumbers);
+        console.log('Updated bankNumbers:', newBankNumbers);
+    }
+
+    const handleRemoveOperator = (op, index) => {
+        console.log(`Removing operator: ${op} at index: ${index}`);
+        const newPlaySlotOperators = [...playSlotOperators];
+        newPlaySlotOperators[index] = undefined;
+        console.log('Updated playSlotOperators:', newPlaySlotOperators);
+        setPlaySlotOperators(newPlaySlotOperators);
+    }
+
     const formatSubmission = () => {
         const formatOperators = playSlotOperators.reduce((acc, curr) => {
             if (curr === "x") {
@@ -114,6 +169,7 @@ function GameArea({
                                 index={index / 2}
                                 dropHandler={dropHandler}
                                 dragStartHandler={dragStartHandler}
+                                onClick={() => {handleRemoveNumber(number, (index / 2))}}
                             />
 
                         </Fragment>
@@ -124,6 +180,7 @@ function GameArea({
                                 index={(index - 1) / 2}
                                 dropHandler={dropHandler}
                                 dragStartHandler={dragStartHandler}
+                                onClick={() => {handleRemoveOperator(playSlotOperators[(index - 1) / 2], (index - 1) / 2)}}
                             />
                         </Fragment>
                     )
@@ -132,14 +189,14 @@ function GameArea({
             <div>
                 {bankNumbers.map((number, index) => (
                     <Fragment key={'numberBank' + (index + 1)}>
-                        <NumberBankBox number={number} index={index} dragStartHandler={dragStartHandler} dropHandler={dropHandler} />
+                        <NumberBankBox number={number} index={index} dragStartHandler={dragStartHandler} dropHandler={dropHandler} onClick={() => handleNumberClick(number, index)} />
                     </Fragment>
                 ))}
             </div>
             <div>
                 {bankOperators.map((symbol, index) => (
                     <Fragment key={'numberBank' + (index + 1)}>
-                        <OperatorBankBox symbol={symbol} index={index} dragStartHandler={dragStartHandler} />
+                        <OperatorBankBox symbol={symbol} index={index} dragStartHandler={dragStartHandler} onClick={() => handleOperatorClick(symbol)} />
                     </Fragment>
                 ))}
             </div>

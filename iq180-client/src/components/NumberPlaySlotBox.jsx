@@ -1,4 +1,4 @@
-function NumberPlaySlotBox({ number, index, dropHandler, dragStartHandler }) {
+function NumberPlaySlotBox({ number, index, dropHandler, dragStartHandler, onClick }) {
 
     const numberPlaySlotDrop = (index) => {
         dropHandler("numslot", index);
@@ -17,6 +17,7 @@ function NumberPlaySlotBox({ number, index, dropHandler, dragStartHandler }) {
             onDragStart={() => numberPlaySlotDragStart(index)}
             onDrop={() => numberPlaySlotDrop(index)}
             onDragOver={(e) => e.preventDefault()}
+            onClick={onClick}
             // id = "span_num_ops"
         >
             {number}

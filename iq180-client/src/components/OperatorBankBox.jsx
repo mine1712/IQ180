@@ -1,4 +1,4 @@
-function OperatorBankBox({ symbol, index, dragStartHandler }) {
+function OperatorBankBox({ symbol, index, dragStartHandler, onClick }) {
     const operatorBankBoxDragStart = (index) => {
         dragStartHandler("opbank", index)
     }
@@ -9,6 +9,7 @@ function OperatorBankBox({ symbol, index, dragStartHandler }) {
             id='operatorBankBox'
             draggable={true}
             onDragStart={() => operatorBankBoxDragStart(index)}
+            onClick={onClick}
         >
             {symbol}
         </span>

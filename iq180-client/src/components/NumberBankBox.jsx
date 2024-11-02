@@ -1,4 +1,4 @@
-function NumberBankBox({ number, index, dragStartHandler, dropHandler }) {
+function NumberBankBox({ number, index, dragStartHandler, dropHandler, onClick }) {
 
     const numberBankBoxDragStart = (index) => {
         dragStartHandler("numbank", index);
@@ -17,6 +17,7 @@ function NumberBankBox({ number, index, dragStartHandler, dropHandler }) {
             onDragStart={() => numberBankBoxDragStart(index)}
             onDrop={() => numberBankBoxDrop(index)}
             onDragOver={(e) => e.preventDefault()}
+            onClick={onClick}
             // id = "span_num_ops"
         >
             {number}

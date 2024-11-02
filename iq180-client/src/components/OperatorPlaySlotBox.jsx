@@ -1,4 +1,4 @@
-function OperatorPlaySlotBox({ operator, index, dropHandler, dragStartHandler }) {
+function OperatorPlaySlotBox({ operator, index, dropHandler, dragStartHandler, onClick }) {
 
     const operatorPlaySlotDragStart = (index) => {
         dragStartHandler("opslot", index)
@@ -18,6 +18,7 @@ function OperatorPlaySlotBox({ operator, index, dropHandler, dragStartHandler })
             onDrop={() => operatorPlaySlotDrop(index)}
             onDragOver={(e) => e.preventDefault()}
             // id = "span_num_ops"
+            onClick={onClick}
         >
             {operator}
         </span>
