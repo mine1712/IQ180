@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import '../css/Singleplayer.css';
 import {GameArea,ScoreBar,TargetDisplay,AttemptsDisplay,Timer} from '../components';
 import { generateNumbers } from '../utils/numberGenerator'
@@ -33,13 +33,6 @@ const Singleplayer = ({goToPage}) => {
     const [attemptsLeft, setAttemptsLeft] = useState(null);
     // const [getNumberButtonState,setGetNumberButtonState] = useState(false);
     // const [privateRoomCode,setPrivateRoomCode] = useState(null);
-    const [dashOffSet, setDashOffSet] = useState(113);
-
-    useEffect(() => {
-        const circumference = 2 * Math.PI * 18; 
-        const offset = circumference - (timeLeft / roundLength) * circumference;
-        setDashOffSet(offset);
-    }, [timeLeft, roundLength]);
 
     const initializeSingleplayer = () => {
         setPlayerScore(0);
@@ -322,7 +315,7 @@ const Singleplayer = ({goToPage}) => {
                         padding: '10px',
                         }}> 
                         {targetResult!==null && <TargetDisplay isRoundInProgress={isRoundInProgress} targetResult={targetResult}/>}
-                        {timeLeft!=null && <Timer timeLeft={timeLeft} dashOffSet={dashOffSet}/>}
+                        {timeLeft!=null && <Timer timeLeft={timeLeft} roundLength={roundLength}/>}
                         {attemptsLeft!== null && <AttemptsDisplay attemptsLeft={attemptsLeft}/>}
                     </div>
                     {/* <p>Test = {isRoundInProgress?"yes":"no"}</p> */}

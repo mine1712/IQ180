@@ -1,4 +1,14 @@
-function Timer({timeLeft,dashOffSet}) {
+import { useState, useEffect } from 'react';
+
+function Timer({timeLeft,roundLength}) {
+    const [dashOffSet, setDashOffSet] = useState(113);
+
+    useEffect(() => {
+        const circumference = 2 * Math.PI * 18; 
+        const offset = circumference - (timeLeft / roundLength) * circumference;
+        setDashOffSet(offset);
+    }, [timeLeft, roundLength]);
+
     return (
         <div id ="countdown"style ={{position: 'relative',
             height: '40px',

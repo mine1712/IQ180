@@ -41,13 +41,6 @@ function Multiplayer ({goToPage}) {
     const [attemptsAllowedInput, setAttemptsAllowedInput] = useState("3");
 
     const [isConnected, setIsConnected] = useState(server.connected);
-    const [dashOffSet, setDashOffSet] = useState(113);
-
-    useEffect(() => {
-        const circumference = 2 * Math.PI * 18; 
-        const offset = circumference - (timeLeft / roundLength) * circumference;
-        setDashOffSet(offset);
-      }, [timeLeft, roundLength]);
 
     useEffect(() => {
         function onNumbers(data) {
@@ -525,7 +518,7 @@ function Multiplayer ({goToPage}) {
                         padding: '10px',
                         }}> 
                         {targetResult!==null && <TargetDisplay isRoundInProgress={isRoundInProgress} targetResult={targetResult}/>}
-                        {timeLeft!=null && <Timer timeLeft={timeLeft} dashOffSet={dashOffSet}/>}
+                        {timeLeft!=null && <Timer timeLeft={timeLeft} roundLength={roundLength}/>}
                         {attemptsLeft!== null && <AttemptsDisplay attemptsLeft={attemptsLeft}/>}
                     </div>
                     {/* <button onClick={() => {
