@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import '../css/Singleplayer.css';
-import {GameArea,ScoreBar,TargetDisplay,AttemptsDisplay,Timer} from '../components';
+import {GameArea,ScoreBar,TargetDisplay,AttemptsDisplay,Timer,ReturnToMenuButton} from '../components';
 import { generateNumbers } from '../utils/numberGenerator'
 
 const Singleplayer = ({goToPage}) => {
@@ -303,7 +303,9 @@ const Singleplayer = ({goToPage}) => {
                         {playerLost && (
                             <button onClick={initializeSingleplayer}>Restart Game</button>
                         )}
-                        <button onClick={()=>goToPage("Menu")}>Return to Menu</button>
+                        <ReturnToMenuButton onClick={() => {
+                            goToPage("Menu");
+                        }} />
                     </div>
                     
                 </div>

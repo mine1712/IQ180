@@ -9,6 +9,7 @@ import ScoreBar from './ScoreBar';
 import AttemptsDisplay from './AttemptsDisplay';
 import TargetDisplay from './TargetDisplay';
 import Timer from './Timer';
+import ReturnToMenuButton from './ReturnToMenuButton';
 
 export {Effects, 
     Howtoplay, 
@@ -20,4 +21,5 @@ export {Effects,
     ScoreBar,
     AttemptsDisplay,
     TargetDisplay,
-    Timer};
+    Timer,
+    ReturnToMenuButton};
