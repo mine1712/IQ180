@@ -5,7 +5,7 @@ const operators = ['+', '-', '*', '/'];
 //       if (nums.length === 1) {
 //         return Math.abs(nums[0] - target) < 1e-6;
 //       }
-  
+
 //       for (let i = 0; i < nums.length; i++) {
 //         for (let j = 0; j < nums.length; j++) {
 //           if (i !== j) {
@@ -16,7 +16,7 @@ const operators = ['+', '-', '*', '/'];
 //               if (op === '-') result = nums[i] - nums[j];
 //               if (op === '*') result = nums[i] * nums[j];
 //               if (op === '/' && nums[j] !== 0) result = nums[i] / nums[j];
-  
+
 //               if (result !== undefined) {
 //                 if (helper([...remaining, result], target)) {
 //                   return true;
@@ -28,7 +28,7 @@ const operators = ['+', '-', '*', '/'];
 //       }
 //       return false;
 //     }
-  
+
 //     return helper(numbers, target);
 //   }
 
@@ -51,21 +51,21 @@ export function generateNumbers(numberLength) {
     let numbers;
     let equation;
     let targetResult;
-    
+
     do {
         // alert(equation)
         equation = "";
         // alert("test")
-        numbers = Array.from({length: numberLength}, () => Math.floor(Math.random() * 9.9999))
-        for (let i=0; i<numbers.length; i++) {
-            equation+=numbers[i];
-            if (i!=numbers.length-1) {
-                equation+=operators[Math.floor(Math.random()*3.9999)]
+        numbers = Array.from({ length: numberLength }, () => Math.floor(Math.random() * 9.9999))
+        for (let i = 0; i < numbers.length; i++) {
+            equation += numbers[i];
+            if (i != numbers.length - 1) {
+                equation += operators[Math.floor(Math.random() * 3.9999)]
             }
         }
-        targetResult=eval(equation);
+        targetResult = eval(equation);
         // alert(targetResult);
-    } while (targetResult - Math.floor(targetResult) != 0 || targetResult<=0);
+    } while (targetResult - Math.floor(targetResult) != 0 || targetResult <= 0);
 
-    return [numbers,targetResult];
+    return [numbers, targetResult];
 }
