@@ -115,14 +115,43 @@ function getNumbersLeftToRight(targetLength){
     for(let i=0; i<targetLength-1; i++){
       ops.push(operators[Math.floor(Math.random()*4)]);
     }
-    let equation = "";
-    for (let i=0;i<numbers.length;i++) {
-      equation+=numbers[i];
-      if (i!==numbers.length-1) {
-        equation+=ops[i];
+    console.log(numbers);
+    console.log(ops);
+    // let equation = "";
+    // for (let i=0;i<numbers.length;i++) {
+    //   equation+=numbers[i];
+    //   if (i!==numbers.length-1) {
+    //     equation+=ops[i];
+    //   }
+    // }
+    result = numbers[0];
+
+    for(let i = 1; i<numbers.length;i++){
+      switch(ops[i-1]){
+        case '+':
+          console.log(result+" + "+numbers[i]);
+          result += numbers[i];
+          console.log(result);
+          break;
+        case '-':
+          console.log(result+" - "+numbers[i]);
+          result -= numbers[i];
+          console.log(result);
+          break;
+        case '*':
+          console.log(result+" * "+numbers[i]);
+          result *= numbers[i];
+          console.log(result);
+          break;
+        case '/':
+          console.log(result+" / "+numbers[i]);
+          result /= numbers[i];
+          console.log(result);
+          break;
+        default:
+          throw new Error('Invalid operator');
       }
     }
-    result = eval(equation);
   }
   console.log(`answer are: ${numbers} ${ops}`);
   let ans ='';
@@ -290,25 +319,23 @@ io.on('connection', (socket) => {
 
   // Checking the answer from left to right
   function check_leftToRight(nums, operators){
-    let playerAnswer = 0;
-    for(let i = 0; i<nums.length;i++){
-      if(i !== operators.length){
-        switch(operators[i]){
-          case '+':
-            playerAnswer += nums[i];
-            break;
-          case '-':
-            playerAnswer -= nums[i];
-            break;
-          case '*':
-            playerAnswer *= nums[i];
-            break;
-          case '/':
-            playerAnswer /= nums[i];
-            break;
-          default:
-            throw new Error('Invalid operator');
-        }
+    let playerAnswer = nums[0];
+    for(let i = 1; i<nums.length;i++){
+      switch(operators[i-1]){
+        case '+':
+          playerAnswer += nums[i];
+          break;
+        case '-':
+          playerAnswer -= nums[i];
+          break;
+        case '*':
+          playerAnswer *= nums[i];
+          break;
+        case '/':
+          playerAnswer /= nums[i];
+          break;
+        default:
+          throw new Error('Invalid operator');
       }
     }
     return playerAnswer;
@@ -322,7 +349,7 @@ io.on('connection', (socket) => {
     let booleanResult;
     if(nums_check.length === keys[room].targetLength && operators_check.length === (keys[room].targetLength-1) && isTimeUp !== true){ 
       try {
-        playerAnswer = keys[room].checkingLefttoright? check_leftToRight(nums, operators) : check_pemdas(nums, operators);
+        playerAnswer = keys[room].orderofoperations==="lefttoright"? check_leftToRight(nums, operators) : check_pemdas(nums, operators);
         booleanResult = playerAnswer === keys[room].ans;
       } catch (error) {
         io.to(room).emit('error', { message: error.message });
