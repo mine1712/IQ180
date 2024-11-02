@@ -40,8 +40,6 @@ function Multiplayer({ goToPage }) {
     const [isRoundInProgress, setIsRoundInProgress] = useState(false);
     const [targetResult, setTargetResult] = useState(null);
     const [attemptsLeft, setAttemptsLeft] = useState(null);
-    // const [getNumberButtonState,setGetNumberButtonState] = useState(false);
-    // TODO: Configurable values
     const [roundLength, setRoundLength] = useState(60);
     const [roundLengthInput, setRoundLengthInput] = useState("60");
     const [numbersLength, setNumbersLength] = useState(5);
@@ -49,8 +47,6 @@ function Multiplayer({ goToPage }) {
     const [orderOfOperations, setOrderOfOperations] = useState("pemdas");
     const [attemptsAllowed, setAttemptsAllowed] = useState(3);
     const [attemptsAllowedInput, setAttemptsAllowedInput] = useState("3");
-
-    const [isConnected, setIsConnected] = useState(server.connected);
 
     useEffect(() => {
         function onNumbers(data) {
@@ -101,7 +97,6 @@ function Multiplayer({ goToPage }) {
     useEffect(() => {
         if (server.id !== undefined) {
             setPlayerID(server.id);
-            // alert(server.id);
         }
     }, [server.id])
 
@@ -117,7 +112,6 @@ function Multiplayer({ goToPage }) {
             alert("The next round is beginning");
         }
         function onSwapTurn(nextPlayer) {
-            // alert(nextPlayer)
             setIsRoundInProgress(false);
             if (nextPlayer == playerID) {
                 setIsYourTurn(true);
@@ -142,7 +136,6 @@ function Multiplayer({ goToPage }) {
             setRoundLength(roundLength);
             if (turn == playerID) {
                 setIsYourTurn(true);
-                // setTimeLeft(60);
                 setCurrentMultiplayerScreen("gamescreen");
             }
             setCurrentMultiplayerScreen("gamescreen");
@@ -186,7 +179,6 @@ function Multiplayer({ goToPage }) {
             alert("This room is full! Please select anothoer room");
         }
         function onJoinRoomSuccess() {
-            // alert('success '+ selectedRoom);
             setCurrentRoom(selectedRoom);
             setSelectedRoom(null);
             setCurrentMultiplayerScreen("roomwaiting");
@@ -204,15 +196,6 @@ function Multiplayer({ goToPage }) {
         }
     }, [selectedRoom])
 
-    const checkSocketConnection = () => {
-        if (!server.connected) {
-            console.log('Socket is disconnected');
-            // Handle the disconnection logic here
-        } else {
-            console.log('Socket is connected');
-        }
-    };
-
     useEffect(() => {
         function onUserDisconnected(name) {
             if (currentMultiplayerScreen == "gamescreen") {
@@ -224,17 +207,8 @@ function Multiplayer({ goToPage }) {
 
         server.on("userDisconnected", onUserDisconnected);
 
-        // Check connection status on mount
-        // setIsConnected(server.connected);
-
-        // Listen for connection and disconnection events
-        // server.on('connect', () => setIsConnected(true));
-        // server.on('disconnect', () => setIsConnected(false));
-
         return () => {
             server.off("userDisconnected", onUserDisconnected);
-            // server.off('connect');
-            // server.off('disconnect');
         }
     }, [currentMultiplayerScreen])
 
@@ -256,14 +230,11 @@ function Multiplayer({ goToPage }) {
         setSelectedRoom(room);
     }
 
-    
-
     const handleNameSubmit = () => {
         setCurrentMultiplayerScreen("selectroom");
     }
 
     const handleSubmission = (numbers, operators) => {
-        // alert(timeLeft);
         server.emit('checkAns', { nums: numbers, operators: operators, timeUsed: roundLength - timeLeft, room: currentRoom, attemptleft: attemptsLeft, isTimeUp: isTimeUp });
         // setAttemptsLeft(attemptsLeft-1);
     }
@@ -299,32 +270,6 @@ function Multiplayer({ goToPage }) {
         server.emit("playerReady");
         setIsReady(true);
     }
-
-    // useEffect(() => {
-    //     function onAnswerChecked({booleanResult}) {
-    //         alert("Test "+booleanResult);
-    //     }
-    //     server.on('answerChecked', onAnswerChecked);
-
-    //     return () => {
-    //         server.off('answerChecked', onAnswerChecked);
-    //     }
-    // }, [])
-
-
-    // useEffect(() => {
-    //     const handleServerReset = () => {
-    //         alert("Server has been reset");
-    //         goToPage("Menu");
-    //         setServerReset(false);
-    //     };
-
-    //     server.on('serverReset', handleServerReset);
-
-    //     return () => {
-    //         server.off('serverReset', handleServerReset);
-    //     };
-    // }, [goToPage]);
 
     return (
         <div style={{height: '100vh', overflowY:'auto'}}>

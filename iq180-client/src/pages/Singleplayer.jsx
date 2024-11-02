@@ -24,11 +24,9 @@ const Singleplayer = ({ goToPage }) => {
     const [playSlotOperators, setPlaySlotOperators] = useState(Array(4).fill());
     const [bankNumbers, setBankNumbers] = useState([]);
     const [bankOperators, setBankOperators] = useState(['+', '-', 'x', '÷'])
-    // const [selectedRoom, setSelectedRoom] = useState(null);
     // Game Variables
     const [timeLeft, setTimeLeft] = useState(null);
     const [isTimeUp, setIsTimeUp] = useState(false);
-    const [isYourTurn, setIsYourTurn] = useState(false);
     const [isRoundInProgress, setIsRoundInProgress] = useState(false);
     const [targetResult, setTargetResult] = useState(null);
     const [playerLost, setPlayerLost] = useState(false);
@@ -41,8 +39,6 @@ const Singleplayer = ({ goToPage }) => {
     const [attemptsAllowedInput, setAttemptsAllowedInput] = useState("3");
     const [attemptsAllowed, setAttemptsAllowed] = useState(3);
     const [attemptsLeft, setAttemptsLeft] = useState(null);
-    // const [getNumberButtonState,setGetNumberButtonState] = useState(false);
-    // const [privateRoomCode,setPrivateRoomCode] = useState(null);
 
     const initializeSingleplayer = () => {
         setPlayerScore(0);
@@ -51,7 +47,6 @@ const Singleplayer = ({ goToPage }) => {
         setBankNumbers([]);
         setTimeLeft(null);
         setAttemptsLeft(null);
-        setIsYourTurn(false);
         setIsTimeUp(false);
         setTargetResult(null);
         setIsRoundInProgress(false);
@@ -94,7 +89,6 @@ const Singleplayer = ({ goToPage }) => {
         setRoundLength(parseInt(roundLengthInput));
         setAttemptsAllowed(parseInt(attemptsAllowedInput));
         setCurrentSingleplayerScreen("gamescreen");
-        // alert(checkNumbersLength(numbersLength));
     }
 
     useEffect(() => {
@@ -112,13 +106,11 @@ const Singleplayer = ({ goToPage }) => {
                     equation += operators[i];
                 }
             }
-            // alert(equation)
             try {
                 playerAnswer = eval(equation);
                 if (playerAnswer === targetResult) {
                     alert("Correct! The solution is valid.");
                     setIsRoundInProgress(false);
-                    setIsYourTurn(false)
                     setPlayerScore(playerScore + 1);
                     return true;
                 } else {
@@ -131,13 +123,9 @@ const Singleplayer = ({ goToPage }) => {
                 setAttemptsLeft(attemptsLeft - 1);
                 return false;
             }
-            // const playerAnswer = eval(equation);
-            // alert("Player Answer: "+playerAnswer+"\nTarget: "+targetResult);
-            // return 
         } else if (orderOfOperations == "lefttoright") {
             let nums_check = numbers.filter((value) => value !== null);
             let operators_check = operators.filter((value) => value !== null);
-            // let booleanResult;
             if (nums_check.length === numbersLength && operators_check.length === (numbersLength - 1)) {
                 let result = numbers[0];
                 for (let i = 1; i < numbers.length; i++) {
@@ -159,7 +147,6 @@ const Singleplayer = ({ goToPage }) => {
                 if (result === targetResult) {
                     alert("Correct! The solution is valid.");
                     setIsRoundInProgress(false);
-                    setIsYourTurn(false)
                     setPlayerScore(playerScore + 1);
                     return true;
                 } else {
