@@ -224,7 +224,7 @@ function Multiplayer({ goToPage }) {
         } else if (timeLeft === 0 && isRoundInProgress) {
             setIsTimeUp(true);
         }
-    }, [timeLeft, isRoundInProgress]);
+    }, [timeLeft, isRoundInProgress, isTimeUp]);
 
     const handleRoomSelection = (room) => {
         setSelectedRoom(room);
