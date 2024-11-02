@@ -22,7 +22,6 @@ function App() {
 
     useEffect(() => {
         function onDisconnect(reason) {
-            alert(reason);
             if (reason === "io server disconnect") {
                 // the disconnection was initiated by the server, you need to reconnect manually
                 server.connect();
@@ -30,6 +29,18 @@ function App() {
             if (reason === "transport error") {
                 if (currentPage == "Multiplayer") {
                     alert("The server has been turned off!\nReturning to Menu")
+                    setCurrentPage("Menu")
+                }
+            }
+            if (reason === "ping timeout") {
+                if (currentPage == "Multiplayer") {
+                    alert("Ping timed out!\nReturning to Menu")
+                    setCurrentPage("Menu")
+                }
+            }
+            if (reason === "transport close") {
+                if (currentPage == "Multiplayer") {
+                    alert("You have lost connection!\nReturning to Menu")
                     setCurrentPage("Menu")
                 }
             }
