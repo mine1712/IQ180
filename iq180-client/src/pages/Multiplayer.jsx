@@ -62,14 +62,6 @@ function Multiplayer({ goToPage }) {
             setCurrentMultiplayerScreen("roomready");
         }
 
-        function onWrongAnswer(attemptleft) {
-            // if (attemptleft===0) {
-            //     setIsRoundInProgress(false);
-            // }
-            setAttemptsLeft(attemptleft);
-            alert("Your answer was incorrect!");
-        }
-
         function onOptions({ targetLength, attempt, orderofoperations, roundLength }) {
             setNumbersLengthInput(targetLength.toString());
             setAttemptsAllowedInput(attempt.toString());
@@ -82,17 +74,36 @@ function Multiplayer({ goToPage }) {
         server.on('numbers', onNumbers);
         server.on("error", onError);
         server.on("getReady", onGetReady);
-        server.on("wrongAnswer", onWrongAnswer);
+        
         server.on("options", onOptions);
 
         return () => {
             server.off('numbers', onNumbers);
             server.off("error", onError);
             server.off("getReady", onGetReady);
-            server.off("wrongAnswer", onWrongAnswer);
             server.off("options", onOptions);
         }
     }, []);
+
+    useEffect(() => {
+        function onWrongAnswer(attemptleft) {
+            // if (attemptleft===0) {
+            //     setIsRoundInProgress(false);
+            // }
+            setAttemptsLeft(attemptleft);
+            if (isTimeUp) {
+                alert("You have ran out of time!");
+            } else {
+                alert("Your answer was incorrect!");
+            }
+        }
+
+        server.on("wrongAnswer", onWrongAnswer);
+
+        return () => {
+            server.off("wrongAnswer", onWrongAnswer);
+        }
+    },[isTimeUp])
 
     useEffect(() => {
         if (server.id !== undefined) {
