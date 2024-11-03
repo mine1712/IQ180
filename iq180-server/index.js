@@ -501,9 +501,9 @@ io.on('connection', (socket) => {
           keys[room].response.timeUsed = timeUsed;
           keys[room].turn = keys[room].id.filter(user => user !== socket.id)[0];
           // Emit the result back to the room => show a page 
-          io.to(room).emit('updateScore',{
-            [socket.id]: stats[socket.id].score,
-            [keys[room].id.filter(user => user !== socket.id)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score});
+          // io.to(room).emit('updateScore',{
+          //   [socket.id]: stats[socket.id].score,
+          //   [keys[room].id.filter(user => user !== socket.id)[0]]: stats[keys[room].id.filter(id => id !== socket.id)[0]].score});
           io.to(room).emit('swapTurn',keys[room].turn);
         }
         // Update score on the client side
