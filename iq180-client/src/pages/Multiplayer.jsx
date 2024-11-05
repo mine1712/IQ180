@@ -339,109 +339,123 @@ function Multiplayer({ goToPage }) {
     };
 
     return (
-        <div style={{ height: "100vh", overflowY: "auto" }}>
-            {currentMultiplayerScreen == "nameentry" && (
-                <NameEntry
-                    userName={userName}
-                    setUserName={setUserName}
-                    handleNameSubmit={handleNameSubmit}
-                />
-            )}
-            {currentMultiplayerScreen == "selectroom" && (
-                <SelectRoom
-                    userName={userName}
-                    handleRoomSelection={handleRoomSelection}
-                    privateRoomCode={privateRoomCode}
-                    setPrivateRoomCode={setPrivateRoomCode}
-                    selectedRoom={selectedRoom}
-                    goToPage={goToPage}
-                />
-            )}
-            {currentMultiplayerScreen == "roomwaiting" && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h2>Waiting for opponent to join...</h2>
-                    </div>
-                </div>
-            )}
-            {currentMultiplayerScreen == "roomready" && (
-                <RoomReady
-                    handleEnterOptions={handleEnterOptions}
-                    handleReady={handleReady}
-                    isReady={isReady}
-                    waitOptions={waitOptions}
-                    server={server}
-                    goToPage={goToPage}
-                />
-            )}
-            {currentMultiplayerScreen == "roomoptions" && (
-                <OptionsMenu
-                    userName={userName}
-                    numbersLengthInput={numbersLengthInput}
-                    setNumbersLengthInput={setNumbersLengthInput}
-                    orderOfOperations={orderOfOperations}
-                    setOrderOfOperations={setOrderOfOperations}
-                    roundLengthInput={roundLengthInput}
-                    setRoundLengthInput={setRoundLengthInput}
-                    attemptsAllowedInput={attemptsAllowedInput}
-                    setAttemptsAllowedInput={setAttemptsAllowedInput}
-                    handleOptionsSubmit={handleOptionsSubmit}
-                />
-            )}
-            {currentMultiplayerScreen == "gamescreen" && (
-                <div>
-                    <ScoreBar
-                        playerScore={playerScore}
+        <div className="area">
+            <div className="container">
+                <ul class="circles">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+                {currentMultiplayerScreen == "nameentry" && (
+                    <NameEntry
                         userName={userName}
-                        opponentScore={opponentScore}
+                        setUserName={setUserName}
+                        handleNameSubmit={handleNameSubmit}
                     />
-                    <GameStatusDisplay
-                        targetResult={targetResult}
-                        isRoundInProgress={isRoundInProgress}
-                        timeLeft={timeLeft}
-                        roundLength={roundLength}
-                        attemptsLeft={attemptsLeft}
+                )}
+                {currentMultiplayerScreen == "selectroom" && (
+                    <SelectRoom
+                        userName={userName}
+                        handleRoomSelection={handleRoomSelection}
+                        privateRoomCode={privateRoomCode}
+                        setPrivateRoomCode={setPrivateRoomCode}
+                        selectedRoom={selectedRoom}
+                        goToPage={goToPage}
                     />
-                    <StartButton
-                        setTimeLeft={setTimeLeft}
-                        roundLength={roundLength}
+                )}
+                {currentMultiplayerScreen == "roomwaiting" && (
+                    <div className="modal">
+                        <div className="modal-content">
+                            <h2>Waiting for opponent to join...</h2>
+                        </div>
+                    </div>
+                )}
+                {currentMultiplayerScreen == "roomready" && (
+                    <RoomReady
+                        handleEnterOptions={handleEnterOptions}
+                        handleReady={handleReady}
+                        isReady={isReady}
+                        waitOptions={waitOptions}
                         server={server}
-                        setPlaySlotNumbers={setPlaySlotNumbers}
-                        numbersLength={numbersLength}
-                        setPlaySlotOperators={setPlaySlotOperators}
-                        setIsRoundInProgress={setIsRoundInProgress}
-                        isRoundInProgress={isRoundInProgress}
-                        setAttemptsLeft={setAttemptsLeft}
-                        attemptsAllowed={attemptsAllowed}
-                        isYourTurn={isYourTurn}
+                        goToPage={goToPage}
                     />
-                    {isYourTurn && (
-                        <GameArea
-                            playSlotNumbers={playSlotNumbers}
-                            playSlotOperators={playSlotOperators}
-                            bankNumbers={bankNumbers}
-                            bankOperators={bankOperators}
-                            setPlaySlotNumbers={setPlaySlotNumbers}
-                            setPlaySlotOperators={setPlaySlotOperators}
-                            setBankNumbers={setBankNumbers}
-                            isTimeUp={isTimeUp}
-                            handleSubmission={handleSubmission}
-                            isRoundInProgress={isRoundInProgress}
+                )}
+                {currentMultiplayerScreen == "roomoptions" && (
+                    <OptionsMenu
+                        userName={userName}
+                        numbersLengthInput={numbersLengthInput}
+                        setNumbersLengthInput={setNumbersLengthInput}
+                        orderOfOperations={orderOfOperations}
+                        setOrderOfOperations={setOrderOfOperations}
+                        roundLengthInput={roundLengthInput}
+                        setRoundLengthInput={setRoundLengthInput}
+                        attemptsAllowedInput={attemptsAllowedInput}
+                        setAttemptsAllowedInput={setAttemptsAllowedInput}
+                        handleOptionsSubmit={handleOptionsSubmit}
+                    />
+                )}
+                {currentMultiplayerScreen == "gamescreen" && (
+                    <div>
+                        <ScoreBar
+                            playerScore={playerScore}
+                            userName={userName}
+                            opponentScore={opponentScore}
                         />
-                    )}
-                    {!isYourTurn && (
-                        <h1 style={{ textAlign: "center" }}>
-                            Please wait until it's your turn!
-                        </h1>
-                    )}
-                    <ReturnToMenuButton
-                        onClick={() => {
-                            server.emit("exitRoom");
-                            goToPage("Menu");
-                        }}
-                    />
-                </div>
-            )}
+                        <GameStatusDisplay
+                            targetResult={targetResult}
+                            isRoundInProgress={isRoundInProgress}
+                            timeLeft={timeLeft}
+                            roundLength={roundLength}
+                            attemptsLeft={attemptsLeft}
+                        />
+                        <StartButton
+                            setTimeLeft={setTimeLeft}
+                            roundLength={roundLength}
+                            server={server}
+                            setPlaySlotNumbers={setPlaySlotNumbers}
+                            numbersLength={numbersLength}
+                            setPlaySlotOperators={setPlaySlotOperators}
+                            setIsRoundInProgress={setIsRoundInProgress}
+                            isRoundInProgress={isRoundInProgress}
+                            setAttemptsLeft={setAttemptsLeft}
+                            attemptsAllowed={attemptsAllowed}
+                            isYourTurn={isYourTurn}
+                        />
+                        {isYourTurn && (
+                            <GameArea
+                                playSlotNumbers={playSlotNumbers}
+                                playSlotOperators={playSlotOperators}
+                                bankNumbers={bankNumbers}
+                                bankOperators={bankOperators}
+                                setPlaySlotNumbers={setPlaySlotNumbers}
+                                setPlaySlotOperators={setPlaySlotOperators}
+                                setBankNumbers={setBankNumbers}
+                                isTimeUp={isTimeUp}
+                                handleSubmission={handleSubmission}
+                                isRoundInProgress={isRoundInProgress}
+                            />
+                        )}
+                        {!isYourTurn && (
+                            <h1 style={{ textAlign: "center" }}>
+                                Please wait until it's your turn!
+                            </h1>
+                        )}
+                        <ReturnToMenuButton
+                            onClick={() => {
+                                server.emit("exitRoom");
+                                goToPage("Menu");
+                            }}
+                        />
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

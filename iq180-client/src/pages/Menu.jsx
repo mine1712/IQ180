@@ -29,16 +29,16 @@ function Menu({ goToPage }) {
             <div className="game-title">IQ180</div>
             <div className="all-menu-containter">
                 <button
-                    className="multiplayer-button"
-                    onClick={() => goToPage("Multiplayer")}
-                >
-                    Multiplayer
-                </button>
-                <button
                     className="singleplayer-button"
                     onClick={() => goToPage("Singleplayer")}
                 >
                     Singleplayer
+                </button>
+                <button
+                    className="multiplayer-button"
+                    onClick={() => goToPage("Multiplayer")}
+                >
+                    Multiplayer
                 </button>
                 <button
                     className="howtoplay-button"

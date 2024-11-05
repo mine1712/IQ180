@@ -36,3 +36,20 @@
     color: red;
     font-size: 30px;
 }
+
+.leaderboard-button {
+    font-size: 24px;
+    font-weight: bold;
+    padding: 10px 75px;
+    background-color: rgb(32, 31, 31);
+    color: white;
+    border: 1px solid white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    z-index: 1;
+  }
+  
+  .leaderboard-button:hover {
+      transform: scale(1.2);
+  }

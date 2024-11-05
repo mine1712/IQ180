@@ -7,20 +7,32 @@ function GameStatusDisplay({
     isRoundInProgress,
     timeLeft,
     roundLength,
-    attemptsLeft
+    attemptsLeft,
 }) {
     return (
-        <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '10px',
-        }}>
-            {targetResult !== null && <TargetDisplay isRoundInProgress={isRoundInProgress} targetResult={targetResult} />}
-            {timeLeft != null && <Timer timeLeft={timeLeft} roundLength={roundLength} />}
-            {attemptsLeft !== null && <AttemptsDisplay attemptsLeft={attemptsLeft} />}
-        </div>
-    )
+        <>
+            <div className="target-attempt-container">
+                <div className="target-container">
+                    {targetResult !== null && (
+                        <TargetDisplay
+                            isRoundInProgress={isRoundInProgress}
+                            targetResult={targetResult}
+                        />
+                    )}
+                </div>
+                <div className="attempt-container">
+                    {attemptsLeft !== null && (
+                        <AttemptsDisplay attemptsLeft={attemptsLeft} />
+                    )}
+                </div>
+            </div>
+            <div className="time-container">
+                {timeLeft != null && (
+                    <Timer timeLeft={timeLeft} roundLength={roundLength} />
+                )}
+            </div>
+        </>
+    );
 }
 
 export default GameStatusDisplay;

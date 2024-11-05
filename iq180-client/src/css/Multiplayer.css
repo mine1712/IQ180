@@ -115,3 +115,19 @@
   font-size: 30px;
   text-align: center;
 }
+
+.set-room-button {
+  height: 40px;
+  background-color: rgb(32, 31, 31);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
+.set-room-button:hover {
+  transform: scale(1.2);
+}
