@@ -1,5 +1,4 @@
-/* Howtoplay.css */
-.howtoplay-modal {
+.leaderboard-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -19,6 +18,7 @@
     position: relative;
     width: 80%;
     max-width: 600px;
+
 }
 
 .close-button {
@@ -29,38 +29,10 @@
     font-weight: bold;
     cursor: pointer;
     color: #333;
+
 }
 
 .close-button:hover {
     color: red;
     font-size: 30px;
-}
-
-
-#howtoplay-line1::before {
-    content: '+';
-    color: green;
-    font-size: 24px;
-    font-weight: bold;
-}
-
-#howtoplay-line2::before {
-    content: '-   ';
-    color: red;
-    font-size: 24px;
-    font-weight: bold;
-}
-
-#howtoplay-line3::before {
-    content: '×    ';
-    color: purple;
-    font-size: 24px;
-    font-weight: bold;
-}
-
-#howtoplay-line4::before {
-    content: '÷   ';
-    color: blue;
-    font-size: 24px;
-    font-weight: bold;
 }

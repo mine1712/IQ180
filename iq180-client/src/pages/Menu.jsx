@@ -1,17 +1,12 @@
 // Menu.js
 import React, { useState } from "react";
-// import { useNavigate } from 'react-router-dom';
-import { Howtoplay } from "../components";
+import { Howtoplay, Leaderboard } from "../components";
 import RandomLetter from "../components/Effects";
 import "../css/Menu.css";
 
 function Menu({ goToPage }) {
     const [showHowtoplay, setShowHowtoplay] = useState(false);
-    // const navigate = useNavigate();
-
-    // const handlePlayClick = () => {
-    //   navigate('/Singleplayer');
-    // };
+    const [showLeaderboard, setShowLeaderboard] = useState(false);
 
     const handleHowtoplayClick = () => {
         setShowHowtoplay(true);
@@ -19,6 +14,14 @@ function Menu({ goToPage }) {
 
     const handleCloseHowtoplay = () => {
         setShowHowtoplay(false);
+    };
+
+    const handleLeaderboardClick = () => {
+        setShowLeaderboard(true);
+    };
+
+    const handleCloseLeaderboard = () => {
+        setShowLeaderboard(false);
     };
 
     return (
@@ -43,8 +46,17 @@ function Menu({ goToPage }) {
                 >
                     How to play
                 </button>
+                <button
+                    className="leaderboard-button"
+                    onClick={handleLeaderboardClick}
+                >
+                    Leaderboard
+                </button>
             </div>
             {showHowtoplay && <Howtoplay onClose={handleCloseHowtoplay} />}
+            {showLeaderboard && (
+                <Leaderboard onClose={handleCloseLeaderboard} />
+            )}
             <RandomLetter />
         </div>
     );

@@ -1,5 +1,5 @@
 import { useState, useEffect, Fragment } from "react";
-import NumberPlaySlotBox from "./numberPlaySlotBox";
+import NumberPlaySlotBox from "./NumberPlaySlotBox";
 import OperatorPlaySlotBox from "./OperatorPlaySlotBox";
 import NumberBankBox from "./NumberBankBox";
 import OperatorBankBox from "./OperatorBankBox";
@@ -15,7 +15,7 @@ function GameArea({
     setBankNumbers,
     isTimeUp,
     handleSubmission,
-    isYourTurn,
+    isRoundInProgress,
 }) {
     const [currentDragItem, setCurrentDragItem] = useState(null);
     const [playSlotValues, setPlaySlotValues] = useState(
@@ -144,6 +144,63 @@ function GameArea({
         setCurrentDragItem(null);
     };
 
+    const handleNumberClick = (num, index) => {
+        console.log(playSlotNumbers);
+        const newPlaySlotNumbers = [...playSlotNumbers];
+        const firstAvailableSlot = newPlaySlotNumbers.findIndex(
+            (slot) => slot === undefined
+        );
+
+        if (firstAvailableSlot !== -1) {
+            newPlaySlotNumbers[firstAvailableSlot] = num;
+        }
+
+        const newBankNumbers = [...bankNumbers];
+        newBankNumbers[index] = undefined;
+        setPlaySlotNumbers(newPlaySlotNumbers);
+        setBankNumbers(newBankNumbers);
+    };
+
+    const handleOperatorClick = (op) => {
+        const newPlaySlotOperators = [...playSlotOperators];
+        const firstAvailableSlot = newPlaySlotOperators.findIndex(
+            (slot) => slot === undefined
+        );
+
+        if (firstAvailableSlot !== -1) {
+            newPlaySlotOperators[firstAvailableSlot] = op;
+        }
+
+        setPlaySlotOperators(newPlaySlotOperators);
+    };
+
+    const handleRemoveNumber = (num, index) => {
+        const newPlaySlotNumbers = [...playSlotNumbers];
+        newPlaySlotNumbers[index] = undefined;
+        const newBankNumbers = [...bankNumbers];
+        const firstAvailableSlot = newBankNumbers.findIndex(
+            (slot) => slot === undefined
+        );
+
+        if (firstAvailableSlot !== -1) {
+            newBankNumbers[firstAvailableSlot] = num;
+        } else {
+            newBankNumbers.push(num);
+        }
+        setPlaySlotNumbers(newPlaySlotNumbers);
+        setBankNumbers(newBankNumbers);
+        console.log("Updated playSlotNumbers:", newPlaySlotNumbers);
+        console.log("Updated bankNumbers:", newBankNumbers);
+    };
+
+    const handleRemoveOperator = (op, index) => {
+        console.log(`Removing operator: ${op} at index: ${index}`);
+        const newPlaySlotOperators = [...playSlotOperators];
+        newPlaySlotOperators[index] = undefined;
+        console.log("Updated playSlotOperators:", newPlaySlotOperators);
+        setPlaySlotOperators(newPlaySlotOperators);
+    };
+
     const formatSubmission = () => {
         const formatOperators = playSlotOperators.reduce((acc, curr) => {
             if (curr === "x") {
@@ -155,20 +212,8 @@ function GameArea({
             }
             return acc;
         }, []);
-        // alert(formatOperators)
         return formatOperators;
     };
-
-    // const playSlotValues = () => {
-    //     let values=[]
-    //     for (let i=0;i<playSlotNumbers.length;i++) {
-    //         if (i==4) {
-    //             values=[...values,playSlotNumbers[i]];
-    //         } else {
-    //             values=[...values,playSlotNumbers[i],playSlotOperators[i]];
-    //         }
-    //     }
-    // }
 
     return (
         <div className="gamearea-container">
@@ -232,58 +277,53 @@ function GameArea({
                             </>
                         )
                     } else return (
-                        <>
-                            <NumberPlaySlotBox number={number}
-                                index={index}
+                        <Fragment key={'operatorPlaySlot' + (index + 1)}>
+                            <OperatorPlaySlotBox operator={playSlotOperators[(index - 1) / 2]}
+                                index={(index - 1) / 2}
                                 dropHandler={dropHandler}
                                 dragStartHandler={dragStartHandler}
+                                onClick={() => {handleRemoveOperator(playSlotOperators[(index - 1) / 2], (index - 1) / 2)}}
                             />
-                            <OperatorPlaySlotBox operator={playSlotOperators[index]}
-                                    index={index}  
-                                    dropHandler={dropHandler}
-                                    dragStartHandler={dragStartHandler}
-                            />
-                        </>
+                        </Fragment>
                     )
-                })} */}
+                })}
             </div>
             {/* <span className="number-text-design">number</span> */}
-            <div className="number-container">
-                {bankNumbers.map((number, index) => (
-                    <Fragment key={"numberBank" + (index + 1)}>
-                        <NumberBankBox
-                            number={number}
-                            index={index}
-                            dragStartHandler={dragStartHandler}
-                            dropHandler={dropHandler}
-                        />
-                    </Fragment>
-                ))}
+                <div className="number-container">
+                    {bankNumbers.map((number, index) => (
+                        <Fragment key={"numberBank" + (index + 1)}>
+                            <NumberBankBox
+                                number={number}
+                                index={index}
+                                dragStartHandler={dragStartHandler}
+                                dropHandler={dropHandler}
+                                onClick={() => handleNumberClick(number, index)}
+                            />
+                        </Fragment>
+                    ))}
+                </div>
+                {/* <span className="number-text-design">operator</span> */}
+                <div className="operator-container">
+                    {bankOperators.map((symbol, index) => (
+                        <Fragment key={"numberBank" + (index + 1)}>
+                            <OperatorBankBox
+                                symbol={symbol}
+                                index={index}
+                                dragStartHandler={dragStartHandler}
+                                onClick={() => handleOperatorClick(symbol)}
+                            />
+                        </Fragment>
+                    ))}
+                </div>
+                <button
+                    onClick={() => {
+                        handleSubmission(playSlotNumbers, formatSubmission());
+                    }}
+                    disabled={isTimeUp || !isRoundInProgress}
+                >
+                    Submit answer
+                </button>
             </div>
-            {/* <span className="number-text-design">operator</span> */}
-            <div className="operator-container">
-                {bankOperators.map((symbol, index) => (
-                    <Fragment key={"numberBank" + (index + 1)}>
-                        <OperatorBankBox
-                            symbol={symbol}
-                            index={index}
-                            dragStartHandler={dragStartHandler}
-                        />
-                    </Fragment>
-                ))}
-            </div>
-            <button
-                className="singleplayer-checkans-button"
-                onClick={() => {
-                    handleSubmission(playSlotNumbers, formatSubmission());
-                }}
-                disabled={isTimeUp || !isYourTurn}
-            >
-                Check answer
-            </button>
-            {/* <button onClick={() => {
-                alert(isTimeUp + " " + isYourTurn);
-            }} >Test</button> */}
         </div>
     );
 }

@@ -58,7 +58,7 @@ body, html {
 }
 
 .multiplayer-button:hover {
-  transform: scale(1.2);
+    transform: scale(1.2);
 }
 
 .singleplayer-button {
@@ -73,8 +73,9 @@ body, html {
   transition: transform 0.2s ease;
   z-index: 1;
 }
+
 .singleplayer-button:hover {
-  transform: scale(1.2); 
+    transform: scale(1.2);
 }
 
 .howtoplay-button {
@@ -89,6 +90,7 @@ body, html {
   transition: transform 0.2s ease;
   z-index: 1;
 }
+
 .howtoplay-button:hover {
   transform: scale(1.2); 
 }
