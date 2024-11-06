@@ -18,68 +18,64 @@ function OptionsMenu({
                 )}
                 <div className="set-welcome-text">Choose your options</div>
                 <div className="option-container">
-                    <div className="option-text-container">
-                        <div>
-                            <div>
-                                <div className="option-design">
-                                    <span>Numbers</span>
-                                </div>
-                                <input
-                                    type="text"
-                                    value={numbersLengthInput}
-                                    onChange={(e) =>
-                                        setNumbersLengthInput(e.target.value)
-                                    }
-                                    placeholder="Default = 5"
-                                    className="set-name-input"
-                                />
-                            </div>
-                            <div>
-                                <div className="option-design">
-                                    <span>Order of Operation</span>
-                                </div>
-                                <select
-                                    value={orderOfOperations}
-                                    onChange={(e) =>
-                                        setOrderOfOperations(e.target.value)
-                                    }
-                                >
-                                    <option value="pemdas">PEMDAS</option>
-                                    <option value="lefttoright">
-                                        Left to Right
-                                    </option>
-                                </select>
-                            </div>
-                            <div>
-                                <div className="option-design">
-                                    <span>Round Length</span>
-                                </div>
-                                <input
-                                    type="text"
-                                    value={roundLengthInput}
-                                    onChange={(e) =>
-                                        setRoundLengthInput(e.target.value)
-                                    }
-                                    placeholder="Default = 60"
-                                    className="set-name-input"
-                                />
-                            </div>
-                            <div>
-                                <div className="option-design">
-                                    <span>Attempts Allowed</span>
-                                </div>
-                                <input
-                                    type="text"
-                                    value={attemptsAllowedInput}
-                                    onChange={(e) =>
-                                        setAttemptsAllowedInput(e.target.value)
-                                    }
-                                    placeholder="Default = 3"
-                                    className="set-name-input"
-                                />
-                            </div>
+                    <div className="each_option-container">
+                        <div className="option-design">
+                            <span>Numbers</span>
                         </div>
+                        <input
+                            type="text"
+                            value={numbersLengthInput}
+                            onChange={(e) =>
+                                setNumbersLengthInput(e.target.value)
+                            }
+                            placeholder="Default = 5"
+                            className="set-name-input"
+                        />
                     </div>
+                    <div className="each_option-container">
+                        <div className="option-design">
+                            <span>Order of Operation</span>
+                        </div>
+                        <select
+                            style={{ flexGrow: 1, padding: "0px 8px" }}
+                            value={orderOfOperations}
+                            onChange={(e) =>
+                                setOrderOfOperations(e.target.value)
+                            }
+                        >
+                            <option value="pemdas">PEMDAS</option>
+                            <option value="lefttoright">Left to Right</option>
+                        </select>
+                    </div>
+                    <div className="each_option-container">
+                        <div className="option-design">
+                            <span>Round Length</span>
+                        </div>
+                        <input
+                            type="text"
+                            value={roundLengthInput}
+                            onChange={(e) =>
+                                setRoundLengthInput(e.target.value)
+                            }
+                            placeholder="Default = 60"
+                            className="set-name-input"
+                        />
+                    </div>
+                    <div className="each_option-container">
+                        <div className="option-design">
+                            <span>Attempts Allowed</span>
+                        </div>
+                        <input
+                            type="text"
+                            value={attemptsAllowedInput}
+                            onChange={(e) =>
+                                setAttemptsAllowedInput(e.target.value)
+                            }
+                            placeholder="Default = 3"
+                            className="set-name-input"
+                        />
+                    </div>
+
                     {/* <div>
                         <h3 style={{ textAlign: "center", display: "inline" }}>
                             Numbers:{" "}

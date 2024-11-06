@@ -3,13 +3,30 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    border: solid 2px red;
+}
+
+.all-playslot-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    /* padding: 15px; */
+    gap: 10px;
+    
 }
 
 .playslot-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 25px 10px -16px rgba(0,0,0,0.1);
+}
+
+.number-container {
     background-color: white;
     border-radius: 10px;
-    padding: 15px;
     box-shadow: 0px 25px 10px -16px rgba(0,0,0,0.1);
+    
 }
 
 .number-text-design {
@@ -20,14 +37,6 @@
     font-weight: 700;
     font-size: 20px;
     box-shadow: 0px 25px 10px -16px rgba(0,0,0,0.1);
-}
-
-.number-container {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0px 25px 10px -16px rgba(0,0,0,0.1);
-    border: solid 2px red;
-    
 }
 
 .operator-container {

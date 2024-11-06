@@ -376,7 +376,7 @@ form {
   text-align: center;
 }
 
-.time-container {
+.opplayer-container {
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -389,8 +389,24 @@ form {
   padding: 15px 40px;
   color: #4AC29A;
   font-weight: 700;
-  font-size: 30px;
+  font-size: 20px;
   text-align: center;
+}
+
+.time-container {
+  position: absolute;
+  top: 0;
+  right: -80px;
+  background-color: white;
+  border-radius: 0px 0px 10px 10px;
+  box-shadow: 25px 25px 10px -15px rgba(0,0,0,0.1);
+  /* width: 150px; */
+  padding: 5px 20px;
+  color: #4AC29A;
+  font-weight: 700;
+  font-size: 20px;
+  text-align: center;
+  align-self: self-start;
 }
 
 .target-container{
@@ -424,9 +440,15 @@ form {
   align-items: center;
 }
 
+.target-time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .singleplayer-start-button {
   background-color: white;
-  padding: 10px 40px;
+  padding: 7px 20px;
   border-radius:4px;
   color: #4AC29A;
   border: none;
@@ -440,21 +462,20 @@ form {
   opacity: 0.9;
 }
 
-.option-text-container {
-  display: flex;
-  justify-content: center;
-  border: solid 2px red;
-}
-
 .option-container {
   display: flex;
   flex-direction: column;
   gap: 8px;
   background-color: white;
-  padding: 12px;
+  padding: 12px ;
   border-radius: 5px;
-  width: 250px;
-  border: solid 2px red;
+  
+}
+
+.each_option-container {
+  /* display: flex; */
+  display: flex;
+  gap: 10px;
 }
 
 .option-design{
@@ -464,5 +485,7 @@ form {
   color: white;
   text-align: center;
   border-radius: 5px;
-  padding: 10px;
+  padding: 10px 50px;
+  min-width: 140px;
+  max-width: 140px;
 }

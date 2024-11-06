@@ -216,7 +216,7 @@ function GameArea({
     };
 
     return (
-        <div className="gamearea-container">
+        <div className="all-playslot-container">
             <div className="playslot-container">
                 {playSlotValues.map((number, index) => {
                     if (index % 2 == 0) {
@@ -264,8 +264,9 @@ function GameArea({
                             </Fragment>
                         );
                 })}
-                {/* BELOW IS OLD CODE THAT CAUSES "CHILD IN LIST NEEDS UNIQUE 'KEY' PROP WARNING"*/}
-                {/* {playSlotNumbers.map((number,index) => {
+            </div>
+            {/* BELOW IS OLD CODE THAT CAUSES "CHILD IN LIST NEEDS UNIQUE 'KEY' PROP WARNING"*/}
+            {/* {playSlotNumbers.map((number,index) => {
                     if (index==4) {
                         return (
                             <>
@@ -289,41 +290,41 @@ function GameArea({
                 })}
             </div>
             {/* <span className="number-text-design">number</span> */}
-                <div className="number-container">
-                    {bankNumbers.map((number, index) => (
-                        <Fragment key={"numberBank" + (index + 1)}>
-                            <NumberBankBox
-                                number={number}
-                                index={index}
-                                dragStartHandler={dragStartHandler}
-                                dropHandler={dropHandler}
-                                onClick={() => handleNumberClick(number, index)}
-                            />
-                        </Fragment>
-                    ))}
-                </div>
-                {/* <span className="number-text-design">operator</span> */}
-                <div className="operator-container">
-                    {bankOperators.map((symbol, index) => (
-                        <Fragment key={"numberBank" + (index + 1)}>
-                            <OperatorBankBox
-                                symbol={symbol}
-                                index={index}
-                                dragStartHandler={dragStartHandler}
-                                onClick={() => handleOperatorClick(symbol)}
-                            />
-                        </Fragment>
-                    ))}
-                </div>
-                <button
-                    onClick={() => {
-                        handleSubmission(playSlotNumbers, formatSubmission());
-                    }}
-                    disabled={isTimeUp || !isRoundInProgress}
-                >
-                    Submit answer
-                </button>
+            <div className="number-container">
+                {bankNumbers.map((number, index) => (
+                    <Fragment key={"numberBank" + (index + 1)}>
+                        <NumberBankBox
+                            number={number}
+                            index={index}
+                            dragStartHandler={dragStartHandler}
+                            dropHandler={dropHandler}
+                            onClick={() => handleNumberClick(number, index)}
+                        />
+                    </Fragment>
+                ))}
             </div>
+            {/* <span className="number-text-design">operator</span> */}
+            <div className="operator-container">
+                {bankOperators.map((symbol, index) => (
+                    <Fragment key={"numberBank" + (index + 1)}>
+                        <OperatorBankBox
+                            symbol={symbol}
+                            index={index}
+                            dragStartHandler={dragStartHandler}
+                            onClick={() => handleOperatorClick(symbol)}
+                        />
+                    </Fragment>
+                ))}
+            </div>
+            <button
+                className="singleplayer-start-button"
+                onClick={() => {
+                    handleSubmission(playSlotNumbers, formatSubmission());
+                }}
+                disabled={isTimeUp || !isRoundInProgress}
+            >
+                Submit answer
+            </button>
         </div>
     );
 }

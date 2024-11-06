@@ -1,16 +1,16 @@
 function ScoreBar({ playerScore, userName, opponentScore }) {
     return (
         <>
-            <div>
-                <div>
-                    <span>YOUR SCORE: {playerScore}</span>
-                    {opponentScore !== undefined && (
-                        <li className="score-label opponent">
-                            OPPONENT'S SCORE: {opponentScore}
-                        </li>
-                    )}
-                </div>
+            <div className="player-container">
+                <span>
+                    {userName}: {playerScore}
+                </span>
             </div>
+            {opponentScore !== undefined && (
+                <div className="opplayer-container">
+                    <span>OPPONENT'S SCORE: {opponentScore}</span>
+                </div>
+            )}
             <div id="divider"></div>
         </>
     );

@@ -57,26 +57,22 @@ const RandomLetter = () => {
         return () => clearInterval(fallInterval);
     }, []);
 
-    return (
-        <div>
-            {letters.map((letter, index) => (
-                <div
-                    key={index}
-                    style={{
-                        position: "absolute",
-                        left: letter.left,
-                        top: letter.top,
-                        fontSize: "36px",
-                        color: letter.color,
-                        // textShadow:
-                        //   "1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black",
-                    }}
-                >
-                    {letter.char}
-                </div>
-            ))}
+    return letters.map((letter, index) => (
+        <div
+            key={index}
+            style={{
+                position: "absolute",
+                left: letter.left,
+                top: letter.top,
+                fontSize: "36px",
+                color: letter.color,
+                // textShadow:
+                //   "1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black",
+            }}
+        >
+            {letter.char}
         </div>
-    );
+    ));
 };
 
 export default RandomLetter;

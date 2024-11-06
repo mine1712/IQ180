@@ -236,7 +236,7 @@ const Singleplayer = ({ goToPage }) => {
                             roundLength={roundLength}
                             attemptsLeft={attemptsLeft}
                         />
-                        <div>
+                        <div style={{ paddingTop: "130px" }}>
                             <StartButton
                                 setTimeLeft={setTimeLeft}
                                 roundLength={roundLength}
@@ -271,7 +271,10 @@ const Singleplayer = ({ goToPage }) => {
                             )}
                             <div style={{ textAlign: "center" }}>
                                 {playerLost && (
-                                    <button onClick={initializeSingleplayer}>
+                                    <button
+                                        className="singleplayer-start-button"
+                                        onClick={initializeSingleplayer}
+                                    >
                                         Restart Game
                                     </button>
                                 )}

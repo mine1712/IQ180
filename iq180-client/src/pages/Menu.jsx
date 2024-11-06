@@ -5,6 +5,7 @@ import RandomLetter from "../components/Effects";
 import "../css/Menu.css";
 
 function Menu({ goToPage }) {
+    const [showRandomLetters, setShowRandomLetters] = useState(true);
     const [showHowtoplay, setShowHowtoplay] = useState(false);
     const [showLeaderboard, setShowLeaderboard] = useState(false);
 
@@ -57,7 +58,13 @@ function Menu({ goToPage }) {
             {showLeaderboard && (
                 <Leaderboard onClose={handleCloseLeaderboard} />
             )}
-            <RandomLetter />
+            <button
+                style={{ position: "absolute", top: 0 }}
+                onClick={() => setShowRandomLetters(!showRandomLetters)}
+            >
+                {showRandomLetters ? "close" : "on"}
+            </button>
+            {showRandomLetters && <RandomLetter />}
         </div>
     );
 }

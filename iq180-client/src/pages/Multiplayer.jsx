@@ -402,12 +402,13 @@ function Multiplayer({ goToPage }) {
                     />
                 )}
                 {currentMultiplayerScreen == "gamescreen" && (
-                    <div>
+                    <div className="gamescreen-container">
                         <ScoreBar
                             playerScore={playerScore}
                             userName={userName}
                             opponentScore={opponentScore}
                         />
+
                         <GameStatusDisplay
                             targetResult={targetResult}
                             isRoundInProgress={isRoundInProgress}
@@ -415,44 +416,52 @@ function Multiplayer({ goToPage }) {
                             roundLength={roundLength}
                             attemptsLeft={attemptsLeft}
                         />
-                        <StartButton
-                            setTimeLeft={setTimeLeft}
-                            roundLength={roundLength}
-                            server={server}
-                            setPlaySlotNumbers={setPlaySlotNumbers}
-                            numbersLength={numbersLength}
-                            setPlaySlotOperators={setPlaySlotOperators}
-                            setIsRoundInProgress={setIsRoundInProgress}
-                            isRoundInProgress={isRoundInProgress}
-                            setAttemptsLeft={setAttemptsLeft}
-                            attemptsAllowed={attemptsAllowed}
-                            isYourTurn={isYourTurn}
-                        />
-                        {isYourTurn && (
-                            <GameArea
-                                playSlotNumbers={playSlotNumbers}
-                                playSlotOperators={playSlotOperators}
-                                bankNumbers={bankNumbers}
-                                bankOperators={bankOperators}
-                                setPlaySlotNumbers={setPlaySlotNumbers}
-                                setPlaySlotOperators={setPlaySlotOperators}
-                                setBankNumbers={setBankNumbers}
-                                isTimeUp={isTimeUp}
-                                handleSubmission={handleSubmission}
-                                isRoundInProgress={isRoundInProgress}
-                            />
-                        )}
-                        {!isYourTurn && (
-                            <h1 style={{ textAlign: "center" }}>
-                                Please wait until it's your turn!
-                            </h1>
-                        )}
-                        <ReturnToMenuButton
-                            onClick={() => {
-                                server.emit("exitRoom");
-                                goToPage("Menu");
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
                             }}
-                        />
+                        >
+                            <StartButton
+                                setTimeLeft={setTimeLeft}
+                                roundLength={roundLength}
+                                server={server}
+                                setPlaySlotNumbers={setPlaySlotNumbers}
+                                numbersLength={numbersLength}
+                                setPlaySlotOperators={setPlaySlotOperators}
+                                setIsRoundInProgress={setIsRoundInProgress}
+                                isRoundInProgress={isRoundInProgress}
+                                setAttemptsLeft={setAttemptsLeft}
+                                attemptsAllowed={attemptsAllowed}
+                                isYourTurn={isYourTurn}
+                            />
+                            {isYourTurn && (
+                                <GameArea
+                                    playSlotNumbers={playSlotNumbers}
+                                    playSlotOperators={playSlotOperators}
+                                    bankNumbers={bankNumbers}
+                                    bankOperators={bankOperators}
+                                    setPlaySlotNumbers={setPlaySlotNumbers}
+                                    setPlaySlotOperators={setPlaySlotOperators}
+                                    setBankNumbers={setBankNumbers}
+                                    isTimeUp={isTimeUp}
+                                    handleSubmission={handleSubmission}
+                                    isRoundInProgress={isRoundInProgress}
+                                />
+                            )}
+                            {!isYourTurn && (
+                                <h1 style={{ textAlign: "center" }}>
+                                    Please wait until it's your turn!
+                                </h1>
+                            )}
+                            <ReturnToMenuButton
+                                onClick={() => {
+                                    server.emit("exitRoom");
+                                    goToPage("Menu");
+                                }}
+                            />
+                        </div>
                     </div>
                 )}
             </div>

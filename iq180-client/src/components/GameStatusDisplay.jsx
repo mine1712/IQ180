@@ -10,28 +10,29 @@ function GameStatusDisplay({
     attemptsLeft,
 }) {
     return (
-        <>
-            <div className="target-attempt-container">
-                <div className="target-container">
-                    {targetResult !== null && (
+        <div className="target-attempt-container">
+            <div className="target-time">
+                {targetResult !== null && (
+                    <div className="target-container">
                         <TargetDisplay
                             isRoundInProgress={isRoundInProgress}
                             targetResult={targetResult}
                         />
-                    )}
-                </div>
-                <div className="attempt-container">
-                    {attemptsLeft !== null && (
+                    </div>
+                )}
+                {attemptsLeft !== null && (
+                    <div className="attempt-container">
                         <AttemptsDisplay attemptsLeft={attemptsLeft} />
-                    )}
-                </div>
-            </div>
-            <div className="time-container">
-                {timeLeft != null && (
-                    <Timer timeLeft={timeLeft} roundLength={roundLength} />
+                    </div>
                 )}
             </div>
-        </>
+
+            {timeLeft != null && (
+                <div className="time-container">
+                    <Timer timeLeft={timeLeft} roundLength={roundLength} />
+                </div>
+            )}
+        </div>
     );
 }
 
