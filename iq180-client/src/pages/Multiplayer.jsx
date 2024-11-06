@@ -24,9 +24,10 @@ function Multiplayer({ goToPage }) {
         useState("nameentry");
     // Player Info
     const [playerScore, setPlayerScore] = useState(0);
-    const [opponentScore, setOponentScore] = useState(0);
+    const [opponentScore, setOpponentScore] = useState(0);
     const [userName, setUserName] = useState("");
     const [playerID, setPlayerID] = useState(null);
+    const [opponent, setOpponent] = useState("");
     // Game Field Values
     const [playSlotNumbers, setPlaySlotNumbers] = useState(Array(5).fill());
     const [playSlotOperators, setPlaySlotOperators] = useState(Array(4).fill());
@@ -123,18 +124,29 @@ function Multiplayer({ goToPage }) {
 
     useEffect(() => {
         function onUpdateScore(scores) {
-            setPlayerScore(scores[playerID]);
-            setOponentScore(
-                Object.keys(scores)
-                    .filter((key) => key !== playerID)
-                    .map((key) => scores[key])[0]
-            );
+            const oldScores=[playerScore,opponentScore];
+            const newScores=[scores[playerID],Object.keys(scores)
+                .filter((key) => key !== playerID)
+                .map((key) => scores[key])[0]]
+            const youWon = newScores[0]>oldScores[0];
+            const opponentWon = newScores[1]>oldScores[1];
+            setPlayerScore(newScores[0]);
+            setOpponentScore(newScores[1]);
             setPlaySlotNumbers(Array(numbersLength).fill());
             setPlaySlotOperators(Array(numbersLength - 1).fill());
             setTimeLeft(null);
             setTargetResult(null);
             setAttemptsLeft(null);
-            alert("The next round is beginning");
+            // alert("The next round is beginning");
+            if (youWon && opponentWon) {
+                alert(`You tied! Current standings:\n${userName}: ${playerScore}\n${opponent}: ${opponentScore} `);
+            } else if (youWon && !opponentWon) {
+                alert(`You won! Current standings:\n${userName}: ${playerScore}\n${opponent}: ${opponentScore} `);
+            } else if (!youWon && opponentWon) {
+                alert(`You lost! Current standings:\n${userName}: ${playerScore}\n${opponent}: ${opponentScore} `);
+            } else {
+                alert(`You both lost! Current standings:\n${userName}: ${playerScore}\n${opponent}: ${opponentScore} `);
+            }
         }
         function onSwapTurn(nextPlayer) {
             setIsRoundInProgress(false);
@@ -151,7 +163,7 @@ function Multiplayer({ goToPage }) {
             server.off("updateScore", onUpdateScore);
             server.off("swapTurn", onSwapTurn);
         };
-    }, [numbersLength, playerID]);
+    }, [numbersLength, playerID, userName, opponent, playerScore, opponentScore]);
 
     useEffect(() => {
         function onStartGame({
@@ -160,11 +172,13 @@ function Multiplayer({ goToPage }) {
             attempt,
             orderofoperations,
             roundLength,
+            opponent
         }) {
             setNumbersLength(targetLength);
             setAttemptsAllowed(attempt);
             setOrderOfOperations(orderofoperations);
             setRoundLength(roundLength);
+            setOpponent(opponent);
             if (turn == playerID) {
                 setIsYourTurn(true);
                 setCurrentMultiplayerScreen("gamescreen");
@@ -407,6 +421,7 @@ function Multiplayer({ goToPage }) {
                             playerScore={playerScore}
                             userName={userName}
                             opponentScore={opponentScore}
+                            opponent={opponent}
                         />
 
                         <GameStatusDisplay

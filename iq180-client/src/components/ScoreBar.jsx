@@ -1,4 +1,4 @@
-function ScoreBar({ playerScore, userName, opponentScore }) {
+function ScoreBar({ playerScore, userName, opponentScore, opponent }) {
     return (
         <>
             <div className="player-container">
@@ -8,7 +8,7 @@ function ScoreBar({ playerScore, userName, opponentScore }) {
             </div>
             {opponentScore !== undefined && (
                 <div className="opplayer-container">
-                    <span>OPPONENT'S SCORE: {opponentScore}</span>
+                    <span>{opponent}: {opponentScore}</span>
                 </div>
             )}
             <div id="divider"></div>
