@@ -355,7 +355,7 @@ function Multiplayer({ goToPage }) {
     return (
         <div className="area">
             <div className="container">
-                <ul class="circles">
+                <ul className="circles">
                     <li></li>
                     <li></li>
                     <li></li>

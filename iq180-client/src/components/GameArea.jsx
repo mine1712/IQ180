@@ -145,7 +145,6 @@ function GameArea({
     };
 
     const handleNumberClick = (num, index) => {
-        console.log(playSlotNumbers);
         const newPlaySlotNumbers = [...playSlotNumbers];
         const firstAvailableSlot = newPlaySlotNumbers.findIndex(
             (slot) => slot === undefined
@@ -189,15 +188,11 @@ function GameArea({
         }
         setPlaySlotNumbers(newPlaySlotNumbers);
         setBankNumbers(newBankNumbers);
-        console.log("Updated playSlotNumbers:", newPlaySlotNumbers);
-        console.log("Updated bankNumbers:", newBankNumbers);
     };
 
     const handleRemoveOperator = (op, index) => {
-        console.log(`Removing operator: ${op} at index: ${index}`);
         const newPlaySlotOperators = [...playSlotOperators];
         newPlaySlotOperators[index] = undefined;
-        console.log("Updated playSlotOperators:", newPlaySlotOperators);
         setPlaySlotOperators(newPlaySlotOperators);
     };
 
@@ -227,6 +222,9 @@ function GameArea({
                                     index={index / 2}
                                     dropHandler={dropHandler}
                                     dragStartHandler={dragStartHandler}
+                                    onClick={() =>
+                                        handleRemoveNumber(number, (index / 2) )
+                                    }
                                 />
                             </Fragment>
                         );
@@ -260,6 +258,7 @@ function GameArea({
                                     index={(index - 1) / 2}
                                     dropHandler={dropHandler}
                                     dragStartHandler={dragStartHandler}
+                                    onClick={() => {handleRemoveOperator(playSlotOperators[(index - 1) / 2], (index - 1) / 2)}}
                                 />
                             </Fragment>
                         );
