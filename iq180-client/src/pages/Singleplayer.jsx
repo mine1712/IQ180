@@ -272,7 +272,7 @@ const Singleplayer = ({ goToPage }) => {
                             <div style={{ textAlign: "center" }}>
                                 {playerLost && (
                                     <button
-                                        className="singleplayer-start-button"
+                                        className="restart-button"
                                         onClick={initializeSingleplayer}
                                     >
                                         Restart Game

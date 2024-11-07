@@ -317,7 +317,7 @@ function GameArea({
                 ))}
             </div>
             <button
-                className="singleplayer-start-button"
+                className="submit-button"
                 onClick={() => {
                     handleSubmission(playSlotNumbers, formatSubmission());
                 }}
