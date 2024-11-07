@@ -59,10 +59,11 @@ function Menu({ goToPage }) {
                 <Leaderboard onClose={handleCloseLeaderboard} />
             )}
             <button
-                style={{ position: "absolute", top: 0 }}
+                className="togglerain-button"
+                style={{ position: "absolute", top: 5 }}
                 onClick={() => setShowRandomLetters(!showRandomLetters)}
             >
-                {showRandomLetters ? "close" : "on"}
+                {showRandomLetters ? "Rain: On" : "Rain: Off"}
             </button>
             {showRandomLetters && <RandomLetter />}
         </div>

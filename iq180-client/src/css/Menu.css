@@ -104,3 +104,21 @@ body, html {
   border-radius: 5px;
   box-shadow: 25px 25px 10px -15px rgba(0,0,0,0.1);
 }
+
+.togglerain-button {
+  font-size: 12px;
+  font-weight: bold;
+  padding: 5px 37.5px;
+  background-color: rgb(32, 31, 31);
+  color: white;
+  border: 1px solid white;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 1;
+  padding-top:8px;
+}
+
+.togglerain-button:hover {
+  transform: scale(1.2); 
+}
