@@ -267,6 +267,7 @@ io.on('connection', (socket) => {
   socket.on('playerReady', () => {
     try{const temp = Array.from(socket.rooms);
     let room = temp[1];
+    let ids =Array.from( io.sockets.adapter.rooms.get(room));
     keys[room].users_ready += 1;
     if(keys[room].users_ready === 2 && io.sockets.adapter.rooms.get(room)?.size === 2){
       stats[keys[room].id[0]] = {nickname: keys[room].users[0], score:0 };
@@ -275,8 +276,13 @@ io.on('connection', (socket) => {
       keys[room].turn = keys[room].id[randomPlayer];
       console.log(`${keys[room].turn} will start the game`);
       //io.to(room).emit('startGame', {firstPlayer:keys[room].turn, attempt:keys[room].attempt});
-      const opponent = connections[keys[room].id.filter(user => user !== socket.id)[0]].nickname;
-      io.to(room).emit('startGame', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations,roundLength:keys[room].roundLength, opponent:opponent});
+      // const opponent = connections[keys[room].id.filter(user => user !== socket.id)[0]].nickname;
+      // io.to(room).emit('startGame', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations,roundLength:keys[room].roundLength, opponent:opponent});
+      ids.forEach((id) => {
+        const opponent = connections[keys[room].id.filter(user => user !== id)[0]].nickname;
+        io.to(id).emit('startGame', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations,roundLength:keys[room].roundLength, opponent:opponent});
+        console.log(`${id}, ${connections[id].nickname} : ${opponent}`);
+      });
     }}
     catch(error){
       console.log('\x1b[31m',`ERROR: ${error}`,'\x1b[0m');

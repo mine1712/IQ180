@@ -131,3 +131,11 @@
 .set-room-button:hover {
   transform: scale(1.2);
 }
+
+.set-room-button:disabled {
+  background-color: #a9a9a9;
+}
+
+.set-room-button:disabled:hover {
+  background-color: #a9a9a9;
+}

@@ -17,7 +17,7 @@ function StartButton({
     return (
         <div style={{ textAlign: "center", marginBottom: "10px" }}>
             <button
-                className="singleplayer-start-button"
+                className="start-button"
                 onClick={() => {
                     setTimeLeft(roundLength);
                     if (server !== undefined) {

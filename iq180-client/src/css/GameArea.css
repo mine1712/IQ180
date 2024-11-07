@@ -56,3 +56,27 @@
     font-weight: 700;
     font-size: 20px;
 }
+
+.submit-button {
+    background-color: white;
+    padding: 7px 20px;
+    border-radius: 4px;
+    color: #4AC29A;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 20px;
+    opacity: 1;
+}
+
+.submit-button:disabled {
+    background-color: #a9a9a9;
+}
+
+.submit-button:disabled:hover {
+    background-color: #a9a9a9;
+}
+
+.submit-button:hover {
+    opacity: 0.9;
+}

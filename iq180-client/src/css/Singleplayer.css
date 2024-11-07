@@ -446,7 +446,7 @@ form {
   align-items: center;
 }
 
-.singleplayer-start-button {
+.restart-button {
   background-color: white;
   padding: 7px 20px;
   border-radius:4px;
@@ -458,7 +458,15 @@ form {
   opacity: 1;
 }
 
-.singleplayer-start-button:hover {
+.restart-button:disabled {
+  background-color: #a9a9a9;
+}
+
+.restart-button:disabled:hover {
+  background-color: #a9a9a9;
+}
+
+.restart-button:hover {
   opacity: 0.9;
 }
 
