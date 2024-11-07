@@ -139,13 +139,13 @@ function Multiplayer({ goToPage }) {
             setAttemptsLeft(null);
             // alert("The next round is beginning");
             if (youWon && opponentWon) {
-                alert(`You tied! Current standings:\n${userName}: ${playerScore}\n${opponent}: ${opponentScore} `);
+                alert(`You tied! Current standings:\n${userName}: ${newScores[0]}\n${opponent}: ${newScores[1]} `);
             } else if (youWon && !opponentWon) {
-                alert(`You won! Current standings:\n${userName}: ${playerScore}\n${opponent}: ${opponentScore} `);
+                alert(`You won! Current standings:\n${userName}: ${newScores[0]}\n${opponent}: ${newScores[1]} `);
             } else if (!youWon && opponentWon) {
-                alert(`You lost! Current standings:\n${userName}: ${playerScore}\n${opponent}: ${opponentScore} `);
+                alert(`You lost! Current standings:\n${userName}: ${newScores[0]}\n${opponent}: ${newScores[1]} `);
             } else {
-                alert(`You both lost! Current standings:\n${userName}: ${playerScore}\n${opponent}: ${opponentScore} `);
+                alert(`You both lost! Current standings:\n${userName}: ${newScores[0]}\n${opponent}: ${newScores[1]} `);
             }
         }
         function onSwapTurn(nextPlayer) {
