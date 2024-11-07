@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import '../css/Multiplayer.css';
-import { server } from '../socket'
+import { useState, useEffect } from "react";
+import "../css/Multiplayer.css";
+import { server } from "../socket";
 import {
     GameArea,
     ScoreBar,
@@ -10,23 +10,29 @@ import {
     SelectRoom,
     RoomReady,
     StartButton,
-    GameStatusDisplay
-} from '../components';
-import { checkNumbersLength, checkRoundLength, checkAttemptsAllowed } from '../utils/checkOptionsInput';
+    GameStatusDisplay,
+} from "../components";
+import {
+    checkNumbersLength,
+    checkRoundLength,
+    checkAttemptsAllowed,
+} from "../utils/checkOptionsInput";
 
 function Multiplayer({ goToPage }) {
     // Screen Value
-    const [currentMultiplayerScreen, setCurrentMultiplayerScreen] = useState("nameentry");
+    const [currentMultiplayerScreen, setCurrentMultiplayerScreen] =
+        useState("nameentry");
     // Player Info
     const [playerScore, setPlayerScore] = useState(0);
-    const [opponentScore, setOponentScore] = useState(0);
+    const [opponentScore, setOpponentScore] = useState(0);
     const [userName, setUserName] = useState("");
     const [playerID, setPlayerID] = useState(null);
+    const [opponent, setOpponent] = useState("");
     // Game Field Values
     const [playSlotNumbers, setPlaySlotNumbers] = useState(Array(5).fill());
     const [playSlotOperators, setPlaySlotOperators] = useState(Array(4).fill());
     const [bankNumbers, setBankNumbers] = useState([]);
-    const [bankOperators, setBankOperators] = useState(['+', '-', 'x', '÷'])
+    const [bankOperators, setBankOperators] = useState(["+", "-", "x", "÷"]);
     // Room variables
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [currentRoom, setCurrentRoom] = useState(null);
@@ -62,7 +68,12 @@ function Multiplayer({ goToPage }) {
             setCurrentMultiplayerScreen("roomready");
         }
 
-        function onOptions({ targetLength, attempt, orderofoperations, roundLength }) {
+        function onOptions({
+            targetLength,
+            attempt,
+            orderofoperations,
+            roundLength,
+        }) {
             setNumbersLengthInput(targetLength.toString());
             setAttemptsAllowedInput(attempt.toString());
             setOrderOfOperations(orderofoperations);
@@ -70,19 +81,19 @@ function Multiplayer({ goToPage }) {
             setWaitOptions(false);
             setCurrentMultiplayerScreen("roomoptions");
         }
-        
-        server.on('numbers', onNumbers);
+
+        server.on("numbers", onNumbers);
         server.on("error", onError);
         server.on("getReady", onGetReady);
-        
+
         server.on("options", onOptions);
 
         return () => {
-            server.off('numbers', onNumbers);
+            server.off("numbers", onNumbers);
             server.off("error", onError);
             server.off("getReady", onGetReady);
             server.off("options", onOptions);
-        }
+        };
     }, []);
 
     useEffect(() => {
@@ -102,25 +113,40 @@ function Multiplayer({ goToPage }) {
 
         return () => {
             server.off("wrongAnswer", onWrongAnswer);
-        }
-    },[isTimeUp])
+        };
+    }, [isTimeUp]);
 
     useEffect(() => {
         if (server.id !== undefined) {
             setPlayerID(server.id);
         }
-    }, [server.id])
+    }, [server.id]);
 
     useEffect(() => {
         function onUpdateScore(scores) {
-            setPlayerScore(scores[playerID]);
-            setOponentScore(Object.keys(scores).filter(key => key !== playerID).map(key => scores[key])[0]);
+            const oldScores=[playerScore,opponentScore];
+            const newScores=[scores[playerID],Object.keys(scores)
+                .filter((key) => key !== playerID)
+                .map((key) => scores[key])[0]]
+            const youWon = newScores[0]>oldScores[0];
+            const opponentWon = newScores[1]>oldScores[1];
+            setPlayerScore(newScores[0]);
+            setOpponentScore(newScores[1]);
             setPlaySlotNumbers(Array(numbersLength).fill());
             setPlaySlotOperators(Array(numbersLength - 1).fill());
             setTimeLeft(null);
             setTargetResult(null);
             setAttemptsLeft(null);
-            alert("The next round is beginning");
+            // alert("The next round is beginning");
+            if (youWon && opponentWon) {
+                alert(`You tied! Current standings:\n${userName}: ${newScores[0]}\n${opponent}: ${newScores[1]} `);
+            } else if (youWon && !opponentWon) {
+                alert(`You won! Current standings:\n${userName}: ${newScores[0]}\n${opponent}: ${newScores[1]} `);
+            } else if (!youWon && opponentWon) {
+                alert(`You lost! Current standings:\n${userName}: ${newScores[0]}\n${opponent}: ${newScores[1]} `);
+            } else {
+                alert(`You both lost! Current standings:\n${userName}: ${newScores[0]}\n${opponent}: ${newScores[1]} `);
+            }
         }
         function onSwapTurn(nextPlayer) {
             setIsRoundInProgress(false);
@@ -130,21 +156,29 @@ function Multiplayer({ goToPage }) {
                 setIsYourTurn(false);
             }
         }
-        server.on('updateScore', onUpdateScore);
-        server.on('swapTurn', onSwapTurn);
+        server.on("updateScore", onUpdateScore);
+        server.on("swapTurn", onSwapTurn);
 
         return () => {
-            server.off('updateScore', onUpdateScore);
-            server.off('swapTurn', onSwapTurn);
-        }
-    }, [numbersLength, playerID]);
+            server.off("updateScore", onUpdateScore);
+            server.off("swapTurn", onSwapTurn);
+        };
+    }, [numbersLength, playerID, userName, opponent, playerScore, opponentScore]);
 
     useEffect(() => {
-        function onStartGame({ turn, targetLength, attempt, orderofoperations, roundLength }) {
+        function onStartGame({
+            turn,
+            targetLength,
+            attempt,
+            orderofoperations,
+            roundLength,
+            opponent
+        }) {
             setNumbersLength(targetLength);
             setAttemptsAllowed(attempt);
             setOrderOfOperations(orderofoperations);
             setRoundLength(roundLength);
+            setOpponent(opponent);
             if (turn == playerID) {
                 setIsYourTurn(true);
                 setCurrentMultiplayerScreen("gamescreen");
@@ -152,7 +186,12 @@ function Multiplayer({ goToPage }) {
             setCurrentMultiplayerScreen("gamescreen");
         }
 
-        function onResetRoom({ turn, targetLength, attempt, orderofoperations }) {
+        function onResetRoom({
+            turn,
+            targetLength,
+            attempt,
+            orderofoperations,
+        }) {
             setNumbersLength(targetLength);
             setAttemptsAllowed(attempt);
             setOrderOfOperations(orderofoperations);
@@ -171,18 +210,18 @@ function Multiplayer({ goToPage }) {
         }
 
         server.on("startGame", onStartGame);
-        server.on("resetRoom", onResetRoom)
+        server.on("resetRoom", onResetRoom);
 
         return () => {
             server.off("startGame", onStartGame);
             server.off("resetRoom", onResetRoom);
-        }
-    }, [playerID])
+        };
+    }, [playerID]);
 
     useEffect(() => {
         setPlaySlotNumbers(Array(numbersLength).fill());
         setPlaySlotOperators(Array(numbersLength - 1).fill());
-    }, [numbersLength])
+    }, [numbersLength]);
 
     useEffect(() => {
         function onRoomFull() {
@@ -195,22 +234,26 @@ function Multiplayer({ goToPage }) {
             setCurrentMultiplayerScreen("roomwaiting");
         }
 
-        server.on('roomFull', onRoomFull);
+        server.on("roomFull", onRoomFull);
         if (selectedRoom != null) {
-            server.emit('joinRoom', { room: selectedRoom, name: userName });
-            server.on('joinRoomSuccess', onJoinRoomSuccess);
+            server.emit("joinRoom", { room: selectedRoom, name: userName });
+            server.on("joinRoomSuccess", onJoinRoomSuccess);
         }
 
         return () => {
-            server.off('roomFull', onRoomFull);
-            server.off('joinRoomSuccess', onJoinRoomSuccess);
-        }
-    }, [selectedRoom])
+            server.off("roomFull", onRoomFull);
+            server.off("joinRoomSuccess", onJoinRoomSuccess);
+        };
+    }, [selectedRoom]);
 
     useEffect(() => {
         function onUserDisconnected(name) {
             if (currentMultiplayerScreen == "gamescreen") {
-                alert("Your opponent \"" + name + "\" has left the room.\nPlease return to the menu.");
+                alert(
+                    'Your opponent "' +
+                        name +
+                        '" has left the room.\nPlease return to the menu.'
+                );
                 setIsRoundInProgress(false);
                 setIsYourTurn(false);
             }
@@ -220,13 +263,20 @@ function Multiplayer({ goToPage }) {
 
         return () => {
             server.off("userDisconnected", onUserDisconnected);
-        }
-    }, [currentMultiplayerScreen])
+        };
+    }, [currentMultiplayerScreen]);
 
     useEffect(() => {
         if (isTimeUp && isRoundInProgress && !timeLeft) {
             setIsRoundInProgress(false);
-            server.emit('checkAns', { nums: Array(numbersLength).fill(), operators: Array(numbersLength - 1).fill(), timeUsed: roundLength - timeLeft, room: currentRoom, attemptleft: 0, isTimeUp: true });
+            server.emit("checkAns", {
+                nums: Array(numbersLength).fill(),
+                operators: Array(numbersLength - 1).fill(),
+                timeUsed: roundLength - timeLeft,
+                room: currentRoom,
+                attemptleft: 0,
+                isTimeUp: true,
+            });
         }
         if (timeLeft > 0 && isRoundInProgress) {
             setIsTimeUp(false);
@@ -238,30 +288,37 @@ function Multiplayer({ goToPage }) {
     }, [timeLeft, isRoundInProgress, isTimeUp]);
 
     const handleRoomSelection = (room) => {
-        if (room==="") {
+        if (room === "") {
             alert("Room cannot be an empty string!");
             return;
         }
         setSelectedRoom(room);
-    }
+    };
 
     const handleNameSubmit = () => {
-        if (userName==="") {
+        if (userName === "") {
             alert("Username cannot be an empty string!");
             return;
         }
         setCurrentMultiplayerScreen("selectroom");
-    }
+    };
 
     const handleSubmission = (numbers, operators) => {
-        server.emit('checkAns', { nums: numbers, operators: operators, timeUsed: roundLength - timeLeft, room: currentRoom, attemptleft: attemptsLeft, isTimeUp: isTimeUp });
+        server.emit("checkAns", {
+            nums: numbers,
+            operators: operators,
+            timeUsed: roundLength - timeLeft,
+            room: currentRoom,
+            attemptleft: attemptsLeft,
+            isTimeUp: isTimeUp,
+        });
         // setAttemptsLeft(attemptsLeft-1);
-    }
+    };
 
     const handleEnterOptions = () => {
         server.emit("getOption");
         setWaitOptions(true);
-    }
+    };
 
     const handleOptionsSubmit = () => {
         let errors = [];
@@ -281,108 +338,150 @@ function Multiplayer({ goToPage }) {
         setNumbersLength(parseInt(numbersLengthInput));
         setRoundLength(parseInt(roundLengthInput));
         setAttemptsAllowed(parseInt(attemptsAllowedInput));
-        server.emit("setOptions", { targetLength: parseInt(numbersLengthInput), attempt: parseInt(attemptsAllowedInput), orderofoperations: orderOfOperations, roundLength: parseInt(roundLengthInput) });
+        server.emit("setOptions", {
+            targetLength: parseInt(numbersLengthInput),
+            attempt: parseInt(attemptsAllowedInput),
+            orderofoperations: orderOfOperations,
+            roundLength: parseInt(roundLengthInput),
+        });
         setCurrentMultiplayerScreen("roomready");
-    }
+    };
 
     const handleReady = () => {
         server.emit("playerReady");
         setIsReady(true);
-    }
+    };
 
     return (
-        <div style={{height: '100vh', overflowY:'auto'}}>
-            {currentMultiplayerScreen == "nameentry" && 
-                <NameEntry userName={userName}
-                    setUserName={setUserName}
-                    handleNameSubmit={handleNameSubmit}
-                />
-            }
-            {currentMultiplayerScreen == "selectroom" && 
-                <SelectRoom userName={userName}
-                    handleRoomSelection={handleRoomSelection}
-                    privateRoomCode={privateRoomCode}
-                    setPrivateRoomCode={setPrivateRoomCode}
-                    selectedRoom={selectedRoom}
-                    goToPage={goToPage}
-                />
-            }
-            {currentMultiplayerScreen == "roomwaiting" && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h2>Waiting for opponent to join...</h2>
-                    </div>
-                </div>
-            )}
-            {currentMultiplayerScreen == "roomready" && 
-                <RoomReady handleEnterOptions={handleEnterOptions}
-                    handleReady={handleReady}
-                    isReady={isReady}
-                    waitOptions={waitOptions}
-                    server={server}
-                    goToPage={goToPage}
-                />
-            }
-            {currentMultiplayerScreen == "roomoptions" && 
-                <OptionsMenu userName={userName}
-                    numbersLengthInput={numbersLengthInput}
-                    setNumbersLengthInput={setNumbersLengthInput}
-                    orderOfOperations={orderOfOperations}
-                    setOrderOfOperations={setOrderOfOperations}
-                    roundLengthInput={roundLengthInput}
-                    setRoundLengthInput={setRoundLengthInput}
-                    attemptsAllowedInput={attemptsAllowedInput}
-                    setAttemptsAllowedInput={setAttemptsAllowedInput}
-                    handleOptionsSubmit={handleOptionsSubmit}
-                />
-            }
-            {currentMultiplayerScreen == "gamescreen" && (
-                <div>
-                    <ScoreBar playerScore={playerScore}
+        <div className="area">
+            <div className="container">
+                <ul class="circles">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+                {currentMultiplayerScreen == "nameentry" && (
+                    <NameEntry
                         userName={userName}
-                        opponentScore={opponentScore} />
-                    <GameStatusDisplay targetResult={targetResult}
-                        isRoundInProgress={isRoundInProgress}
-                        timeLeft={timeLeft}
-                        roundLength={roundLength}
-                        attemptsLeft={attemptsLeft}
+                        setUserName={setUserName}
+                        handleNameSubmit={handleNameSubmit}
                     />
-                    <StartButton setTimeLeft={setTimeLeft}
-                        roundLength={roundLength}
+                )}
+                {currentMultiplayerScreen == "selectroom" && (
+                    <SelectRoom
+                        userName={userName}
+                        handleRoomSelection={handleRoomSelection}
+                        privateRoomCode={privateRoomCode}
+                        setPrivateRoomCode={setPrivateRoomCode}
+                        selectedRoom={selectedRoom}
+                        goToPage={goToPage}
+                    />
+                )}
+                {currentMultiplayerScreen == "roomwaiting" && (
+                    <div className="modal">
+                        <div className="modal-content">
+                            <h2>Waiting for opponent to join...</h2>
+                        </div>
+                    </div>
+                )}
+                {currentMultiplayerScreen == "roomready" && (
+                    <RoomReady
+                        handleEnterOptions={handleEnterOptions}
+                        handleReady={handleReady}
+                        isReady={isReady}
+                        waitOptions={waitOptions}
                         server={server}
-                        setPlaySlotNumbers={setPlaySlotNumbers}
-                        numbersLength={numbersLength}
-                        setPlaySlotOperators={setPlaySlotOperators}
-                        setIsRoundInProgress={setIsRoundInProgress}
-                        isRoundInProgress={isRoundInProgress}
-                        setAttemptsLeft={setAttemptsLeft}
-                        attemptsAllowed={attemptsAllowed}
-                        isYourTurn={isYourTurn}
+                        goToPage={goToPage}
                     />
-                    {isYourTurn && (
-                        <GameArea playSlotNumbers={playSlotNumbers}
-                            playSlotOperators={playSlotOperators}
-                            bankNumbers={bankNumbers}
-                            bankOperators={bankOperators}
-                            setPlaySlotNumbers={setPlaySlotNumbers}
-                            setPlaySlotOperators={setPlaySlotOperators}
-                            setBankNumbers={setBankNumbers}
-                            isTimeUp={isTimeUp}
-                            handleSubmission={handleSubmission}
-                            isRoundInProgress={isRoundInProgress}
+                )}
+                {currentMultiplayerScreen == "roomoptions" && (
+                    <OptionsMenu
+                        userName={userName}
+                        numbersLengthInput={numbersLengthInput}
+                        setNumbersLengthInput={setNumbersLengthInput}
+                        orderOfOperations={orderOfOperations}
+                        setOrderOfOperations={setOrderOfOperations}
+                        roundLengthInput={roundLengthInput}
+                        setRoundLengthInput={setRoundLengthInput}
+                        attemptsAllowedInput={attemptsAllowedInput}
+                        setAttemptsAllowedInput={setAttemptsAllowedInput}
+                        handleOptionsSubmit={handleOptionsSubmit}
+                    />
+                )}
+                {currentMultiplayerScreen == "gamescreen" && (
+                    <div className="gamescreen-container">
+                        <ScoreBar
+                            playerScore={playerScore}
+                            userName={userName}
+                            opponentScore={opponentScore}
+                            opponent={opponent}
                         />
-                    )}
-                    {!isYourTurn && (
-                        <h1 style={{ textAlign: 'center' }}>Please wait until it's your turn!</h1>
-                    )}
-                    <ReturnToMenuButton onClick={() => {
-                        server.emit('exitRoom');
-                        goToPage("Menu");
-                    }} />
-                </div>
-            )}
+
+                        <GameStatusDisplay
+                            targetResult={targetResult}
+                            isRoundInProgress={isRoundInProgress}
+                            timeLeft={timeLeft}
+                            roundLength={roundLength}
+                            attemptsLeft={attemptsLeft}
+                        />
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                            }}
+                        >
+                            <StartButton
+                                setTimeLeft={setTimeLeft}
+                                roundLength={roundLength}
+                                server={server}
+                                setPlaySlotNumbers={setPlaySlotNumbers}
+                                numbersLength={numbersLength}
+                                setPlaySlotOperators={setPlaySlotOperators}
+                                setIsRoundInProgress={setIsRoundInProgress}
+                                isRoundInProgress={isRoundInProgress}
+                                setAttemptsLeft={setAttemptsLeft}
+                                attemptsAllowed={attemptsAllowed}
+                                isYourTurn={isYourTurn}
+                            />
+                            {isYourTurn && (
+                                <GameArea
+                                    playSlotNumbers={playSlotNumbers}
+                                    playSlotOperators={playSlotOperators}
+                                    bankNumbers={bankNumbers}
+                                    bankOperators={bankOperators}
+                                    setPlaySlotNumbers={setPlaySlotNumbers}
+                                    setPlaySlotOperators={setPlaySlotOperators}
+                                    setBankNumbers={setBankNumbers}
+                                    isTimeUp={isTimeUp}
+                                    handleSubmission={handleSubmission}
+                                    isRoundInProgress={isRoundInProgress}
+                                />
+                            )}
+                            {!isYourTurn && (
+                                <h1 style={{ textAlign: "center" }}>
+                                    Please wait until it's your turn!
+                                </h1>
+                            )}
+                            <ReturnToMenuButton
+                                onClick={() => {
+                                    server.emit("exitRoom");
+                                    goToPage("Menu");
+                                }}
+                            />
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
-    )
+    );
 }
 
 export default Multiplayer;

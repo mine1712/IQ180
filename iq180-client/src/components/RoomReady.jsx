@@ -6,27 +6,39 @@ function RoomReady({
     isReady,
     waitOptions,
     server,
-    goToPage
+    goToPage,
 }) {
     return (
-        <div className="modal">
-            <div className="modal-content">
-                <h2>Choose your options or ready up!</h2>
-                <button onClick={handleEnterOptions}>Option</button>
-                <button onClick={handleReady}
-                    disabled={isReady}>Ready</button>
-                <div>
-                    {waitOptions && (
-                        <p>Waiting for server</p>
-                    )}
+        <div className="form-container">
+            <div className="multiplayer-welcome-container">
+                <div className="set-welcome-text">
+                    Choose your options or ready up!
                 </div>
-                <ReturnToMenuButton onClick={() => {
-                    server.emit('exitRoom');
-                    goToPage("Menu");
-                }} />
+                <div className="input-container">
+                    <button
+                        className="set-room-button"
+                        onClick={handleEnterOptions}
+                    >
+                        Option
+                    </button>
+                    <button
+                        className="set-room-button"
+                        onClick={handleReady}
+                        disabled={isReady}
+                    >
+                        Ready
+                    </button>
+                </div>
+                <div>{waitOptions && <p>Waiting for server</p>}</div>
+                <ReturnToMenuButton
+                    onClick={() => {
+                        server.emit("exitRoom");
+                        goToPage("Menu");
+                    }}
+                />
             </div>
         </div>
-    )
+    );
 }
 
 export default RoomReady;

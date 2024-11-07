@@ -275,7 +275,8 @@ io.on('connection', (socket) => {
       keys[room].turn = keys[room].id[randomPlayer];
       console.log(`${keys[room].turn} will start the game`);
       //io.to(room).emit('startGame', {firstPlayer:keys[room].turn, attempt:keys[room].attempt});
-      io.to(room).emit('startGame', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations,roundLength:keys[room].roundLength});
+      const opponent = connections[keys[room].id.filter(user => user !== socket.id)[0]].nickname;
+      io.to(room).emit('startGame', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations,roundLength:keys[room].roundLength, opponent:opponent});
     }}
     catch(error){
       console.log('\x1b[31m',`ERROR: ${error}`,'\x1b[0m');

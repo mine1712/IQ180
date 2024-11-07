@@ -1,84 +1,239 @@
-#numberPlaySlotBox {
-    display: inline-block;
-    /* Makes it a box */
-    padding: 10px;
-    /* Adjust padding as needed */
-    margin: 10px;
-    /* Adds margin around the box */
-    border-radius: 5px;
-    /* Adjust border-radius as needed */
-    background-color: #f9f9f9;
-    min-width: 50px;
-    min-height: 50px;
-    font-size: 40px;
-    vertical-align: middle;
+/* singleplayer.css */
+
+body {
+  margin: 0;
+  padding: 0;
 }
 
-#operatorPlaySlotBox {
-    display: inline-block;
-    /* Makes it a box */
-    padding: 5px;
-    /* Adjust padding as needed */
-    margin: 5px;
-    /* Adds margin around the box */
-    border-radius: 5px;
-    /* Adjust border-radius as needed */
-    background-color: #f9f9f9;
-    min-width: 25px;
-    min-height: 25px;
-    font-size: 25px;
-    vertical-align: middle;
+.container {
+  height: 100vh;
+  background: #4AC29A;
+  /* background: linear-gradient(to right,#4AC29A, #BDFFF3); */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-#numberBankBox {
-    display: inline-block;
-    /* Makes it a box */
-    padding: 10px;
-    /* Adjust padding as needed */
-    margin: 10px;
-    /* Adds margin around the box */
-    border-radius: 5px;
-    /* Adjust border-radius as needed */
-    background-color: #f9f9f9;
-    min-width: 10px;
-    min-height: 20px;
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  z-index: 2;
 }
 
-#operatorBankBox {
-    display: inline-block;
-    /* Makes it a box */
-    padding: 10px;
-    /* Adjust padding as needed */
-    margin: 10px;
-    /* Adds margin around the box */
-    border-radius: 5px;
-    /* Adjust border-radius as needed */
-    background-color: #f9f9f9;
+.set-name-text {
+  color: white;
+  font-size: 40px;
+  font-weight: 500;
+  
 }
 
-:disabled {
-    background-color: #f9f9f9;
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: white;
+  padding: 12px;
+  border-radius: 5px;
+  width: 250px;
 }
 
-:disabled:hover {
-    background-color: #f9f9f9;
+.set-name-input {
+  height: 36px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-align: center;
+  border-radius: 5px;
+  border: #b5b5b5 solid 1px;
+  font-weight: 600;
+  font-size: 16px;
 }
 
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    margin: 5px;
-    /* Espaciado entre botones */
+.set-name-input:focus {
+  outline: none;
 }
 
-button:hover {
-    background-color: #0056b3;
+.set-name-button {
+  height: 40px;
+  background-color: rgb(32, 31, 31);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
 }
+.set-name-button:hover {
+  opacity: 0.9;
+}
+
+.plus-background {
+  font-size: 1000px;
+  color: white;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translateY(50px) rotate(70deg);
+}
+
+.image-background {
+  position: absolute;
+  z-index: 1;
+}
+
+/*animation*/
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+body{
+    font-family: 'Exo', sans-serif;
+}
+
+
+.context {
+    width: 100%;
+    position: absolute;
+    top:50vh;
+    
+}
+
+.context h1{
+    text-align: center;
+    color: #fff;
+    font-size: 50px;
+}
+
+
+.area{
+    /* background: #4e54c8;  
+    background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);   */
+    width: 100%;
+    height:100vh;
+}
+
+.circles{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.circles li{
+    position: absolute;
+    display: block;
+    list-style: none;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    animation: animate 25s linear infinite;
+    bottom: -150px;
+    
+}
+
+.circles li:nth-child(1){
+    left: 25%;
+    width: 80px;
+    height: 80px;
+    animation-delay: 0s;
+}
+
+
+.circles li:nth-child(2){
+    left: 10%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 2s;
+    animation-duration: 12s;
+}
+
+.circles li:nth-child(3){
+    left: 70%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 4s;
+}
+
+.circles li:nth-child(4){
+    left: 40%;
+    width: 60px;
+    height: 60px;
+    animation-delay: 0s;
+    animation-duration: 18s;
+}
+
+.circles li:nth-child(5){
+    left: 65%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 0s;
+}
+
+.circles li:nth-child(6){
+    left: 75%;
+    width: 110px;
+    height: 110px;
+    animation-delay: 3s;
+}
+
+.circles li:nth-child(7){
+    left: 35%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 7s;
+}
+
+.circles li:nth-child(8){
+    left: 50%;
+    width: 25px;
+    height: 25px;
+    animation-delay: 15s;
+    animation-duration: 45s;
+}
+
+.circles li:nth-child(9){
+    left: 20%;
+    width: 15px;
+    height: 15px;
+    animation-delay: 2s;
+    animation-duration: 35s;
+}
+
+.circles li:nth-child(10){
+    left: 85%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 0s;
+    animation-duration: 11s;
+}
+
+
+
+@keyframes animate {
+
+    0%{
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+        border-radius: 0;
+    }
+
+    100%{
+        transform: translateY(-1000px) rotate(720deg);
+        opacity: 0;
+        border-radius: 50%;
+    }
+
+}
+
+/* button:hover {
+  background-color: #0056b3; 
+} */
 
 form {
     display: flex;
@@ -86,14 +241,251 @@ form {
     align-items: center;
 }
 
-input {
-    padding: 10px;
-    margin: 10px 0;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+.top-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Centra verticalmente las casillas */
+  flex-wrap: wrap; /* Permite que las casillas se muevan a la siguiente línea si es necesario */
+  gap: 20px;
+  /* padding: 8px;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); */
 }
 
-/* #playSlotBoxArea {
-  display:inline-block;
+.boxes {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Centra verticalmente las casillas */
+  flex-wrap: wrap; /* Permite que las casillas se muevan a la siguiente línea si es necesario */
+}
+
+.box {
+  border: 1px solid #ccc; 
+  border-radius: 5px; 
+  padding: 20px;
+  margin: 5px; /* Espacio entre casillas */
+  min-width: 50px; /* Ancho mínimo para las casillas */
+  text-align: center; /* Centra el texto dentro de la casilla */
+}
+
+.equals-box {
+  font-weight: bold;
+}
+
+.random-number-box {
+  background-color: #e0e0e0; /* Diferenciar la casilla del número aleatorio */
+}
+
+.bottom-buttons {
+  display: flex;
+  flex-direction: column; /* Organiza los botones en columna */
+  align-items: center; /* Centra los botones en la columna */
+}
+
+.operations-buttons {
+  display: flex; /* Alinear botones de operación en fila */
+}
+
+.clear-button {
+  margin-top: 10px; /* Espacio entre el botón de operaciones y el botón de borrar */
+}
+
+.check-button {
+  margin-top: 10px; /* Espacio entre el botón de borrar y el botón de comprobar */
+}
+
+.button-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.set-welcome-text {
+  color: white;
+  font-size: 40px;
+  font-weight: 500;
+}
+
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/*game play page*/
+.gamescreen-container {
+  /* background-color: #4AC29A; */
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.content-container {
+  /*border: solid 2px blue;*/
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  overflow: auto;
+  padding-bottom: 20px;
+}
+
+.playername-container {
+  border: solid 3px white;
+  padding: 10px 30px;
+  background-color: #4AC29A;
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  font-weight: 600;
+  font-size: 25px;
+  word-break: break-all;
+}
+
+/* .playerscore-container {
+  border: solid 3px white;
+  padding: 40px 30px;
+  background-color: #4AC29A;
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  font-weight: 600;
+  font-size: 25px;
 } */
+
+.player-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  left: 0;
+  background-color: white;
+  border-radius: 0px 0px 10px 10px;
+  box-shadow: 25px 25px 10px -15px rgba(0,0,0,0.1);
+  width: 150px;
+  padding: 15px 40px;
+  color: #4AC29A;
+  font-weight: 700;
+  font-size: 20px;
+  text-align: center;
+}
+
+.opplayer-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  right: 0;
+  background-color: white;
+  border-radius: 0px 0px 10px 10px;
+  box-shadow: 25px 25px 10px -15px rgba(0,0,0,0.1);
+  width: 150px;
+  padding: 15px 40px;
+  color: #4AC29A;
+  font-weight: 700;
+  font-size: 20px;
+  text-align: center;
+}
+
+.time-container {
+  position: absolute;
+  top: 0;
+  right: -80px;
+  background-color: white;
+  border-radius: 0px 0px 10px 10px;
+  box-shadow: 25px 25px 10px -15px rgba(0,0,0,0.1);
+  /* width: 150px; */
+  padding: 5px 20px;
+  color: #4AC29A;
+  font-weight: 700;
+  font-size: 20px;
+  text-align: center;
+  align-self: self-start;
+}
+
+.target-container{
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  background-color: white;
+  padding: 20px 50px;
+  border-radius: 0px 0px 10px 10px;
+  color: #4AC29A;
+  font-weight: 700;
+  font-size: 30px;
+  box-shadow: 0px 25px 10px -16px rgba(0,0,0,0.1);
+}
+
+.attempt-container {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 1px 30px;
+  border-radius: 0px 0px 10px 10px;
+  color: #4AC29A;
+  box-shadow: 0px 25px 10px -16px rgba(0,0,0,0.1);
+}
+
+.target-attempt-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  align-items: center;
+}
+
+.target-time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.singleplayer-start-button {
+  background-color: white;
+  padding: 7px 20px;
+  border-radius:4px;
+  color: #4AC29A;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 20px;
+  opacity: 1;
+}
+
+.singleplayer-start-button:hover {
+  opacity: 0.9;
+}
+
+.option-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: white;
+  padding: 12px ;
+  border-radius: 5px;
+  
+}
+
+.each_option-container {
+  /* display: flex; */
+  display: flex;
+  gap: 10px;
+}
+
+.option-design{
+  display: flex;
+  flex-direction: column;
+  background: black;
+  color: white;
+  text-align: center;
+  border-radius: 5px;
+  padding: 10px 50px;
+  min-width: 140px;
+  max-width: 140px;
+}

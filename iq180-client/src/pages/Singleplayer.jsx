@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import '../css/Singleplayer.css';
+import { useState, useEffect } from "react";
+import "../css/Singleplayer.css";
 import {
     GameArea,
     ScoreBar,
@@ -7,15 +7,19 @@ import {
     NameEntry,
     OptionsMenu,
     StartButton,
-    GameStatusDisplay
-} from '../components';
-import { generateNumbers } from '../utils/numberGenerator'
-import { checkNumbersLength, checkRoundLength, checkAttemptsAllowed } from '../utils/checkOptionsInput';
-
+    GameStatusDisplay,
+} from "../components";
+import { generateNumbers } from "../utils/numberGenerator";
+import {
+    checkNumbersLength,
+    checkRoundLength,
+    checkAttemptsAllowed,
+} from "../utils/checkOptionsInput";
 
 const Singleplayer = ({ goToPage }) => {
     // Screen Value
-    const [currentSingleplayerScreen, setCurrentSingleplayerScreen] = useState("nameentry");
+    const [currentSingleplayerScreen, setCurrentSingleplayerScreen] =
+        useState("nameentry");
     // Player Info
     const [playerScore, setPlayerScore] = useState(0);
     const [userName, setUserName] = useState("");
@@ -23,7 +27,7 @@ const Singleplayer = ({ goToPage }) => {
     const [playSlotNumbers, setPlaySlotNumbers] = useState(Array(5).fill());
     const [playSlotOperators, setPlaySlotOperators] = useState(Array(4).fill());
     const [bankNumbers, setBankNumbers] = useState([]);
-    const [bankOperators, setBankOperators] = useState(['+', '-', 'x', '÷'])
+    const [bankOperators, setBankOperators] = useState(["+", "-", "x", "÷"]);
     // Game Variables
     const [timeLeft, setTimeLeft] = useState(null);
     const [isTimeUp, setIsTimeUp] = useState(false);
@@ -34,7 +38,7 @@ const Singleplayer = ({ goToPage }) => {
     const [numbersLengthInput, setNumbersLengthInput] = useState("5");
     const [numbersLength, setNumbersLength] = useState(5);
     const [orderOfOperations, setOrderOfOperations] = useState("pemdas");
-    const [roundLengthInput, setRoundLengthInput] = useState("60")
+    const [roundLengthInput, setRoundLengthInput] = useState("60");
     const [roundLength, setRoundLength] = useState(60);
     const [attemptsAllowedInput, setAttemptsAllowedInput] = useState("3");
     const [attemptsAllowed, setAttemptsAllowed] = useState(3);
@@ -51,7 +55,7 @@ const Singleplayer = ({ goToPage }) => {
         setTargetResult(null);
         setIsRoundInProgress(false);
         setPlayerLost(false);
-    }
+    };
 
     useEffect(() => {
         if (timeLeft > 0 && isRoundInProgress) {
@@ -67,12 +71,12 @@ const Singleplayer = ({ goToPage }) => {
     }, [timeLeft]);
 
     const handleNameSubmit = () => {
-        if (userName==="") {
+        if (userName === "") {
             alert("Username cannot be an empty string!");
             return;
         }
         setCurrentSingleplayerScreen("gameoptions");
-    }
+    };
 
     const handleOptionsSubmit = () => {
         let errors = [];
@@ -93,12 +97,12 @@ const Singleplayer = ({ goToPage }) => {
         setRoundLength(parseInt(roundLengthInput));
         setAttemptsAllowed(parseInt(attemptsAllowedInput));
         setCurrentSingleplayerScreen("gamescreen");
-    }
+    };
 
     useEffect(() => {
         setPlaySlotNumbers(Array(numbersLength).fill());
         setPlaySlotOperators(Array(numbersLength - 1).fill());
-    }, [numbersLength])
+    }, [numbersLength]);
 
     const handleSubmission = (numbers, operators) => {
         if (orderOfOperations == "pemdas") {
@@ -118,32 +122,39 @@ const Singleplayer = ({ goToPage }) => {
                     setPlayerScore(playerScore + 1);
                     return true;
                 } else {
-                    alert(`Incorrect. The result is ${playerAnswer}, but ${targetResult} was expected.`);
+                    alert(
+                        `Incorrect. The result is ${playerAnswer}, but ${targetResult} was expected.`
+                    );
                     setAttemptsLeft(attemptsLeft - 1);
                     return false;
                 }
             } catch (error) {
-                alert("Error in the expression. Please ensure it is well-formed.");
+                alert(
+                    "Error in the expression. Please ensure it is well-formed."
+                );
                 setAttemptsLeft(attemptsLeft - 1);
                 return false;
             }
         } else if (orderOfOperations == "lefttoright") {
             let nums_check = numbers.filter((value) => value !== null);
             let operators_check = operators.filter((value) => value !== null);
-            if (nums_check.length === numbersLength && operators_check.length === (numbersLength - 1)) {
+            if (
+                nums_check.length === numbersLength &&
+                operators_check.length === numbersLength - 1
+            ) {
                 let result = numbers[0];
                 for (let i = 1; i < numbers.length; i++) {
                     switch (operators[i - 1]) {
-                        case '+':
+                        case "+":
                             result += numbers[i];
                             break;
-                        case '-':
+                        case "-":
                             result -= numbers[i];
                             break;
-                        case '*':
+                        case "*":
                             result *= numbers[i];
                             break;
-                        case '/':
+                        case "/":
                             result /= numbers[i];
                             break;
                     }
@@ -154,7 +165,9 @@ const Singleplayer = ({ goToPage }) => {
                     setPlayerScore(playerScore + 1);
                     return true;
                 } else {
-                    alert(`Incorrect. The result is ${result}, but ${targetResult} was expected.`);
+                    alert(
+                        `Incorrect. The result is ${result}, but ${targetResult} was expected.`
+                    );
                     setAttemptsLeft(attemptsLeft - 1);
                     return false;
                 }
@@ -163,87 +176,120 @@ const Singleplayer = ({ goToPage }) => {
             setAttemptsLeft(attemptsLeft - 1);
             return false;
         }
-
-    }
+    };
 
     useEffect(() => {
         if (attemptsLeft === 0) {
             setTimeLeft(0);
             setPlayerLost(true);
         }
-    }, [attemptsLeft])
+    }, [attemptsLeft]);
 
     return (
-        <div style={{height: '100vh', overflowY:'auto'}}>
-            {currentSingleplayerScreen == "nameentry" && 
-                <NameEntry userName={userName}
-                    setUserName={setUserName}
-                    handleNameSubmit={handleNameSubmit}
-                />
-            }
-            {currentSingleplayerScreen == "gameoptions" && 
-                <OptionsMenu userName={userName}
-                numbersLengthInput={numbersLengthInput}
-                setNumbersLengthInput={setNumbersLengthInput}
-                orderOfOperations={orderOfOperations}
-                setOrderOfOperations={setOrderOfOperations}
-                roundLengthInput={roundLengthInput}
-                setRoundLengthInput={setRoundLengthInput}
-                attemptsAllowedInput={attemptsAllowedInput}
-                setAttemptsAllowedInput={setAttemptsAllowedInput}
-                handleOptionsSubmit={handleOptionsSubmit}
-            />
-            }
-            {currentSingleplayerScreen == "gamescreen" && (
-                <div>
-                    <ScoreBar playerScore={playerScore}
-                        userName={userName} />
-                    <GameStatusDisplay targetResult={targetResult}
-                        isRoundInProgress={isRoundInProgress}
-                        timeLeft={timeLeft}
-                        roundLength={roundLength}
-                        attemptsLeft={attemptsLeft}
+        <div className="area">
+            <div className="container">
+                <ul class="circles">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+                {currentSingleplayerScreen == "nameentry" && (
+                    <NameEntry
+                        userName={userName}
+                        setUserName={setUserName}
+                        handleNameSubmit={handleNameSubmit}
                     />
-                    <StartButton setTimeLeft={setTimeLeft}
-                        roundLength={roundLength}
-                        setPlaySlotNumbers={setPlaySlotNumbers}
-                        generateNumbers={generateNumbers}
-                        numbersLength={numbersLength}
-                        setPlaySlotOperators={setPlaySlotOperators}
-                        setIsRoundInProgress={setIsRoundInProgress}
-                        isRoundInProgress={isRoundInProgress}
-                        setAttemptsLeft={setAttemptsLeft}
-                        attemptsAllowed={attemptsAllowed}
-                        isYourTurn={true}
-                        setBankNumbers={setBankNumbers}
-                        setTargetResult={setTargetResult}
+                )}
+                {currentSingleplayerScreen == "gameoptions" && (
+                    <OptionsMenu
+                        userName={userName}
+                        numbersLengthInput={numbersLengthInput}
+                        setNumbersLengthInput={setNumbersLengthInput}
+                        orderOfOperations={orderOfOperations}
+                        setOrderOfOperations={setOrderOfOperations}
+                        roundLengthInput={roundLengthInput}
+                        setRoundLengthInput={setRoundLengthInput}
+                        attemptsAllowedInput={attemptsAllowedInput}
+                        setAttemptsAllowedInput={setAttemptsAllowedInput}
+                        handleOptionsSubmit={handleOptionsSubmit}
                     />
-                    <GameArea playSlotNumbers={playSlotNumbers}
-                        playSlotOperators={playSlotOperators}
-                        bankNumbers={bankNumbers}
-                        bankOperators={bankOperators}
-                        setPlaySlotNumbers={setPlaySlotNumbers}
-                        setPlaySlotOperators={setPlaySlotOperators}
-                        setBankNumbers={setBankNumbers}
-                        isTimeUp={isTimeUp}
-                        handleSubmission={handleSubmission}
-                        isRoundInProgress={isRoundInProgress}
-                    />
-                    {playerLost && (
-                        <h1 style={{ textAlign: 'center' }}>You lost! Try again?</h1>
-                    )}
-                    <div style={{ textAlign: 'center' }}>
-                        {playerLost && (
-                            <button onClick={initializeSingleplayer}>Restart Game</button>
-                        )}
-                        <ReturnToMenuButton onClick={() => {
-                            goToPage("Menu");
-                        }} />
+                )}
+                {currentSingleplayerScreen == "gamescreen" && (
+                    <div className="gamescreen-container">
+                        <div className="player-container">
+                            <ScoreBar
+                                playerScore={playerScore}
+                                userName={userName}
+                            />
+                        </div>
+                        <GameStatusDisplay
+                            targetResult={targetResult}
+                            isRoundInProgress={isRoundInProgress}
+                            timeLeft={timeLeft}
+                            roundLength={roundLength}
+                            attemptsLeft={attemptsLeft}
+                        />
+                        <div style={{ paddingTop: "130px" }}>
+                            <StartButton
+                                setTimeLeft={setTimeLeft}
+                                roundLength={roundLength}
+                                setPlaySlotNumbers={setPlaySlotNumbers}
+                                generateNumbers={generateNumbers}
+                                numbersLength={numbersLength}
+                                setPlaySlotOperators={setPlaySlotOperators}
+                                setIsRoundInProgress={setIsRoundInProgress}
+                                isRoundInProgress={isRoundInProgress}
+                                setAttemptsLeft={setAttemptsLeft}
+                                attemptsAllowed={attemptsAllowed}
+                                isYourTurn={true}
+                                setBankNumbers={setBankNumbers}
+                                setTargetResult={setTargetResult}
+                            />
+                            <GameArea
+                                playSlotNumbers={playSlotNumbers}
+                                playSlotOperators={playSlotOperators}
+                                bankNumbers={bankNumbers}
+                                bankOperators={bankOperators}
+                                setPlaySlotNumbers={setPlaySlotNumbers}
+                                setPlaySlotOperators={setPlaySlotOperators}
+                                setBankNumbers={setBankNumbers}
+                                isTimeUp={isTimeUp}
+                                handleSubmission={handleSubmission}
+                                isRoundInProgress={isRoundInProgress}
+                            />
+                            {playerLost && (
+                                <h1 style={{ textAlign: "center" }}>
+                                    You lost! Try again?
+                                </h1>
+                            )}
+                            <div style={{ textAlign: "center" }}>
+                                {playerLost && (
+                                    <button
+                                        className="singleplayer-start-button"
+                                        onClick={initializeSingleplayer}
+                                    >
+                                        Restart Game
+                                    </button>
+                                )}
+                                <ReturnToMenuButton
+                                    onClick={() => {
+                                        goToPage("Menu");
+                                    }}
+                                />
+                            </div>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
-    )
-}
+    );
+};
 
 export default Singleplayer;

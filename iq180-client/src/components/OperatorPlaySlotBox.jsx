@@ -1,17 +1,27 @@
-function OperatorPlaySlotBox({ operator, index, dropHandler, dragStartHandler, onClick }) {
-
+function OperatorPlaySlotBox({
+    operator,
+    index,
+    dropHandler,
+    dragStartHandler,
+    onClick,
+}) {
     const operatorPlaySlotDragStart = (index) => {
-        dragStartHandler("opslot", index)
-    }
+        dragStartHandler("opslot", index);
+    };
 
     const operatorPlaySlotDrop = (index) => {
         dropHandler("opslot", index);
-    }
+    };
 
     return (
         <span
-            key={'operatorPlaySlot' + (index + 1)}
-            id='operatorPlaySlotBox'
+            style={{
+                backgroundColor: "#4AC29A",
+                textAlign: "center",
+                color: "white",
+            }}
+            key={"operatorPlaySlot" + (index + 1)}
+            id="operatorPlaySlotBox"
             // disabled={isTimeUp}
             draggable={true}
             onDragStart={() => operatorPlaySlotDragStart(index)}
@@ -22,7 +32,6 @@ function OperatorPlaySlotBox({ operator, index, dropHandler, dragStartHandler, o
         >
             {operator}
         </span>
-
     );
 }
 
