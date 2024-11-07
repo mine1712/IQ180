@@ -10,7 +10,7 @@ Members:
 Frontend: Thas, David, Minerva, Black  
 Backend: Matt, Thame  
 
-**Term Project Submission on November 3rd and 10th**  
+**Term Project Submission on November 8th**  
 
 **TO Start Server** NO LONGER NEEDED TO CD INTO FOLDER!  
 
