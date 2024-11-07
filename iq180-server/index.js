@@ -686,7 +686,7 @@ app.post('/resetRoom', (req, res) => {
     keys[room].numbers = [];
     keys[room].ans = null;
     keys[room].response = {correctness:null,timeUsed:null};
-    const randomPlayer = Math.floor(Math.random()*1);
+    const randomPlayer = Math.floor(Math.random()*2);
     keys[room].turn = keys[room].id[randomPlayer];
     io.to(room).emit('resetRoom', {turn:keys[room].turn, targetLength:keys[room].targetLength, attempt:keys[room].attempt, orderofoperations:keys[room].orderofoperations});
   }

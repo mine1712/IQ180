@@ -197,6 +197,7 @@ function Multiplayer({ goToPage }) {
             setOrderOfOperations(orderofoperations);
             setIsRoundInProgress(false);
             setPlayerScore(0);
+            setOpponentScore(0);
             setPlaySlotNumbers(Array(targetLength).fill());
             setPlaySlotOperators(Array(targetLength - 1).fill());
             setTimeLeft(null);
