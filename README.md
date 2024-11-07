@@ -50,13 +50,14 @@ Server
 - [X] (1.0) Server randomizes the five digits and the final result when the game starts and also randomizes the first player for the first game.
   
 Extra features (1.0 per feature)
-- [X] Feature 1: How to play screen.
-- [ ] Feature 2: Background Rain Toggle
-- [ ] Feature 3: Background Color Toggle
-- [X] Feature 4: Change number of numbers (Default needs to be 5 numbers according to the original assignment.)
-- [X] Feature 5: Change the game's timer.
-- [ ] Feature 6: Background music.
-- [X] Feature 7: Singleplayer
-- [X] Feature 8: Change the order of operations used in the game..
-- [X] Feature 9: Change the amount of attempts allowed on each equation.
-- [X] Feature 10: Leaderboard
+
+- [X] Feature 1: How to play screen
+- [X] Feature 2: Leaderboard
+- [X] Feature 3: Support for multiple rooms.
+- [X] Feature 4: Singleplayer
+- [X] Feature 5: Change the number of numbers (Default needs to be 5 numbers according to the original assignment.)
+- [X] Feature 6: Change the game's timer.
+- [X] Feature 7: Change the order of operations used in the game.
+- [X] Feature 8: Change the amount of attempts allowed on each equation.
+- [X] Feature 9: Displays answer for each round on the server's interface.
+- [X] Feature 10: Can reset individual room on the server instead of the entire server. (?)
