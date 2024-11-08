@@ -1,26 +1,28 @@
 # IQ180  
 
-All information here are subject to change.  
+This game was created as a group project in university.  
 
 Frontend/UI: React Framework  
 Backend/Server: NodeJS  
 Frontend and Backend will be connected with Socket.IO  
 
-Members:  
+### Members  
 Frontend: Thas, David, Minerva, Black  
 Backend: Matt, Thame  
 
-**Term Project Submission on November 8th**  
+## How to use
 
-**TO Start Server** NO LONGER NEEDED TO CD INTO FOLDER!  
+When using the following commands, it is not mandatory to cd into their respective folders.  
+
+**To Start Server**  
 
 npm start  
 
-**TO Start Client**  NO LONGER NEEDED TO CD INTO FOLDER!  
+**To Start Client**    
   
 npm run dev  
 
-**Requirement Checklist**  
+## Requirement Checklist
 
 Score Criteria (Full score = 25 points)  
 a) (5.0) Demo preparation and creativity  
