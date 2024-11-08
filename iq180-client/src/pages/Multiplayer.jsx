@@ -134,6 +134,7 @@ function Multiplayer({ goToPage }) {
             setOpponentScore(newScores[1]);
             setPlaySlotNumbers(Array(numbersLength).fill());
             setPlaySlotOperators(Array(numbersLength - 1).fill());
+            setBankNumbers(Array(numbersLength).fill());
             setTimeLeft(null);
             setTargetResult(null);
             setAttemptsLeft(null);
